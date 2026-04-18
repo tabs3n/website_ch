@@ -1,17 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 
-function HeroVideo() {
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80";
+
+export interface HeroData {
+  heroImage?: string | null;
+  heroEyebrow?: string | null;
+  heroHeadline?: string | null;
+  heroDescription?: string | null;
+  heroStats?: Array<{ value: string; label: string }> | null;
+}
+
+const DEFAULT_STATS = [
+  { value: "20+", label: "Jahre" },
+  { value: "800+", label: "Produktionen" },
+  { value: "24/7", label: "On-Site Support" },
+  { value: "4K", label: "Broadcast-Ready" },
+];
+
+function HeroBackground({ src }: { src: string }) {
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div
         style={{
           position: "absolute",
           inset: "-6%",
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80)",
+          backgroundImage: `url(${src})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           animation: "kenburns 22s ease-in-out infinite alternate",
@@ -34,7 +50,6 @@ function HeroVideo() {
             "radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(10,10,10,.6) 100%)",
         }}
       />
-      {/* scan line overlay */}
       <div
         style={{
           position: "absolute",
@@ -92,13 +107,27 @@ function CTA({ children, primary }: { children: React.ReactNode; primary?: boole
   );
 }
 
-export default function Hero() {
+export default function Hero({
+  heroImage,
+  heroEyebrow,
+  heroHeadline,
+  heroDescription,
+  heroStats,
+}: HeroData = {}) {
+  const imgSrc = heroImage ?? FALLBACK_IMAGE;
+  const eyebrow = heroEyebrow ?? "Veranstaltungstechnik · Köln · seit 2003";
+  const headline = heroHeadline ?? "Licht. Ton. Video auf Broadcast-Niveau.";
+  const description =
+    heroDescription ??
+    "Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der ersten CAD-Zeichnung bis zur schlüsselfertigen Show.";
+  const stats = heroStats?.length ? heroStats : DEFAULT_STATS;
+
   return (
     <section
       id="top"
       style={{ position: "relative", minHeight: "100vh", overflow: "hidden", paddingTop: 110 }}
     >
-      <HeroVideo />
+      <HeroBackground src={imgSrc} />
 
       {/* top meta rail */}
       <div
@@ -133,8 +162,15 @@ export default function Hero() {
           className="eyebrow"
           style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 10 }}
         >
-          <span style={{ width: 28, height: 1, background: "var(--accent)", display: "inline-block" }} />
-          Veranstaltungstechnik · Köln · seit 2003
+          <span
+            style={{
+              width: 28,
+              height: 1,
+              background: "var(--accent)",
+              display: "inline-block",
+            }}
+          />
+          {eyebrow}
         </div>
 
         <h1
@@ -146,11 +182,7 @@ export default function Hero() {
             maxWidth: "14ch",
           }}
         >
-          Licht. Ton.
-          <br />
-          Video auf
-          <br />
-          <span style={{ fontStyle: "italic", color: "var(--ink)" }}>Broadcast</span>—Niveau.
+          {headline}
         </h1>
 
         <div
@@ -171,8 +203,7 @@ export default function Hero() {
               lineHeight: 1.55,
             }}
           >
-            Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der
-            ersten CAD-Zeichnung bis zur schlüsselfertigen Show.
+            {description}
           </p>
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <CTA primary>Projekt anfragen</CTA>
@@ -192,23 +223,18 @@ export default function Hero() {
           borderTop: "1px solid var(--line)",
           padding: "20px var(--pad-x)",
           display: "grid",
-          gridTemplateColumns: "repeat(4, minmax(0,1fr))",
+          gridTemplateColumns: `repeat(${stats.length}, minmax(0,1fr))`,
           gap: 24,
           background: "linear-gradient(180deg, transparent, rgba(10,10,10,.55))",
         }}
       >
-        {[
-          ["20+", "Jahre"],
-          ["800+", "Produktionen"],
-          ["24/7", "On-Site Support"],
-          ["4K", "Broadcast-Ready"],
-        ].map(([num, label]) => (
-          <div key={num} style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+        {stats.map((s) => (
+          <div key={s.value + s.label} style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
             <span
               className="serif"
               style={{ fontSize: "clamp(28px, 3.2vw, 44px)", lineHeight: 1 }}
             >
-              {num}
+              {s.value}
             </span>
             <span
               className="mono"
@@ -219,7 +245,7 @@ export default function Hero() {
                 textTransform: "uppercase",
               }}
             >
-              {label}
+              {s.label}
             </span>
           </div>
         ))}

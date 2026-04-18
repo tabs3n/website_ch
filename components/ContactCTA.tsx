@@ -4,6 +4,17 @@ import { useState } from "react";
 
 const SERVICES = ["Licht", "Ton", "Video", "Konferenz", "Rigging", "Stage-Design"];
 
+export interface ContactData {
+  contactHeading?: string | null;
+  contactResponseTime?: string | null;
+  contactLocationImage?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  addressStreet?: string | null;
+  addressCity?: string | null;
+  businessHours?: string[] | null;
+}
+
 function Field({
   label,
   type = "text",
@@ -186,7 +197,28 @@ function CTABtn({ children, primary }: { children: React.ReactNode; primary?: bo
   );
 }
 
-export default function ContactCTA({ heading }: { heading?: string } = {}) {
+const FALLBACK_LOCATION_IMG =
+  "https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?auto=format&fit=crop&w=1000&q=80";
+
+export default function ContactCTA({
+  contactHeading,
+  contactResponseTime,
+  contactLocationImage,
+  email,
+  phone,
+  addressStreet,
+  addressCity,
+  businessHours,
+}: ContactData = {}) {
+  const heading = contactHeading ?? "Lassen Sie uns Ihr nächstes Event realisieren.";
+  const responseTime = contactResponseTime ?? "Antwort innerhalb von 24 h werktags";
+  const locationImg = contactLocationImage ?? FALLBACK_LOCATION_IMG;
+  const resolvedEmail = email ?? "kontakt@cologne-hunters.de";
+  const resolvedPhone = phone ?? "+49 221 1234 5678";
+  const street = addressStreet ?? "Deutz-Mülheimer Straße 129";
+  const city = addressCity ?? "51063 Köln";
+  const hours = businessHours?.length ? businessHours : ["Mo–Fr · 08:00–18:00", "24/7 Show-Support"];
+
   return (
     <section
       id="kontakt"
@@ -211,7 +243,10 @@ export default function ContactCTA({ heading }: { heading?: string } = {}) {
         className="ctc-head"
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-mute)" }}>
+          <span
+            className="mono"
+            style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-mute)" }}
+          >
             IV/IV
           </span>
           <span className="eyebrow" style={{ color: "var(--accent)" }}>
@@ -226,13 +261,7 @@ export default function ContactCTA({ heading }: { heading?: string } = {}) {
             letterSpacing: "-0.03em",
           }}
         >
-          {heading ?? (
-            <>
-              Lassen Sie uns
-              <br />
-              Ihr <span style={{ fontStyle: "italic" }}>nächstes</span> Event realisieren.
-            </>
-          )}
+          {heading}
         </h2>
         <style>{`@media (max-width:900px){ .ctc-head{grid-template-columns:1fr !important} }`}</style>
       </div>
@@ -275,22 +304,33 @@ export default function ContactCTA({ heading }: { heading?: string } = {}) {
               className="mono"
               style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--ink-mute)" }}
             >
-              Antwort innerhalb von 24 h werktags
+              {responseTime}
             </span>
           </div>
         </form>
 
         <aside style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-          <InfoBlock label="Projektbüro Köln" lines={["Deutz-Mülheimer Straße 129", "51063 Köln"]} />
+          <InfoBlock
+            label="Projektbüro Köln"
+            lines={[street, city]}
+          />
           <InfoBlock
             label="Telefon"
-            lines={[<a key="t" href="tel:+4922112345678">+49 221 1234 5678</a>]}
+            lines={[
+              <a key="t" href={`tel:${resolvedPhone.replace(/\s/g, "")}`}>
+                {resolvedPhone}
+              </a>,
+            ]}
           />
           <InfoBlock
             label="E-Mail"
-            lines={[<a key="e" href="mailto:kontakt@cologne-hunters.de">kontakt@cologne-hunters.de</a>]}
+            lines={[
+              <a key="e" href={`mailto:${resolvedEmail}`}>
+                {resolvedEmail}
+              </a>,
+            ]}
           />
-          <InfoBlock label="Erreichbarkeit" lines={["Mo–Fr · 08:00–18:00", "24/7 Show-Support"]} />
+          <InfoBlock label="Erreichbarkeit" lines={hours} />
 
           <div
             style={{
@@ -304,9 +344,14 @@ export default function ContactCTA({ heading }: { heading?: string } = {}) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?auto=format&fit=crop&w=1000&q=80"
+              src={locationImg}
               alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.55) contrast(1.1)" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                filter: "brightness(.55) contrast(1.1)",
+              }}
             />
             <div
               className="mono"

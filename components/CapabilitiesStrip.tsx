@@ -2,40 +2,43 @@
 
 import { useState } from "react";
 
-const CAPABILITIES = [
+export interface Capability {
+  tag: string;
+  title: string;
+  description: string;
+}
+
+export interface CapabilitiesData {
+  capabilitiesHeading?: string | null;
+  capabilities?: Capability[] | null;
+}
+
+const FALLBACK_CAPABILITIES: Capability[] = [
   {
     tag: "Planung",
-    t: "Konzeption & Engineering",
-    d: "CAD-basierte Planung, Rigging-Statik, Power-Kalkulation und Netzwerk-Design.",
+    title: "Konzeption & Engineering",
+    description: "CAD-basierte Planung, Rigging-Statik, Power-Kalkulation und Netzwerk-Design.",
   },
   {
     tag: "Rigging",
-    t: "Traversen & Motorsysteme",
-    d: "Zertifizierte Rigger, Chain Hoists bis 2 t, Ground Support und Arena-Systeme.",
+    title: "Traversen & Motorsysteme",
+    description: "Zertifizierte Rigger, Chain Hoists bis 2 t, Ground Support und Arena-Systeme.",
   },
   {
     tag: "Konferenz",
-    t: "Dolmetsch & Streaming",
-    d: "Personenführungsanlagen, Simultandolmetschen, hybride Konferenzen mit Multi-Feed-Streaming.",
+    title: "Dolmetsch & Streaming",
+    description:
+      "Personenführungsanlagen, Simultandolmetschen, hybride Konferenzen mit Multi-Feed-Streaming.",
   },
   {
     tag: "Crew",
-    t: "Techniker & Operator",
-    d: "Eigene, qualifizierte Crew — von SFX und Pyro bis FOH-Engineer und Show-Caller.",
+    title: "Techniker & Operator",
+    description:
+      "Eigene, qualifizierte Crew — von SFX und Pyro bis FOH-Engineer und Show-Caller.",
   },
 ];
 
-function CapRow({
-  tag,
-  t,
-  d,
-  i,
-}: {
-  tag: string;
-  t: string;
-  d: string;
-  i: number;
-}) {
+function CapRow({ tag, title, description, i }: Capability & { i: number }) {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -89,7 +92,7 @@ function CapRow({
             transition: "margin .3s",
           }}
         >
-          {t}
+          {title}
         </div>
         <div
           style={{
@@ -103,7 +106,7 @@ function CapRow({
             maxWidth: "62ch",
           }}
         >
-          {d}
+          {description}
         </div>
       </div>
 
@@ -122,7 +125,13 @@ function CapRow({
   );
 }
 
-export default function CapabilitiesStrip() {
+export default function CapabilitiesStrip({
+  capabilitiesHeading,
+  capabilities,
+}: CapabilitiesData = {}) {
+  const heading = capabilitiesHeading ?? "Alles, was zwischen Idee und Show liegt.";
+  const caps = capabilities?.length ? capabilities : FALLBACK_CAPABILITIES;
+
   return (
     <section
       style={{
@@ -151,12 +160,12 @@ export default function CapabilitiesStrip() {
               marginTop: 18,
             }}
           >
-            Alles, was zwischen Idee und Show liegt.
+            {heading}
           </h3>
         </div>
 
         <div>
-          {CAPABILITIES.map((c, i) => (
+          {caps.map((c, i) => (
             <CapRow key={i} {...c} i={i} />
           ))}
         </div>

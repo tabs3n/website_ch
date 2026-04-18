@@ -1,12 +1,24 @@
 // ClientMarquee — animated scrolling strip with client names
-const CLIENTS = [
-  "RTL", "ZDF", "FORD", "LANXESS", "KOELNMESSE",
-  "DEUTSCHE TELEKOM", "REWE", "BAYER", "DMEXCO",
-  "BURDA", "AXEL SPRINGER", "VODAFONE",
+
+const FALLBACK_CLIENTS = [
+  "RTL",
+  "ZDF",
+  "FORD",
+  "LANXESS",
+  "KOELNMESSE",
+  "DEUTSCHE TELEKOM",
+  "REWE",
+  "BAYER",
+  "DMEXCO",
+  "BURDA",
+  "AXEL SPRINGER",
+  "VODAFONE",
 ];
 
-export default function LogosStrip() {
-  const items = [...CLIENTS, ...CLIENTS];
+export default function LogosStrip({ clients }: { clients?: string[] | null }) {
+  const list = clients?.length ? clients : FALLBACK_CLIENTS;
+  const items = [...list, ...list];
+
   return (
     <section
       style={{

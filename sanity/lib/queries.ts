@@ -76,17 +76,57 @@ export const mapProjectsQuery = groq`
   }
 `;
 
+// ─── Homepage ──────────────────────────────────────────────────────────────────
+
+export const homepageQuery = groq`
+  *[_type == "homepage"][0] {
+    "heroImage": heroImage.asset->url,
+    heroEyebrow,
+    heroHeadline,
+    heroDescription,
+    heroStats,
+    servicesHeading,
+    servicesBody,
+    "disciplines": disciplines[] {
+      num,
+      abbr,
+      title,
+      description,
+      "image": image.asset->url,
+      href
+    },
+    capabilitiesHeading,
+    "capabilities": capabilities[] {
+      tag,
+      title,
+      description
+    },
+    studioHeading,
+    studioBody,
+    "studioImage": studioImage.asset->url,
+    "processSteps": processSteps[] {
+      num,
+      title,
+      description
+    },
+    contactHeading,
+    contactResponseTime,
+    "contactLocationImage": contactLocationImage.asset->url
+  }
+`;
+
 // ─── Site Settings ─────────────────────────────────────────────────────────────
 
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0] {
     companyName,
     tagline,
-    heroHeadline,
-    heroSubline,
+    clients,
     email,
     phone,
-    address,
-    clients
+    addressStreet,
+    addressCity,
+    businessHours,
+    footerTagline
   }
 `;

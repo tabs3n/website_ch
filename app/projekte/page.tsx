@@ -33,7 +33,7 @@ export default async function ProjekteIndex() {
         </div>
       </section>
 
-      <ContactCTA heading="Ihr Projekt als nächstes?" />
+      <ContactCTA contactHeading="Ihr Projekt als nächstes?" />
     </>
   );
 }
