@@ -1,0 +1,8 @@
+{
+  "env": {
+    "NEXT_PUBLIC_SANITY_PROJECT_ID": "6vse62qu",
+    "NEXT_PUBLIC_SANITY_DATASET": "production"
+  },
+  "buildCommand": "npm run build",
+  "framework": "nextjs"
+}

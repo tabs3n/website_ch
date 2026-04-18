@@ -24,13 +24,15 @@ export const metadata: Metadata = {
   },
   description:
     "Cologne Hunters ist ein Full-Service-Dienstleister für Veranstaltungstechnik: Licht, Ton, Video, Rigging und Konferenztechnik auf Broadcast-Niveau.",
-  metadataBase: new URL("https://cologne-hunters.de"),
+  metadataBase: new URL("https://website-ch.vercel.app"),
   openGraph: {
     title: "Cologne Hunters · Licht und Ton Service GmbH",
     description:
       "Premium Veranstaltungstechnik aus Köln — Licht, Ton, Video und Rigging für Events, Broadcast und Corporate.",
     type: "website",
     locale: "de_DE",
+    url: "https://website-ch.vercel.app",
+    siteName: "Cologne Hunters",
   },
 };
 
