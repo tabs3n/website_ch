@@ -3,6 +3,7 @@ import LogosStrip from "@/components/LogosStrip";
 import ServicesPreview from "@/components/ServicesPreview";
 import CapabilitiesStrip from "@/components/CapabilitiesStrip";
 import ProjectsPreview from "@/components/ProjectsPreview";
+import MapSection from "@/components/MapSection";
 import ContactCTA from "@/components/ContactCTA";
 
 // Revalidate every 30s so Sanity changes appear quickly
@@ -16,6 +17,7 @@ export default function HomePage() {
       <ServicesPreview />
       <CapabilitiesStrip />
       <ProjectsPreview />
+      <MapSection />
       <ContactCTA />
     </>
   );
