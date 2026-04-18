@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import "./globals.css";
@@ -47,6 +48,12 @@ const GOOGLE_FONT_URLS: Record<string, string> = {
     "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap",
 };
 
+// ─── Cached settings fetch (deduplicates between generateMetadata + RootLayout) ─
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const fetchSettings = cache((): Promise<any> =>
+  (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null)
+);
+
 // Font-family CSS values for each option
 const FONT_FAMILIES: Record<string, string> = {
   "instrument-serif": '"Instrument Serif", serif',
@@ -60,24 +67,46 @@ const FONT_FAMILIES: Record<string, string> = {
   "ibm-plex-mono": '"IBM Plex Mono", ui-monospace, monospace',
 };
 
-export const metadata: Metadata = {
-  title: {
-    default: "Cologne Hunters · Licht und Ton Service GmbH",
-    template: "%s · Cologne Hunters",
-  },
-  description:
-    "Cologne Hunters ist ein Full-Service-Dienstleister für Veranstaltungstechnik: Licht, Ton, Video, Rigging und Konferenztechnik auf Broadcast-Niveau.",
-  metadataBase: new URL("https://website-ch.vercel.app"),
-  openGraph: {
-    title: "Cologne Hunters · Licht und Ton Service GmbH",
-    description:
-      "Premium Veranstaltungstechnik aus Köln — Licht, Ton, Video und Rigging für Events, Broadcast und Corporate.",
-    type: "website",
-    locale: "de_DE",
-    url: "https://website-ch.vercel.app",
-    siteName: "Cologne Hunters",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await fetchSettings();
+
+  const siteUrl: string = settings?.siteUrl ?? "https://cologne-hunters.de";
+  const companyName: string = settings?.companyName ?? "Cologne Hunters";
+  const description: string =
+    settings?.siteDescription ??
+    "Cologne Hunters ist ein Full-Service-Dienstleister für Veranstaltungstechnik: Licht, Ton, Video, Rigging und Konferenztechnik auf Broadcast-Niveau.";
+  const ogImage: string | null = settings?.ogImage ?? null;
+  const defaultTitle = `${companyName} · Licht und Ton Service GmbH`;
+
+  return {
+    title: {
+      default: defaultTitle,
+      template: `%s · ${companyName}`,
+    },
+    description,
+    metadataBase: new URL(siteUrl),
+    openGraph: {
+      title: defaultTitle,
+      description,
+      type: "website",
+      locale: "de_DE",
+      url: siteUrl,
+      siteName: companyName,
+      ...(ogImage
+        ? { images: [{ url: ogImage, width: 1200, height: 630, alt: companyName }] }
+        : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+    alternates: {
+      canonical: siteUrl,
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -86,8 +115,7 @@ export default async function RootLayout({
 }) {
   const { isEnabled: preview } = draftMode();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const settings = await (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null);
+  const settings = await fetchSettings();
 
   // ─── Branding tokens from Sanity ─────────────────────────────────────────────
   const accentColor: string = settings?.accentColor ?? "#E8B54A";

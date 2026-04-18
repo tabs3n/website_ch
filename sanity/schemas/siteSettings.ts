@@ -9,6 +9,7 @@ export const siteSettingsSchema = defineType({
     { name: "company", title: "🏢 Unternehmen" },
     { name: "contact", title: "📞 Kontakt" },
     { name: "footer", title: "🔗 Footer" },
+    { name: "seo", title: "🔍 SEO" },
   ],
   fields: [
     // ── Branding ──────────────────────────────────────────
@@ -171,6 +172,38 @@ export const siteSettingsSchema = defineType({
       rows: 3,
       initialValue:
         "Licht und Ton Service GmbH · Veranstaltungstechnik auf Broadcast-Niveau — von der Konzeption bis zur schlüsselfertigen Umsetzung.",
+    }),
+
+    // ── SEO ───────────────────────────────────────────────
+    defineField({
+      name: "siteUrl",
+      title: "Website-URL",
+      type: "url",
+      group: "seo",
+      initialValue: "https://cologne-hunters.de",
+      description:
+        "Vollständige URL der Website inkl. https://, z.B. https://cologne-hunters.de — wird für Sitemap, og:url und strukturierte Daten verwendet.",
+    }),
+    defineField({
+      name: "siteDescription",
+      title: "Meta-Beschreibung (Homepage)",
+      type: "text",
+      group: "seo",
+      rows: 3,
+      initialValue:
+        "Cologne Hunters ist ein Full-Service-Dienstleister für Veranstaltungstechnik: Licht, Ton, Video, Rigging und Konferenztechnik auf Broadcast-Niveau.",
+      validation: (R) =>
+        R.max(160).warning("Empfohlen: max. 160 Zeichen für optimale Darstellung in Google."),
+      description: "Wird in Google-Suchergebnissen und beim Teilen in sozialen Medien angezeigt.",
+    }),
+    defineField({
+      name: "ogImage",
+      title: "Social Media Bild (OG Image)",
+      type: "image",
+      group: "seo",
+      options: { hotspot: true },
+      description:
+        "Vorschaubild für Facebook, LinkedIn, Twitter etc. Empfohlen: 1200 × 630 px, JPG oder PNG.",
     }),
   ],
 });

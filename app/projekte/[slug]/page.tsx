@@ -8,6 +8,9 @@ import {
 } from "@/lib/getProjects";
 import Reveal from "@/components/Reveal";
 import ContactCTA from "@/components/ContactCTA";
+import JsonLd from "@/components/JsonLd";
+import { client } from "@/sanity/lib/client";
+import { siteSettingsQuery } from "@/sanity/lib/queries";
 
 type Params = { slug: string };
 
@@ -23,18 +26,48 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const project = await getProjectBySlug(params.slug);
+  const [project, settings] = await Promise.all([
+    getProjectBySlug(params.slug),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null),
+  ]);
   if (!project) return { title: "Projekt" };
+
+  const siteUrl: string = settings?.siteUrl ?? "https://cologne-hunters.de";
+  const companyName: string = settings?.companyName ?? "Cologne Hunters";
+  const ogImage: string | null = project.hero ?? null;
+  const pageUrl = `${siteUrl}/projekte/${project.slug}`;
+
   return {
     title: project.title,
     description: project.summary,
+    alternates: { canonical: pageUrl },
+    openGraph: {
+      title: `${project.title} · ${companyName}`,
+      description: project.summary ?? undefined,
+      type: "article",
+      locale: "de_DE",
+      url: pageUrl,
+      siteName: companyName,
+      ...(ogImage
+        ? { images: [{ url: ogImage, width: 1200, height: 630, alt: project.title }] }
+        : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} · ${companyName}`,
+      description: project.summary ?? undefined,
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
   };
 }
 
 export default async function ProjektPage({ params }: { params: Params }) {
-  const [project, allProjects] = await Promise.all([
+  const [project, allProjects, settings] = await Promise.all([
     getProjectBySlug(params.slug),
     getAllProjects(),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null),
   ]);
 
   if (!project) notFound();
@@ -42,8 +75,40 @@ export default async function ProjektPage({ params }: { params: Params }) {
   const idx = allProjects.findIndex((p) => p.slug === project.slug);
   const nextProject = allProjects[(idx + 1) % allProjects.length];
 
+  const siteUrl: string = settings?.siteUrl ?? "https://cologne-hunters.de";
+  const companyName: string = settings?.companyName ?? "Cologne Hunters";
+  const pageUrl = `${siteUrl}/projekte/${project.slug}`;
+
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Startseite", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "Referenzen", item: `${siteUrl}/projekte` },
+      { "@type": "ListItem", position: 3, name: project.title, item: pageUrl },
+    ],
+  };
+
+  const creativeWorkLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: project.summary,
+    url: pageUrl,
+    dateCreated: project.publishedAt ?? String(project.year),
+    creator: {
+      "@type": "Organization",
+      name: companyName,
+      url: siteUrl,
+    },
+    ...(project.hero ? { image: project.hero } : {}),
+    ...(project.location ? { locationCreated: { "@type": "Place", name: project.location } } : {}),
+  };
+
   return (
     <>
+      <JsonLd data={breadcrumbLd} />
+      <JsonLd data={creativeWorkLd} />
       {/* Hero */}
       <section className="relative isolate overflow-hidden pb-20 pt-32 md:pb-28 md:pt-48">
         <div

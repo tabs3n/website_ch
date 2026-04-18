@@ -53,7 +53,7 @@ export const projectBySlugQuery = groq`
 `;
 
 export const allProjectSlugsQuery = groq`
-  *[_type == "project"] { "slug": slug.current }
+  *[_type == "project"] { "slug": slug.current, publishedAt }
 `;
 
 // ─── Projektkarte ──────────────────────────────────────────────────────────────
@@ -135,6 +135,9 @@ export const siteSettingsQuery = groq`
     addressStreet,
     addressCity,
     businessHours,
-    footerTagline
+    footerTagline,
+    siteUrl,
+    siteDescription,
+    "ogImage": ogImage.asset->url
   }
 `;
