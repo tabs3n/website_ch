@@ -123,6 +123,14 @@ export const projectSchema = defineType({
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
+      name: "showInReferenzen",
+      title: "In Referenzen anzeigen",
+      type: "boolean",
+      group: "content",
+      initialValue: true,
+      description: "Projekt auf der Referenzen-Seite (/projekte) anzeigen. Deaktivieren, um ein Projekt zu verstecken.",
+    }),
+    defineField({
       name: "featured",
       title: "Featured (Startseite)",
       type: "boolean",

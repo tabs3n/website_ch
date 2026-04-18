@@ -3,7 +3,7 @@ import groq from "groq";
 // ─── Projects ─────────────────────────────────────────────────────────────────
 
 export const allProjectsQuery = groq`
-  *[_type == "project"] | order(year desc, publishedAt desc) {
+  *[_type == "project" && showInReferenzen != false] | order(year desc, publishedAt desc) {
     _id,
     title,
     "slug": slug.current,
@@ -19,7 +19,7 @@ export const allProjectsQuery = groq`
 `;
 
 export const featuredProjectsQuery = groq`
-  *[_type == "project" && featured == true] | order(year desc) [0...4] {
+  *[_type == "project" && featured == true && showInReferenzen != false] | order(year desc) [0...4] {
     _id,
     title,
     "slug": slug.current,
