@@ -80,6 +80,9 @@ export const mapProjectsQuery = groq`
 
 export const homepageQuery = groq`
   *[_type == "homepage"][0] {
+    showCapabilities,
+    showProjectsPreview,
+    showStudio,
     "heroImage": heroImage.asset->url,
     heroEyebrow,
     heroHeadline,

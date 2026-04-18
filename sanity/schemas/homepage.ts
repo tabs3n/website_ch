@@ -5,6 +5,7 @@ export const homepageSchema = defineType({
   title: "Startseite",
   type: "document",
   groups: [
+    { name: "visibility", title: "👁 Sichtbarkeit" },
     { name: "hero", title: "🎬 Hero", default: true },
     { name: "services", title: "⚡ Leistungen" },
     { name: "capabilities", title: "🔧 Capabilities" },
@@ -12,6 +13,32 @@ export const homepageSchema = defineType({
     { name: "contact", title: "📧 Kontakt" },
   ],
   fields: [
+    // ── Sichtbarkeit ──────────────────────────────────────
+    defineField({
+      name: "showCapabilities",
+      title: "Capabilities-Bereich anzeigen",
+      type: "boolean",
+      group: "visibility",
+      initialValue: false,
+      description: "Den Capabilities-Accordion-Bereich auf der Startseite ein- oder ausblenden.",
+    }),
+    defineField({
+      name: "showProjectsPreview",
+      title: "Referenz-Vorschau anzeigen",
+      type: "boolean",
+      group: "visibility",
+      initialValue: false,
+      description: "Die Projekt-Kacheln auf der Startseite zeigen (die Karte bleibt immer sichtbar).",
+    }),
+    defineField({
+      name: "showStudio",
+      title: "Studio-Bereich anzeigen",
+      type: "boolean",
+      group: "visibility",
+      initialValue: false,
+      description: "Den Studio / Prozess-Schritt-Bereich auf der Startseite ein- oder ausblenden.",
+    }),
+
     // ── Hero ─────────────────────────────────────────────
     defineField({
       name: "heroImage",

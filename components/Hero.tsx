@@ -114,13 +114,17 @@ export default function Hero({
   heroDescription,
   heroStats,
 }: HeroData = {}) {
-  const imgSrc = heroImage ?? FALLBACK_IMAGE;
-  const eyebrow = heroEyebrow ?? "Veranstaltungstechnik · Köln · seit 2003";
-  const headline = heroHeadline ?? "Licht. Ton. Video auf Broadcast-Niveau.";
+  // undefined  = Sanity-Dokument existiert noch nicht → Fallback-Text zeigen
+  // null / ""  = Feld wurde in Sanity geleert → Bereich ausblenden
+  // "text"     = Sanity-Wert verwenden
+  const imgSrc = heroImage !== undefined ? (heroImage ?? FALLBACK_IMAGE) : FALLBACK_IMAGE;
+  const eyebrow = heroEyebrow !== undefined ? heroEyebrow : "Veranstaltungstechnik · Köln · seit 2003";
+  const headline = heroHeadline !== undefined ? heroHeadline : "Licht. Ton. Video auf Broadcast-Niveau.";
   const description =
-    heroDescription ??
-    "Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der ersten CAD-Zeichnung bis zur schlüsselfertigen Show.";
-  const stats = heroStats?.length ? heroStats : DEFAULT_STATS;
+    heroDescription !== undefined
+      ? heroDescription
+      : "Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der ersten CAD-Zeichnung bis zur schlüsselfertigen Show.";
+  const stats = heroStats !== undefined ? (heroStats ?? []) : DEFAULT_STATS;
 
   return (
     <section
@@ -158,20 +162,22 @@ export default function Hero({
           marginTop: "clamp(60px, 14vh, 160px)",
         }}
       >
-        <div
-          className="eyebrow"
-          style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 10 }}
-        >
-          <span
-            style={{
-              width: 28,
-              height: 1,
-              background: "var(--accent)",
-              display: "inline-block",
-            }}
-          />
-          {eyebrow}
-        </div>
+        {eyebrow && (
+          <div
+            className="eyebrow"
+            style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 10 }}
+          >
+            <span
+              style={{
+                width: 28,
+                height: 1,
+                background: "var(--accent)",
+                display: "inline-block",
+              }}
+            />
+            {eyebrow}
+          </div>
+        )}
 
         <h1
           className="serif"
@@ -195,16 +201,18 @@ export default function Hero({
             justifyContent: "space-between",
           }}
         >
-          <p
-            style={{
-              maxWidth: "46ch",
-              color: "var(--ink-dim)",
-              fontSize: "clamp(15px, 1.1vw, 17px)",
-              lineHeight: 1.55,
-            }}
-          >
-            {description}
-          </p>
+          {description && (
+            <p
+              style={{
+                maxWidth: "46ch",
+                color: "var(--ink-dim)",
+                fontSize: "clamp(15px, 1.1vw, 17px)",
+                lineHeight: 1.55,
+              }}
+            >
+              {description}
+            </p>
+          )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <CTA primary>Projekt anfragen</CTA>
             <CTA>Arbeiten ansehen</CTA>
@@ -212,7 +220,8 @@ export default function Hero({
         </div>
       </div>
 
-      {/* bottom stat rail */}
+      {/* bottom stat rail — wird ausgeblendet wenn stats in Sanity geleert */}
+      {stats.length > 0 && (
       <div
         style={{
           position: "absolute",
@@ -250,6 +259,7 @@ export default function Hero({
           </div>
         ))}
       </div>
+      )}
     </section>
   );
 }

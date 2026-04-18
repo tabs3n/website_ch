@@ -5,6 +5,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PreviewBanner from "@/components/PreviewBanner";
+import { client } from "@/sanity/lib/client";
+import { siteSettingsQuery } from "@/sanity/lib/queries";
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -47,12 +49,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { isEnabled: preview } = draftMode();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const settings = await (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null);
 
   return (
     <html
@@ -69,7 +74,14 @@ export default function RootLayout({
       >
         <Navbar />
         <main style={{ position: "relative" }}>{children}</main>
-        <Footer />
+        <Footer
+          companyName={settings?.companyName}
+          footerTagline={settings?.footerTagline}
+          email={settings?.email}
+          phone={settings?.phone}
+          addressStreet={settings?.addressStreet}
+          addressCity={settings?.addressCity}
+        />
         {preview && <PreviewBanner />}
       </body>
     </html>
