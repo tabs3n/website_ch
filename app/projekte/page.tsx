@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { projects } from "@/data/projects";
+import { getAllProjects } from "@/lib/getProjects";
 import PageHeader from "@/components/PageHeader";
 import ProjectCard from "@/components/ProjectCard";
 import ContactCTA from "@/components/ContactCTA";
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
     "Referenzen aus Corporate, Broadcast, Live und Konferenz — realisiert von Cologne Hunters.",
 };
 
-export default function ProjekteIndex() {
+export const revalidate = 60;
+
+export default async function ProjekteIndex() {
+  const projects = await getAllProjects();
+
   return (
     <>
       <PageHeader
@@ -21,9 +25,9 @@ export default function ProjekteIndex() {
 
       <section className="py-8 md:py-16">
         <div className="container">
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((p, i) => (
-              <ProjectCard key={p.slug} project={p} index={i} />
+              <ProjectCard key={p._id} project={p} index={i} />
             ))}
           </div>
         </div>

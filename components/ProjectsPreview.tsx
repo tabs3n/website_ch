@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { projects } from "@/data/projects";
+import { getFeaturedProjects } from "@/lib/getProjects";
 import SectionHeading from "./SectionHeading";
 import ProjectCard from "./ProjectCard";
 import Reveal from "./Reveal";
 
-export default function ProjectsPreview() {
-  const selected = projects.slice(0, 4);
+export default async function ProjectsPreview() {
+  const projects = await getFeaturedProjects();
+
   return (
     <section className="relative py-28 md:py-40">
       <div
@@ -33,8 +34,8 @@ export default function ProjectsPreview() {
         </div>
 
         <div className="mt-16 grid gap-5 md:grid-cols-2">
-          {selected.map((p, i) => (
-            <ProjectCard key={p.slug} project={p} index={i} />
+          {projects.map((p, i) => (
+            <ProjectCard key={p._id} project={p} index={i} />
           ))}
         </div>
       </div>

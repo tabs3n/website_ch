@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { Project } from "@/data/projects";
+import type { SanityProject } from "@/sanity/lib/types";
 
 type Props = {
-  project: Project;
+  project: SanityProject;
   index?: number;
 };
 

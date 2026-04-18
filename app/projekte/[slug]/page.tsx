@@ -3,16 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   getAllProjectSlugs,
+  getAllProjects,
   getProjectBySlug,
-  projects,
-} from "@/data/projects";
+} from "@/lib/getProjects";
 import Reveal from "@/components/Reveal";
 import ContactCTA from "@/components/ContactCTA";
 
 type Params = { slug: string };
 
+export const revalidate = 60;
+
 export async function generateStaticParams(): Promise<Params[]> {
-  return getAllProjectSlugs().map((slug) => ({ slug }));
+  const slugs = await getAllProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -20,7 +23,7 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const project = getProjectBySlug(params.slug);
+  const project = await getProjectBySlug(params.slug);
   if (!project) return { title: "Projekt" };
   return {
     title: project.title,
@@ -28,15 +31,20 @@ export async function generateMetadata({
   };
 }
 
-export default function ProjektPage({ params }: { params: Params }) {
-  const project = getProjectBySlug(params.slug);
+export default async function ProjektPage({ params }: { params: Params }) {
+  const [project, allProjects] = await Promise.all([
+    getProjectBySlug(params.slug),
+    getAllProjects(),
+  ]);
+
   if (!project) notFound();
 
-  const idx = projects.findIndex((p) => p.slug === project.slug);
-  const nextProject = projects[(idx + 1) % projects.length];
+  const idx = allProjects.findIndex((p) => p.slug === project.slug);
+  const nextProject = allProjects[(idx + 1) % allProjects.length];
 
   return (
     <>
+      {/* Hero */}
       <section className="relative isolate overflow-hidden pb-20 pt-32 md:pb-28 md:pt-48">
         <div
           aria-hidden
@@ -102,53 +110,34 @@ export default function ProjektPage({ params }: { params: Params }) {
       {/* Meta row */}
       <section className="border-y border-white/5 bg-ink-900/60 py-10">
         <div className="container grid grid-cols-2 gap-6 md:grid-cols-4">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
-              Kunde
+          {[
+            { label: "Kunde", value: project.client },
+            { label: "Jahr", value: String(project.year) },
+            { label: "Kategorie", value: project.category },
+            { label: "Ort", value: project.location ?? "—" },
+          ].map(({ label, value }) => (
+            <div key={label}>
+              <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
+                {label}
+              </div>
+              <div className="mt-2 font-display text-lg text-white">{value}</div>
             </div>
-            <div className="mt-2 font-display text-lg text-white">
-              {project.client}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
-              Jahr
-            </div>
-            <div className="mt-2 font-display text-lg text-white">
-              {project.year}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
-              Kategorie
-            </div>
-            <div className="mt-2 font-display text-lg text-white">
-              {project.category}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
-              Ort
-            </div>
-            <div className="mt-2 font-display text-lg text-white">
-              {project.location ?? "—"}
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
       {/* Description + stats */}
       <section className="py-20 md:py-28">
         <div className="container grid gap-16 md:grid-cols-12">
-          <div className="md:col-span-7 space-y-5 text-steel-300">
-            {project.description.map((p, i) => (
+          <div className="space-y-5 text-steel-300 md:col-span-7">
+            {(project.description ?? [project.summary]).map((p, i) => (
               <Reveal key={i} delay={i * 0.05}>
                 <p className="leading-relaxed md:text-lg">{p}</p>
               </Reveal>
             ))}
           </div>
 
-          {project.stats && (
+          {project.stats && project.stats.length > 0 && (
             <aside className="md:col-span-5 md:border-l md:border-white/10 md:pl-10">
               <Reveal>
                 <div className="mb-6 text-[11px] uppercase tracking-[0.28em] text-accent">
@@ -175,66 +164,70 @@ export default function ProjektPage({ params }: { params: Params }) {
       </section>
 
       {/* Gallery */}
-      <section className="py-10">
-        <div className="container">
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-            {project.gallery.map((src, i) => (
-              <Reveal key={src + i} delay={i * 0.05}>
-                <div
-                  className={`relative overflow-hidden rounded-2xl border border-white/5 ${
-                    i === 0
-                      ? "col-span-2 row-span-2 aspect-[4/3]"
-                      : "aspect-[4/3]"
-                  }`}
-                >
+      {project.gallery && project.gallery.length > 0 && (
+        <section className="py-10">
+          <div className="container">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+              {project.gallery.map((src, i) => (
+                <Reveal key={src + i} delay={i * 0.05}>
                   <div
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
-                    style={{ backgroundImage: `url(${src})` }}
-                  />
-                </div>
-              </Reveal>
-            ))}
+                    className={`relative overflow-hidden rounded-2xl border border-white/5 ${
+                      i === 0
+                        ? "col-span-2 row-span-2 aspect-[4/3]"
+                        : "aspect-[4/3]"
+                    }`}
+                  >
+                    <div
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
+                      style={{ backgroundImage: `url(${src})` }}
+                    />
+                  </div>
+                </Reveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Next project */}
-      <section className="py-20">
-        <div className="container">
-          <Reveal>
-            <Link
-              href={`/projekte/${nextProject.slug}`}
-              className="group relative grid overflow-hidden rounded-2xl border border-white/10 bg-ink-800 md:grid-cols-2"
-            >
-              <div className="relative aspect-[4/3] md:aspect-auto">
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: `url(${nextProject.hero})` }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-ink-950/40 to-ink-800/60" />
-              </div>
-              <div className="flex flex-col justify-center gap-4 p-10 md:p-14">
-                <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
-                  Nächstes Projekt
+      {nextProject && nextProject.slug !== project.slug && (
+        <section className="py-20">
+          <div className="container">
+            <Reveal>
+              <Link
+                href={`/projekte/${nextProject.slug}`}
+                className="group relative grid overflow-hidden rounded-2xl border border-white/10 bg-ink-800 md:grid-cols-2"
+              >
+                <div className="relative aspect-[4/3] md:aspect-auto">
+                  <div
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                    style={{ backgroundImage: `url(${nextProject.hero})` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-ink-950/40 to-ink-800/60" />
                 </div>
-                <div className="font-display text-3xl font-semibold text-white md:text-5xl">
-                  {nextProject.title}
+                <div className="flex flex-col justify-center gap-4 p-10 md:p-14">
+                  <div className="text-[10px] uppercase tracking-[0.28em] text-steel-400">
+                    Nächstes Projekt
+                  </div>
+                  <div className="font-display text-3xl font-semibold text-white md:text-5xl">
+                    {nextProject.title}
+                  </div>
+                  <div className="text-steel-300">{nextProject.client}</div>
+                  <div className="mt-2 inline-flex items-center gap-2 text-sm text-white">
+                    Projekt ansehen
+                    <span
+                      aria-hidden
+                      className="transition-transform group-hover:translate-x-1"
+                    >
+                      →
+                    </span>
+                  </div>
                 </div>
-                <div className="text-steel-300">{nextProject.client}</div>
-                <div className="mt-2 inline-flex items-center gap-2 text-sm text-white">
-                  Projekt ansehen
-                  <span
-                    aria-hidden
-                    className="transition-transform group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </div>
-              </div>
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       <ContactCTA />
     </>

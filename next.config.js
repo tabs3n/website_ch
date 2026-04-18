@@ -7,6 +7,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        // Sanity CDN
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
     ],
   },
 };
