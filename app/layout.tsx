@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { draftMode } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PreviewBanner from "@/components/PreviewBanner";
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -50,6 +52,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isEnabled: preview } = draftMode();
+
   return (
     <html
       lang="de"
@@ -66,6 +70,7 @@ export default function RootLayout({
         <Navbar />
         <main style={{ position: "relative" }}>{children}</main>
         <Footer />
+        {preview && <PreviewBanner />}
       </body>
     </html>
   );

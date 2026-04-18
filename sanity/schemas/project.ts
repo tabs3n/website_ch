@@ -4,6 +4,10 @@ export const projectSchema = defineType({
   name: "project",
   title: "Projekt",
   type: "document",
+  groups: [
+    { name: "content", title: "Inhalt", default: true },
+    { name: "map", title: "🗺 Projektkarte" },
+  ],
   fields: [
     defineField({
       name: "title",
@@ -137,6 +141,34 @@ export const projectSchema = defineType({
       title: "Featured (Startseite)",
       type: "boolean",
       initialValue: false,
+    }),
+    // ── Projektkarte ──────────────────────────────────
+    defineField({
+      name: "country",
+      title: "Land (für Projektkarte)",
+      type: "string",
+      description: "Vollständiger Ländername, z.B. Deutschland",
+      group: "map",
+    }),
+    defineField({
+      name: "countryIso",
+      title: "ISO-3-Ländercode",
+      type: "string",
+      description: "3-stelliger ISO-Code, z.B. DEU, GBR, USA",
+      validation: (R) => R.max(3).uppercase(),
+      group: "map",
+    }),
+    defineField({
+      name: "lat",
+      title: "Breitengrad (optional)",
+      type: "number",
+      group: "map",
+    }),
+    defineField({
+      name: "lng",
+      title: "Längengrad (optional)",
+      type: "number",
+      group: "map",
     }),
   ],
   preview: {
