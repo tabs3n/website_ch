@@ -1,8 +1,7 @@
-import { metadata } from "next-sanity/studio/metadata";
-import StudioClient from "@/components/StudioClient";
+import { redirect } from "next/navigation";
 
-export { metadata };
-
-export default function StudioPage() {
-  return <StudioClient />;
+// Das Sanity Studio läuft auf Sanity's eigenem CDN-Hosting.
+// Aufruf /studio → direkte Weiterleitung zum gehosteten Studio.
+export default function StudioRedirect() {
+  redirect("https://6vse62qu.sanity.studio");
 }

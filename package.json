@@ -9,15 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sanity/client": "^6.29.1",
     "@sanity/image-url": "^1.2.0",
-    "@sanity/vision": "^3.99.0",
     "framer-motion": "^11.3.19",
+    "groq": "^5.21.0",
     "next": "14.2.5",
-    "next-sanity": "^8.5.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "sanity": "^3.99.0",
-    "styled-components": "^6.4.0"
+    "sanity": "^3.99.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.12",

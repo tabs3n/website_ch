@@ -1,20 +1,18 @@
 /**
  * Unified data access layer.
- * — When NEXT_PUBLIC_SANITY_PROJECT_ID is set → fetch from Sanity CMS.
- * — Otherwise fall back to the local static data file (zero breaking changes
- *   during development before Sanity is wired up).
+ * — NEXT_PUBLIC_SANITY_PROJECT_ID gesetzt → Sanity CMS via @sanity/client
+ * — Nicht gesetzt → statische Fallback-Daten aus data/projects.ts
  */
 
 import type { SanityProject } from "@/sanity/lib/types";
 
-function isSanityConfigured() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID &&
-      process.env.NEXT_PUBLIC_SANITY_DATASET
-  );
+function isSanityConfigured(): boolean {
+  const id =
+    process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "6vse62qu";
+  return id !== "" && id !== "placeholder";
 }
 
-// ── Static fallback ────────────────────────────────────────────────────────────
+// ── Statischer Adapter ─────────────────────────────────────────────────────────
 
 function staticToSanity(
   p: import("@/data/projects").Project
@@ -36,13 +34,24 @@ function staticToSanity(
   };
 }
 
+// ── Sanity fetch helper (Next.js cache) ────────────────────────────────────────
+
+async function sanityFetch<T>(
+  query: string,
+  params: Record<string, unknown> = {},
+  revalidate = 60
+): Promise<T> {
+  const { client } = await import("@/sanity/lib/client");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return client.fetch(query, params, { next: { revalidate } } as any) as Promise<T>;
+}
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 export async function getAllProjects(): Promise<SanityProject[]> {
   if (isSanityConfigured()) {
-    const { client } = await import("@/sanity/lib/client");
     const { allProjectsQuery } = await import("@/sanity/lib/queries");
-    return client.fetch<SanityProject[]>(allProjectsQuery, {}, { next: { revalidate: 60 } });
+    return sanityFetch<SanityProject[]>(allProjectsQuery);
   }
   const { projects } = await import("@/data/projects");
   return projects.map(staticToSanity);
@@ -50,23 +59,13 @@ export async function getAllProjects(): Promise<SanityProject[]> {
 
 export async function getFeaturedProjects(): Promise<SanityProject[]> {
   if (isSanityConfigured()) {
-    const { client } = await import("@/sanity/lib/client");
-    const { featuredProjectsQuery } = await import("@/sanity/lib/queries");
-    const featured = await client.fetch<SanityProject[]>(
-      featuredProjectsQuery,
-      {},
-      { next: { revalidate: 60 } }
+    const { featuredProjectsQuery, allProjectsQuery } = await import(
+      "@/sanity/lib/queries"
     );
-    // if no featured docs yet, return first 4
-    if (featured.length === 0) {
-      const all = await client.fetch<SanityProject[]>(
-        (await import("@/sanity/lib/queries")).allProjectsQuery,
-        {},
-        { next: { revalidate: 60 } }
-      );
-      return all.slice(0, 4);
-    }
-    return featured;
+    const featured = await sanityFetch<SanityProject[]>(featuredProjectsQuery);
+    if (featured.length > 0) return featured;
+    const all = await sanityFetch<SanityProject[]>(allProjectsQuery);
+    return all.slice(0, 4);
   }
   const { projects } = await import("@/data/projects");
   return projects.slice(0, 4).map(staticToSanity);
@@ -76,29 +75,21 @@ export async function getProjectBySlug(
   slug: string
 ): Promise<SanityProject | null> {
   if (isSanityConfigured()) {
-    const { client } = await import("@/sanity/lib/client");
     const { projectBySlugQuery } = await import("@/sanity/lib/queries");
-    return client.fetch<SanityProject | null>(
-      projectBySlugQuery,
-      { slug },
-      { next: { revalidate: 60 } }
-    );
+    return sanityFetch<SanityProject | null>(projectBySlugQuery, { slug });
   }
-  const { getProjectBySlug: getStatic, projects } = await import(
-    "@/data/projects"
-  );
+  const { getProjectBySlug: getStatic } = await import("@/data/projects");
   const p = getStatic(slug);
   return p ? staticToSanity(p) : null;
 }
 
 export async function getAllProjectSlugs(): Promise<string[]> {
   if (isSanityConfigured()) {
-    const { client } = await import("@/sanity/lib/client");
     const { allProjectSlugsQuery } = await import("@/sanity/lib/queries");
-    const docs = await client.fetch<{ slug: string }[]>(
+    const docs = await sanityFetch<{ slug: string }[]>(
       allProjectSlugsQuery,
       {},
-      { next: { revalidate: 3600 } }
+      3600
     );
     return docs.map((d) => d.slug);
   }
