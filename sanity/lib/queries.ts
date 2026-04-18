@@ -56,6 +56,26 @@ export const allProjectSlugsQuery = groq`
   *[_type == "project"] { "slug": slug.current }
 `;
 
+// ─── Projektkarte ──────────────────────────────────────────────────────────────
+// Fetches only projects that have a countryIso set (= visible on the map)
+export const mapProjectsQuery = groq`
+  *[_type == "project" && defined(countryIso)] | order(year desc) {
+    _id,
+    title,
+    "slug": slug.current,
+    client,
+    year,
+    city,
+    location,
+    country,
+    countryIso,
+    summary,
+    lat,
+    lng,
+    "hero": hero.asset->url
+  }
+`;
+
 // ─── Site Settings ─────────────────────────────────────────────────────────────
 
 export const siteSettingsQuery = groq`
