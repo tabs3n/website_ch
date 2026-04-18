@@ -160,6 +160,7 @@ export default function Hero({
           zIndex: 2,
           padding: "0 var(--pad-x)",
           marginTop: "clamp(60px, 14vh, 160px)",
+          paddingBottom: stats.length > 0 ? "clamp(100px, 14vh, 140px)" : "clamp(48px, 8vh, 80px)",
         }}
       >
         {eyebrow && (

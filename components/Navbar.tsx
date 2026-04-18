@@ -39,7 +39,7 @@ function Clock() {
 const NAV_LINKS = [
   { label: "Arbeiten", href: "/#arbeiten" },
   { label: "Leistungen", href: "/#leistungen" },
-  { label: "Projektkarte", href: "/projektkarte" },
+  { label: "Referenzen", href: "/projekte" },
   { label: "Kontakt", href: "/#kontakt" },
 ];
 
