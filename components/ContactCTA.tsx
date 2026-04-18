@@ -7,7 +7,6 @@ const SERVICES = ["Licht", "Ton", "Video", "Konferenz", "Rigging", "Stage-Design
 export interface ContactData {
   contactHeading?: string | null;
   contactResponseTime?: string | null;
-  contactLocationImage?: string | null;
   email?: string | null;
   phone?: string | null;
   addressStreet?: string | null;
@@ -197,22 +196,21 @@ function CTABtn({ children, primary }: { children: React.ReactNode; primary?: bo
   );
 }
 
-const FALLBACK_LOCATION_IMG =
-  "https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?auto=format&fit=crop&w=1000&q=80";
-
 export default function ContactCTA({
   contactHeading,
   contactResponseTime,
-  contactLocationImage,
   email,
   phone,
   addressStreet,
   addressCity,
   businessHours,
 }: ContactData = {}) {
-  const heading = contactHeading ?? "Lassen Sie uns Ihr nächstes Event realisieren.";
-  const responseTime = contactResponseTime ?? "Antwort innerhalb von 24 h werktags";
-  const locationImg = contactLocationImage ?? FALLBACK_LOCATION_IMG;
+  const heading = contactHeading !== undefined
+    ? contactHeading
+    : "Lassen Sie uns Ihr nächstes Event realisieren.";
+  const responseTime = contactResponseTime !== undefined
+    ? contactResponseTime
+    : "Antwort innerhalb von 24 h werktags";
   const resolvedEmail = email ?? "kontakt@cologne-hunters.de";
   const resolvedPhone = phone ?? "+49 221 1234 5678";
   const street = addressStreet ?? "Deutz-Mülheimer Straße 129";
@@ -331,42 +329,6 @@ export default function ContactCTA({
             ]}
           />
           <InfoBlock label="Erreichbarkeit" lines={hours} />
-
-          <div
-            style={{
-              position: "relative",
-              aspectRatio: "4/3",
-              borderRadius: 6,
-              overflow: "hidden",
-              border: "1px solid var(--line)",
-              marginTop: 8,
-            }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={locationImg}
-              alt=""
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                filter: "brightness(.55) contrast(1.1)",
-              }}
-            />
-            <div
-              className="mono"
-              style={{
-                position: "absolute",
-                bottom: 10,
-                left: 14,
-                fontSize: 10,
-                letterSpacing: "0.14em",
-                color: "rgba(242,238,232,.85)",
-              }}
-            >
-              ● N 50°56′ E 6°58′
-            </div>
-          </div>
         </aside>
       </div>
 

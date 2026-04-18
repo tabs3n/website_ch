@@ -60,25 +60,6 @@ export default function Footer({
         overflow: "hidden",
       }}
     >
-      {/* Oversized wordmark */}
-      <div
-        className="serif"
-        style={{
-          fontSize: "clamp(56px, 16vw, 260px)",
-          lineHeight: 0.85,
-          letterSpacing: "-0.04em",
-          opacity: 0.94,
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-        }}
-      >
-        {company.split(" ")[0]}{" "}
-        <span style={{ fontStyle: "italic", color: "var(--accent)" }}>
-          {company.split(" ").slice(1).join(" ") || "Hunters"}
-        </span>
-        .
-      </div>
-
       {/* Footer links */}
       <div
         style={{

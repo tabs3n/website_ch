@@ -43,7 +43,17 @@ const NAV_LINKS = [
   { label: "Kontakt", href: "/#kontakt" },
 ];
 
-export default function Navbar() {
+export default function Navbar({
+  logoUrl,
+  companyName,
+  tagline,
+}: {
+  logoUrl?: string | null;
+  companyName?: string | null;
+  tagline?: string | null;
+} = {}) {
+  const name = companyName ?? "Cologne Hunters";
+  const sub = tagline ?? "LICHT · TON · VIDEO";
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -74,15 +84,31 @@ export default function Navbar() {
     >
       {/* Logo */}
       <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <LogoMark />
-        <div style={{ lineHeight: 1.05 }}>
-          <div className="serif" style={{ fontSize: 18, letterSpacing: "-0.01em" }}>
-            Cologne Hunters
-          </div>
-          <div className="mono" style={{ fontSize: 10, color: "var(--ink-mute)", letterSpacing: "0.12em" }}>
-            LICHT · TON · VIDEO
-          </div>
-        </div>
+        {logoUrl ? (
+          /* Custom uploaded logo */
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={logoUrl}
+            alt={name}
+            style={{ height: 36, width: "auto", objectFit: "contain" }}
+          />
+        ) : (
+          /* Default SVG mark + wordmark */
+          <>
+            <LogoMark />
+            <div style={{ lineHeight: 1.05 }}>
+              <div className="serif" style={{ fontSize: 18, letterSpacing: "-0.01em" }}>
+                {name}
+              </div>
+              <div
+                className="mono"
+                style={{ fontSize: 10, color: "var(--ink-mute)", letterSpacing: "0.12em" }}
+              >
+                {sub}
+              </div>
+            </div>
+          </>
+        )}
       </Link>
 
       {/* Desktop nav */}

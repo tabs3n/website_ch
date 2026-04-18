@@ -13,6 +13,10 @@
     --accent: #E8B54A;
     --pad-x: clamp(20px, 4vw, 56px);
     --gap: clamp(16px, 2vw, 28px);
+    /* Font roles — overridable via Sanity branding settings */
+    --font-headline: "Instrument Serif", serif;
+    --font-body: "Inter Tight", system-ui, sans-serif;
+    --font-label: "JetBrains Mono", ui-monospace, monospace;
   }
 
   *, *::before, *::after {
@@ -51,25 +55,28 @@
   }
 }
 
-/* Typography helpers */
+/* Typography helpers — all use CSS variables so Sanity can override them */
 .serif {
-  font-family: "Instrument Serif", serif;
+  font-family: var(--font-headline);
   font-weight: 400;
   letter-spacing: -0.02em;
 }
 
 .mono {
-  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-family: var(--font-label);
   font-weight: 400;
   letter-spacing: 0;
 }
 
 .eyebrow {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-label);
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-dim);
+  color: var(--ink-dim);}
+
+html, body {
+  font-family: var(--font-body);
 }
 
 /* Reveal on scroll */

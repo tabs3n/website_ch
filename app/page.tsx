@@ -83,7 +83,6 @@ export default async function HomePage() {
       <ContactCTA
         contactHeading={g(hp?.contactHeading)}
         contactResponseTime={g(hp?.contactResponseTime)}
-        contactLocationImage={g(hp?.contactLocationImage)}
         email={settings.email}
         phone={settings.phone}
         addressStreet={settings.addressStreet}

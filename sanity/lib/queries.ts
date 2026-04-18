@@ -122,6 +122,11 @@ export const homepageQuery = groq`
 
 export const siteSettingsQuery = groq`
   *[_type == "siteSettings"][0] {
+    "logo": logo.asset->url,
+    accentColor,
+    headlineFont,
+    bodyFont,
+    labelFont,
     companyName,
     tagline,
     clients,
