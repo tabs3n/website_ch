@@ -1,175 +1,228 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
 
-export default function Hero() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoReady, setVideoReady] = useState(false);
-  const reduce = useReducedMotion();
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const onCanPlay = () => setVideoReady(true);
-    const onError = () => setVideoReady(false);
-    v.addEventListener("canplay", onCanPlay);
-    v.addEventListener("error", onError);
-    return () => {
-      v.removeEventListener("canplay", onCanPlay);
-      v.removeEventListener("error", onError);
-    };
-  }, []);
-
+function HeroVideo() {
   return (
-    <section className="relative isolate flex min-h-[100svh] w-full items-end overflow-hidden bg-ink-950">
-      {/* Fallback background image */}
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
       <div
-        aria-hidden
-        className="absolute inset-0 -z-20 bg-cover bg-center"
         style={{
+          position: "absolute",
+          inset: "-6%",
           backgroundImage:
-            "url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80')",
+            "url(https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          animation: "kenburns 22s ease-in-out infinite alternate",
+          filter: "brightness(.55) contrast(1.05) saturate(.9)",
         }}
       />
-
-      {/* Video background (optional: place /public/videos/hero.mp4) */}
-      <video
-        ref={videoRef}
-        className={`absolute inset-0 -z-10 h-full w-full object-cover transition-opacity duration-700 ${
-          videoReady ? "opacity-100" : "opacity-0"
-        }`}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        poster="https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80"
-      >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
-
-      {/* Overlays */}
-      <div aria-hidden className="hero-vignette absolute inset-0 -z-[5]" />
       <div
-        aria-hidden
-        className="bg-grid absolute inset-0 -z-[4] opacity-[0.12] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]"
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(180deg, rgba(10,10,10,.35) 0%, rgba(10,10,10,.1) 35%, rgba(10,10,10,.35) 65%, var(--bg) 100%)",
+        }}
       />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(10,10,10,.6) 100%)",
+        }}
+      />
+      {/* scan line overlay */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+          background:
+            "repeating-linear-gradient(0deg, rgba(255,255,255,.015) 0 1px, transparent 1px 3px)",
+          mixBlendMode: "overlay",
+        }}
+      />
+    </div>
+  );
+}
 
-      <div className="container relative z-10 pb-20 pt-32 md:pb-28 md:pt-40">
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[11px] uppercase tracking-[0.28em] text-steel-200 backdrop-blur"
-        >
-          <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
-          </span>
-          Veranstaltungstechnik · Köln
-        </motion.div>
+function CTA({ children, primary }: { children: React.ReactNode; primary?: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href="#kontakt"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: 13,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        padding: "14px 22px",
+        borderRadius: 999,
+        background: primary
+          ? hovered
+            ? "var(--ink)"
+            : "var(--accent)"
+          : hovered
+          ? "rgba(242,238,232,.08)"
+          : "transparent",
+        color: primary ? "#0A0A0A" : "var(--ink)",
+        border: primary ? "1px solid var(--accent)" : "1px solid var(--line-strong)",
+        transition: "all .25s",
+      }}
+    >
+      {children}
+      <span
+        style={{
+          display: "inline-block",
+          transform: hovered ? "translateX(4px)" : "none",
+          transition: "transform .25s",
+        }}
+      >
+        →
+      </span>
+    </a>
+  );
+}
 
-        <motion.h1
-          initial={reduce ? false : { opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-8 max-w-5xl font-display text-5xl font-semibold leading-[0.95] tracking-tightest text-white md:text-7xl lg:text-[96px]"
-        >
-          <span className="text-balance">
-            Licht. Ton. Video.
-            <br />
-            <span className="text-steel-300">Auf Broadcast-Niveau.</span>
-          </span>
-        </motion.h1>
+export default function Hero() {
+  return (
+    <section
+      id="top"
+      style={{ position: "relative", minHeight: "100vh", overflow: "hidden", paddingTop: 110 }}
+    >
+      <HeroVideo />
 
-        <motion.p
-          initial={reduce ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.32 }}
-          className="mt-8 max-w-xl text-base leading-relaxed text-steel-300 md:text-lg"
-        >
-          Cologne Hunters realisiert Events, Konferenzen und Broadcast-Produktionen
-          mit einem integrierten Technik-Setup — von der Planung bis zum
-          schlüsselfertigen Aufbau.
-        </motion.p>
-
-        <motion.div
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.45 }}
-          className="mt-10 flex flex-wrap items-center gap-3"
-        >
-          <Link
-            href="/kontakt"
-            className="group inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover"
-          >
-            Projekt anfragen
-            <span
-              aria-hidden
-              className="transition-transform group-hover:translate-x-1"
-            >
-              →
-            </span>
-          </Link>
-          <Link
-            href="/projekte"
-            className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.02] px-6 py-3.5 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/5"
-          >
-            Referenzen ansehen
-          </Link>
-        </motion.div>
-
-        <motion.div
-          initial={reduce ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.8 }}
-          className="mt-20 grid max-w-3xl grid-cols-3 gap-8 border-t border-white/10 pt-8 text-sm"
-        >
-          <div>
-            <div className="font-display text-2xl font-semibold text-white md:text-3xl">
-              20+
-            </div>
-            <div className="mt-1 text-xs uppercase tracking-[0.22em] text-steel-400">
-              Jahre Erfahrung
-            </div>
-          </div>
-          <div>
-            <div className="font-display text-2xl font-semibold text-white md:text-3xl">
-              800+
-            </div>
-            <div className="mt-1 text-xs uppercase tracking-[0.22em] text-steel-400">
-              Produktionen
-            </div>
-          </div>
-          <div>
-            <div className="font-display text-2xl font-semibold text-white md:text-3xl">
-              24/7
-            </div>
-            <div className="mt-1 text-xs uppercase tracking-[0.22em] text-steel-400">
-              On-Site Support
-            </div>
-          </div>
-        </motion.div>
+      {/* top meta rail */}
+      <div
+        className="mono"
+        style={{
+          position: "relative",
+          zIndex: 2,
+          padding: "0 var(--pad-x)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
+          REEL · 2024 — 2026
+        </span>
+        <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
+          N 50° 56′ · E 6° 58′
+        </span>
       </div>
 
-      {/* Scroll cue */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center">
-        <div className="flex flex-col items-center gap-2 text-[10px] uppercase tracking-[0.28em] text-steel-400">
-          <span>Scroll</span>
-          <span className="relative block h-8 w-px overflow-hidden bg-white/10">
-            <motion.span
-              animate={{ y: [-32, 32] }}
-              transition={{
-                duration: 2.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-x-0 h-8 bg-gradient-to-b from-transparent via-accent to-transparent"
-            />
-          </span>
+      {/* main headline */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          padding: "0 var(--pad-x)",
+          marginTop: "clamp(60px, 14vh, 160px)",
+        }}
+      >
+        <div
+          className="eyebrow"
+          style={{ marginBottom: 22, display: "flex", alignItems: "center", gap: 10 }}
+        >
+          <span style={{ width: 28, height: 1, background: "var(--accent)", display: "inline-block" }} />
+          Veranstaltungstechnik · Köln · seit 2003
         </div>
+
+        <h1
+          className="serif"
+          style={{
+            fontSize: "clamp(48px, 10.5vw, 184px)",
+            lineHeight: 0.92,
+            letterSpacing: "-0.035em",
+            maxWidth: "14ch",
+          }}
+        >
+          Licht. Ton.
+          <br />
+          Video auf
+          <br />
+          <span style={{ fontStyle: "italic", color: "var(--ink)" }}>Broadcast</span>—Niveau.
+        </h1>
+
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "28px 40px",
+            marginTop: "clamp(28px, 5vh, 56px)",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+          }}
+        >
+          <p
+            style={{
+              maxWidth: "46ch",
+              color: "var(--ink-dim)",
+              fontSize: "clamp(15px, 1.1vw, 17px)",
+              lineHeight: 1.55,
+            }}
+          >
+            Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der
+            ersten CAD-Zeichnung bis zur schlüsselfertigen Show.
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <CTA primary>Projekt anfragen</CTA>
+            <CTA>Arbeiten ansehen</CTA>
+          </div>
+        </div>
+      </div>
+
+      {/* bottom stat rail */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 2,
+          borderTop: "1px solid var(--line)",
+          padding: "20px var(--pad-x)",
+          display: "grid",
+          gridTemplateColumns: "repeat(4, minmax(0,1fr))",
+          gap: 24,
+          background: "linear-gradient(180deg, transparent, rgba(10,10,10,.55))",
+        }}
+      >
+        {[
+          ["20+", "Jahre"],
+          ["800+", "Produktionen"],
+          ["24/7", "On-Site Support"],
+          ["4K", "Broadcast-Ready"],
+        ].map(([num, label]) => (
+          <div key={num} style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <span
+              className="serif"
+              style={{ fontSize: "clamp(28px, 3.2vw, 44px)", lineHeight: 1 }}
+            >
+              {num}
+            </span>
+            <span
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                color: "var(--ink-dim)",
+                textTransform: "uppercase",
+              }}
+            >
+              {label}
+            </span>
+          </div>
+        ))}
       </div>
     </section>
   );

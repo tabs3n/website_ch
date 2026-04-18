@@ -1,91 +1,331 @@
-import Link from "next/link";
-import Reveal from "./Reveal";
+"use client";
 
-type Props = {
-  heading?: string;
-  intro?: string;
-};
+import { useState } from "react";
 
-export default function ContactCTA({
-  heading = "Lassen Sie uns Ihr nächstes Event realisieren.",
-  intro = "Von der ersten technischen Konzeption bis zur finalen Show — sprechen Sie direkt mit unserem Projektteam.",
-}: Props) {
+const SERVICES = ["Licht", "Ton", "Video", "Konferenz", "Rigging", "Stage-Design"];
+
+function Field({
+  label,
+  type = "text",
+  textarea,
+  full,
+  chips,
+}: {
+  label: string;
+  type?: string;
+  textarea?: boolean;
+  full?: boolean;
+  chips?: string[];
+}) {
+  const [focused, setFocused] = useState(false);
+  const [val, setVal] = useState("");
+  const [active, setActive] = useState<string[]>([]);
+
   return (
-    <section className="relative py-28 md:py-40">
-      <div className="container">
-        <Reveal>
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-ink-800 via-ink-900 to-ink-950 p-10 md:p-16">
-            <div
-              aria-hidden
-              className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-accent/25 blur-[120px]"
+    <label
+      style={{
+        gridColumn: full ? "1 / -1" : "auto",
+        display: "block",
+        position: "relative",
+      }}
+    >
+      <div
+        className="mono"
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: focused ? "var(--accent)" : "var(--ink-mute)",
+          marginBottom: 8,
+          transition: "color .2s",
+        }}
+      >
+        {label}
+      </div>
+
+      {chips ? (
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {chips.map((c) => {
+            const on = active.includes(c);
+            return (
+              <button
+                type="button"
+                key={c}
+                onClick={() =>
+                  setActive((a) => (on ? a.filter((x) => x !== c) : [...a, c]))
+                }
+                className="mono"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  padding: "8px 12px",
+                  borderRadius: 999,
+                  border: `1px solid ${on ? "var(--accent)" : "var(--line-strong)"}`,
+                  background: on ? "var(--accent)" : "transparent",
+                  color: on ? "#0A0A0A" : "var(--ink)",
+                  cursor: "pointer",
+                  transition: "all .2s",
+                }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      ) : textarea ? (
+        <textarea
+          rows={3}
+          value={val}
+          onChange={(e) => setVal(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{
+            width: "100%",
+            background: "transparent",
+            border: "none",
+            borderBottom: `1px solid ${focused ? "var(--accent)" : "var(--line-strong)"}`,
+            color: "var(--ink)",
+            fontFamily: "inherit",
+            fontSize: 16,
+            padding: "10px 0",
+            outline: "none",
+            resize: "vertical",
+            transition: "border-color .2s",
+          }}
+        />
+      ) : (
+        <input
+          type={type}
+          value={val}
+          onChange={(e) => setVal(e.target.value)}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          style={{
+            width: "100%",
+            background: "transparent",
+            border: "none",
+            borderBottom: `1px solid ${focused ? "var(--accent)" : "var(--line-strong)"}`,
+            color: "var(--ink)",
+            fontFamily: "inherit",
+            fontSize: 16,
+            padding: "10px 0",
+            outline: "none",
+            transition: "border-color .2s",
+          }}
+        />
+      )}
+    </label>
+  );
+}
+
+function InfoBlock({ label, lines }: { label: string; lines: React.ReactNode[] }) {
+  return (
+    <div style={{ paddingTop: 16, borderTop: "1px solid var(--line)" }}>
+      <div
+        className="mono"
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: "var(--ink-mute)",
+          marginBottom: 10,
+        }}
+      >
+        {label}
+      </div>
+      {lines.map((l, i) => (
+        <div key={i} style={{ fontSize: 16, lineHeight: 1.55, color: "var(--ink)" }}>
+          {l}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CTABtn({ children, primary }: { children: React.ReactNode; primary?: boolean }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      type="submit"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 10,
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: 13,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        padding: "14px 22px",
+        borderRadius: 999,
+        background: primary
+          ? hovered
+            ? "var(--ink)"
+            : "var(--accent)"
+          : hovered
+          ? "rgba(242,238,232,.08)"
+          : "transparent",
+        color: primary ? "#0A0A0A" : "var(--ink)",
+        border: primary ? "1px solid var(--accent)" : "1px solid var(--line-strong)",
+        cursor: "pointer",
+        transition: "all .25s",
+      }}
+    >
+      {children}
+      <span
+        style={{
+          transform: hovered ? "translateX(4px)" : "none",
+          transition: "transform .25s",
+        }}
+      >
+        →
+      </span>
+    </button>
+  );
+}
+
+export default function ContactCTA({ heading }: { heading?: string } = {}) {
+  return (
+    <section
+      id="kontakt"
+      style={{
+        padding: "clamp(80px,12vh,160px) var(--pad-x)",
+        borderTop: "1px solid var(--line)",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Section header */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "auto 1fr",
+          gap: "clamp(20px, 4vw, 60px)",
+          alignItems: "end",
+          borderTop: "1px solid var(--line)",
+          paddingTop: 22,
+          marginBottom: "clamp(48px, 8vh, 100px)",
+        }}
+        className="ctc-head"
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <span className="mono" style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-mute)" }}>
+            IV/IV
+          </span>
+          <span className="eyebrow" style={{ color: "var(--accent)" }}>
+            ● Projektanfrage
+          </span>
+        </div>
+        <h2
+          className="serif"
+          style={{
+            fontSize: "clamp(40px, 6vw, 96px)",
+            lineHeight: 0.96,
+            letterSpacing: "-0.03em",
+          }}
+        >
+          {heading ?? (
+            <>
+              Lassen Sie uns
+              <br />
+              Ihr <span style={{ fontStyle: "italic" }}>nächstes</span> Event realisieren.
+            </>
+          )}
+        </h2>
+        <style>{`@media (max-width:900px){ .ctc-head{grid-template-columns:1fr !important} }`}</style>
+      </div>
+
+      {/* Form + info */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1fr",
+          gap: "clamp(28px, 5vw, 80px)",
+          alignItems: "start",
+        }}
+        className="ctc-grid"
+      >
+        <form onSubmit={(e) => e.preventDefault()}>
+          <div
+            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
+            className="ctc-fields"
+          >
+            <Field label="Name" />
+            <Field label="Unternehmen" />
+            <Field label="E-Mail" type="email" />
+            <Field label="Telefon" type="tel" />
+            <Field label="Eventdatum (optional)" full />
+            <Field label="Gewerke" full chips={SERVICES} />
+            <Field label="Kurzbeschreibung" full textarea />
+          </div>
+
+          <div
+            style={{
+              marginTop: 28,
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <CTABtn primary>Anfrage senden</CTABtn>
+            <span
+              className="mono"
+              style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--ink-mute)" }}
+            >
+              Antwort innerhalb von 24 h werktags
+            </span>
+          </div>
+        </form>
+
+        <aside style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          <InfoBlock label="Projektbüro Köln" lines={["Deutz-Mülheimer Straße 129", "51063 Köln"]} />
+          <InfoBlock
+            label="Telefon"
+            lines={[<a key="t" href="tel:+4922112345678">+49 221 1234 5678</a>]}
+          />
+          <InfoBlock
+            label="E-Mail"
+            lines={[<a key="e" href="mailto:kontakt@cologne-hunters.de">kontakt@cologne-hunters.de</a>]}
+          />
+          <InfoBlock label="Erreichbarkeit" lines={["Mo–Fr · 08:00–18:00", "24/7 Show-Support"]} />
+
+          <div
+            style={{
+              position: "relative",
+              aspectRatio: "4/3",
+              borderRadius: 6,
+              overflow: "hidden",
+              border: "1px solid var(--line)",
+              marginTop: 8,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://images.unsplash.com/photo-1449157291145-7efd050a4d0e?auto=format&fit=crop&w=1000&q=80"
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover", filter: "brightness(.55) contrast(1.1)" }}
             />
             <div
-              aria-hidden
-              className="bg-grid absolute inset-0 opacity-[0.08] [mask-image:radial-gradient(ellipse_at_top_right,black_20%,transparent_70%)]"
-            />
-            <div className="relative grid gap-10 md:grid-cols-12 md:gap-16">
-              <div className="md:col-span-7">
-                <div className="text-[11px] uppercase tracking-[0.3em] text-accent">
-                  Projektanfrage
-                </div>
-                <h2 className="mt-5 font-display text-3xl font-semibold tracking-tightest text-white md:text-5xl">
-                  <span className="text-balance">{heading}</span>
-                </h2>
-                <p className="mt-5 max-w-xl text-steel-300 md:text-lg">
-                  {intro}
-                </p>
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <Link
-                    href="/kontakt"
-                    className="inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover"
-                  >
-                    Projekt anfragen
-                    <span aria-hidden>→</span>
-                  </Link>
-                  <a
-                    href="mailto:kontakt@cologne-hunters.de"
-                    className="inline-flex items-center gap-3 rounded-full border border-white/15 px-6 py-3.5 text-sm font-medium text-white transition hover:border-white/30 hover:bg-white/5"
-                  >
-                    kontakt@cologne-hunters.de
-                  </a>
-                </div>
-              </div>
-              <div className="md:col-span-5">
-                <dl className="grid gap-6 border-t border-white/10 pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0">
-                  <div>
-                    <dt className="text-[11px] uppercase tracking-[0.24em] text-steel-400">
-                      Projektbüro Köln
-                    </dt>
-                    <dd className="mt-2 text-sm text-steel-200">
-                      Deutz-Mülheimer Straße 129
-                      <br />
-                      51063 Köln
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-[11px] uppercase tracking-[0.24em] text-steel-400">
-                      Telefon
-                    </dt>
-                    <dd className="mt-2 text-sm text-steel-200">
-                      <a href="tel:+4922112345678" className="hover:text-white">
-                        +49 221 1234 5678
-                      </a>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-[11px] uppercase tracking-[0.24em] text-steel-400">
-                      Erreichbarkeit
-                    </dt>
-                    <dd className="mt-2 text-sm text-steel-200">
-                      Mo–Fr 08:00–18:00 · 24/7 Show-Support
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+              className="mono"
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 14,
+                fontSize: 10,
+                letterSpacing: "0.14em",
+                color: "rgba(242,238,232,.85)",
+              }}
+            >
+              ● N 50°56′ E 6°58′
             </div>
           </div>
-        </Reveal>
+        </aside>
       </div>
+
+      <style>{`@media (max-width:900px){ .ctc-grid, .ctc-fields{grid-template-columns:1fr !important} }`}</style>
     </section>
   );
 }

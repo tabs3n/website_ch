@@ -8,30 +8,40 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // New design system tokens
+        bg: "#0A0A0A",
+        accent: {
+          DEFAULT: "#E8B54A",
+          hover: "#f0c25f",
+          soft: "#c8982e",
+        },
+        // Legacy tokens (kept for inner pages)
         ink: {
-          950: "#05070b",
-          900: "#0a0d13",
-          800: "#10141c",
-          700: "#161b26",
-          600: "#1d2330",
+          950: "#0A0A0A",
+          900: "#111111",
+          800: "#181818",
+          700: "#202020",
+          600: "#282828",
         },
         steel: {
-          400: "#8a93a4",
-          300: "#aab2c0",
-          200: "#cdd3dd",
-        },
-        accent: {
-          DEFAULT: "#2563eb",
-          hover: "#3b82f6",
-          soft: "#1d4ed8",
+          400: "#9a9a8a",
+          300: "#b8b4a8",
+          200: "#d4d0c8",
         },
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-space)", "system-ui", "sans-serif"],
+        sans: ['"Inter Tight"', "system-ui", "sans-serif"],
+        serif: ['"Instrument Serif"', "serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        // Legacy alias
+        display: ['"Instrument Serif"', "serif"],
       },
       letterSpacing: {
         tightest: "-0.04em",
+        tight2: "-0.035em",
+        tight3: "-0.03em",
+        eyebrow: "0.14em",
+        cap: "0.08em",
       },
       container: {
         center: true,
@@ -43,10 +53,6 @@ const config: Config = {
         screens: {
           "2xl": "1400px",
         },
-      },
-      backgroundImage: {
-        "grid-fade":
-          "linear-gradient(to bottom, rgba(10,13,19,0) 0%, rgba(10,13,19,1) 85%)",
       },
     },
   },

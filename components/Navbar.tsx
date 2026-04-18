@@ -1,144 +1,179 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import Logo from "./Logo";
+import Link from "next/link";
 
-const NAV = [
-  { label: "Start", href: "/" },
-  { label: "Leistungen", href: "/leistungen" },
-  { label: "Projekte", href: "/projekte" },
-  { label: "Kontakt", href: "/kontakt" },
+function LogoMark() {
+  return (
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden>
+      <circle cx="17" cy="17" r="16" stroke="currentColor" strokeOpacity=".25" />
+      <circle cx="17" cy="17" r="4" fill="var(--accent)" />
+      <path
+        d="M17 1 v7 M17 26 v7 M1 17 h7 M26 17 h7"
+        stroke="currentColor"
+        strokeOpacity=".6"
+      />
+    </svg>
+  );
+}
+
+function Clock() {
+  const [time, setTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setTime(new Date());
+    const i = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(i);
+  }, []);
+
+  if (!time) return null;
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return (
+    <span className="mono" style={{ color: "var(--ink-dim)", fontSize: 11, letterSpacing: "0.1em" }}>
+      KÖLN · {pad(time.getHours())}:{pad(time.getMinutes())}:{pad(time.getSeconds())}
+    </span>
+  );
+}
+
+const NAV_LINKS = [
+  { label: "Arbeiten", href: "/#arbeiten" },
+  { label: "Leistungen", href: "/#leistungen" },
+  { label: "Studio", href: "/#studio" },
+  { label: "Kontakt", href: "/#kontakt" },
 ];
 
 export default function Navbar() {
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const handler = () => setScrolled(window.scrollY > 20);
+    handler();
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
   }, []);
-
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "border-b border-white/5 bg-ink-950/80 backdrop-blur-lg"
-          : "border-b border-transparent"
-      }`}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 50,
+        padding: "18px var(--pad-x)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        background: scrolled ? "rgba(10,10,10,0.78)" : "transparent",
+        backdropFilter: scrolled ? "blur(14px) saturate(1.2)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(14px) saturate(1.2)" : "none",
+        borderBottom: scrolled ? "1px solid var(--line)" : "1px solid transparent",
+        transition: "background .35s ease, border-color .35s ease, backdrop-filter .35s ease",
+      }}
     >
-      <div className="container flex h-16 items-center justify-between md:h-20">
-        <Link
-          href="/"
-          className="flex items-center gap-3 text-white"
-          aria-label="Cologne Hunters — zur Startseite"
-        >
-          <Logo className="h-7 w-7" />
-          <div className="leading-none">
-            <div className="font-display text-[15px] font-semibold tracking-tight">
-              Cologne Hunters
-            </div>
-            <div className="text-[10px] uppercase tracking-[0.22em] text-steel-400">
-              Licht · Ton · Video
-            </div>
+      {/* Logo */}
+      <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <LogoMark />
+        <div style={{ lineHeight: 1.05 }}>
+          <div className="serif" style={{ fontSize: 18, letterSpacing: "-0.01em" }}>
+            Cologne Hunters
           </div>
-        </Link>
+          <div className="mono" style={{ fontSize: 10, color: "var(--ink-mute)", letterSpacing: "0.12em" }}>
+            LICHT · TON · VIDEO
+          </div>
+        </div>
+      </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {NAV.map((item) => {
-            const active =
-              item.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(item.href);
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative px-4 py-2 text-sm transition-colors ${
-                  active
-                    ? "text-white"
-                    : "text-steel-300 hover:text-white"
-                }`}
-              >
-                {item.label}
-                {active && (
-                  <motion.span
-                    layoutId="nav-underline"
-                    className="absolute inset-x-3 -bottom-0.5 h-px bg-accent"
-                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                  />
-                )}
-              </Link>
-            );
-          })}
-          <Link
-            href="/kontakt"
-            className="ml-4 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-medium text-white transition hover:bg-accent-hover"
-          >
-            Projekt anfragen
-            <span aria-hidden>→</span>
-          </Link>
-        </nav>
+      {/* Desktop nav */}
+      <nav
+        className="mono"
+        style={{
+          display: "flex",
+          gap: 28,
+          fontSize: 12,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+        }}
+      >
+        {NAV_LINKS.map((link, i) => (
+          <NavAnchor key={link.href} href={link.href} index={i}>
+            {link.label}
+          </NavAnchor>
+        ))}
+      </nav>
 
-        <button
-          type="button"
-          aria-label={open ? "Menü schließen" : "Menü öffnen"}
-          aria-expanded={open}
-          className="relative h-10 w-10 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-        >
-          <span
-            className={`absolute left-2 right-2 top-3.5 h-px bg-white transition-transform ${
-              open ? "translate-y-1.5 rotate-45" : ""
-            }`}
-          />
-          <span
-            className={`absolute left-2 right-2 top-6 h-px bg-white transition-transform ${
-              open ? "-translate-y-1 -rotate-45" : ""
-            }`}
-          />
-        </button>
+      {/* Right: clock + CTA */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <Clock />
+        <ContactBtn />
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-            className="md:hidden"
-          >
-            <div className="container flex flex-col gap-1 border-t border-white/5 bg-ink-950/95 py-4 backdrop-blur">
-              {NAV.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-lg px-3 py-3 text-base text-steel-200 hover:bg-white/5 hover:text-white"
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <Link
-                href="/kontakt"
-                className="mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-medium text-white"
-              >
-                Projekt anfragen →
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <style>{`
+        @media (max-width: 900px) {
+          header nav { display: none !important; }
+        }
+      `}</style>
     </header>
+  );
+}
+
+function NavAnchor({
+  href,
+  children,
+  index,
+}: {
+  href: string;
+  children: React.ReactNode;
+  index: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href={href}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ color: hovered ? "var(--ink)" : "var(--ink-dim)", transition: "color .2s" }}
+    >
+      <span style={{ color: "var(--accent)", marginRight: 6, opacity: 0.8 }}>0{index + 1}</span>
+      {children}
+    </a>
+  );
+}
+
+function ContactBtn() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <a
+      href="#kontakt"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        fontFamily: '"JetBrains Mono", monospace',
+        fontSize: 12,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        border: `1px solid ${hovered ? "var(--accent)" : "var(--line-strong)"}`,
+        padding: "10px 16px",
+        borderRadius: 999,
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        background: hovered ? "var(--accent)" : "transparent",
+        color: hovered ? "#0A0A0A" : "var(--ink)",
+        transition: "all .25s",
+      }}
+    >
+      <span
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: "50%",
+          background: hovered ? "#0A0A0A" : "var(--accent)",
+          boxShadow: hovered ? "none" : "0 0 12px var(--accent)",
+        }}
+      />
+      Projekt anfragen
+    </a>
   );
 }

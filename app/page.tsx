@@ -1,11 +1,11 @@
 import Hero from "@/components/Hero";
+import LogosStrip from "@/components/LogosStrip";
 import ServicesPreview from "@/components/ServicesPreview";
+import CapabilitiesStrip from "@/components/CapabilitiesStrip";
 import ProjectsPreview from "@/components/ProjectsPreview";
 import ContactCTA from "@/components/ContactCTA";
-import CapabilitiesStrip from "@/components/CapabilitiesStrip";
-import LogosStrip from "@/components/LogosStrip";
 
-// Seite alle 30 s neu validieren → Sanity-Änderungen erscheinen schnell
+// Revalidate every 30s so Sanity changes appear quickly
 export const revalidate = 30;
 
 export default function HomePage() {

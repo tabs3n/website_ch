@@ -1,19 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import PageTransition from "@/components/PageTransition";
 
-const inter = Inter({
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 
-const space = Space_Grotesk({
+const interTight = Inter_Tight({
   subsets: ["latin"],
-  variable: "--font-space",
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -42,12 +51,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="de" className={`${inter.variable} ${space.variable}`}>
-      <body className="min-h-screen bg-ink-950 font-sans text-steel-200 antialiased">
+    <html
+      lang="de"
+      className={`${instrumentSerif.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+    >
+      <body
+        style={{
+          fontFamily: '"Inter Tight", system-ui, sans-serif',
+          background: "#0A0A0A",
+          color: "#F2EEE8",
+          minHeight: "100vh",
+        }}
+      >
         <Navbar />
-        <PageTransition>
-          <main className="relative">{children}</main>
-        </PageTransition>
+        <main style={{ position: "relative" }}>{children}</main>
         <Footer />
       </body>
     </html>
