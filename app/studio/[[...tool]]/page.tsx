@@ -1,7 +1,9 @@
-import { redirect } from "next/navigation";
+import StudioClient from "@/components/StudioClient";
 
-// Das Sanity Studio läuft auf Sanity's eigenem CDN-Hosting.
-// Aufruf /studio → direkte Weiterleitung zum gehosteten Studio.
-export default function StudioRedirect() {
-  redirect("https://6vse62qu.sanity.studio");
+export const metadata = {
+  title: "Cologne Hunters · Studio",
+};
+
+export default function StudioPage() {
+  return <StudioClient />;
 }
