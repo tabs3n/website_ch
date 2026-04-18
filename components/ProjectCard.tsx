@@ -45,7 +45,7 @@ export default function ProjectCard({ project, index = 0 }: Props) {
             {project.title}
           </h3>
           <div className="mt-4 flex flex-wrap gap-2">
-            {project.services.slice(0, 3).map((s) => (
+            {(project.services ?? []).slice(0, 3).map((s) => (
               <span
                 key={s}
                 className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] uppercase tracking-[0.18em] text-steel-200"

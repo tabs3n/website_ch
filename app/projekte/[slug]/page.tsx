@@ -94,7 +94,7 @@ export default async function ProjektPage({ params }: { params: Params }) {
 
           <Reveal delay={0.2}>
             <div className="mt-10 flex flex-wrap gap-2">
-              {project.services.map((s) => (
+              {(project.services ?? []).map((s) => (
                 <span
                   key={s}
                   className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.18em] text-steel-200"

@@ -8,7 +8,7 @@ export type SanityProject = {
   category: "Corporate" | "Broadcast" | "Live" | "Konferenz";
   summary: string;
   description?: string[];
-  services: string[];
+  services?: string[] | null;
   hero: string;
   gallery?: string[];
   stats?: { label: string; value: string }[];
