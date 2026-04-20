@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Tontechnik",
   description:
     "Line-Array-Beschallung, digitale Mischpulte, IEM-Monitoring und Dante-Netzwerke.",
+  openGraph: {
+    title: "Tontechnik · Cologne Hunters",
+    description: "Line-Array-Beschallung, digitale Mischpulte, IEM-Monitoring und Dante-Netzwerke.",
+    images: [{ url: "https://images.unsplash.com/photo-1520166012956-add9ba0835cb?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 630 }],
+  },
 };
 
 export default function TonPage() {

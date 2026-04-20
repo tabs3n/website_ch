@@ -98,9 +98,17 @@ export default function ProjectMap({ projects }: Props) {
     if (!container) return;
 
     let cleanupFn = () => {};
+    let attempts = 0;
+    const MAX_ATTEMPTS = 100; // 5s timeout
 
     function render() {
       if (!window.d3 || !window.topojson) {
+        if (++attempts > MAX_ATTEMPTS) {
+          if (container) {
+            container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:320px;color:rgba(242,238,232,0.38);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.1em;">KARTE KONNTE NICHT GELADEN WERDEN</div>`;
+          }
+          return;
+        }
         setTimeout(render, 50);
         return;
       }

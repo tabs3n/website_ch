@@ -93,6 +93,9 @@ export default async function HomePage() {
       <JsonLd data={localBusinessLd} />
       <Hero
         heroImage={g(hp?.heroImage)}
+        heroImages={g(hp?.heroImages)}
+        heroSlideshowEnabled={g(hp?.heroSlideshowEnabled)}
+        heroSlideshowInterval={g(hp?.heroSlideshowInterval)}
         heroEyebrow={g(hp?.heroEyebrow)}
         heroHeadline={g(hp?.heroHeadline)}
         heroDescription={g(hp?.heroDescription)}

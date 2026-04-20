@@ -42,11 +42,36 @@ export const homepageSchema = defineType({
     // ── Hero ─────────────────────────────────────────────
     defineField({
       name: "heroImage",
-      title: "Hero-Hintergrundbild",
+      title: "Hero-Hintergrundbild (einzeln)",
       type: "image",
       group: "hero",
       options: { hotspot: true },
-      description: "Wird als Ken-Burns-animiertes Hintergrundbild im Hero verwendet.",
+      description: "Einzelbild – wird ignoriert wenn unten eine Bilderliste angegeben ist.",
+    }),
+    defineField({
+      name: "heroImages",
+      title: "Hero-Bilderliste (Slideshow)",
+      type: "array",
+      group: "hero",
+      of: [{ type: "image", options: { hotspot: true } }],
+      description: "Mehrere Bilder für den automatischen Wechsel. Überschreibt das Einzelbild oben.",
+    }),
+    defineField({
+      name: "heroSlideshowEnabled",
+      title: "Automatischer Bildwechsel aktiv",
+      type: "boolean",
+      group: "hero",
+      initialValue: true,
+      description: "Slideshow ein- oder ausschalten. Bei nur einem Bild hat diese Einstellung keinen Effekt.",
+    }),
+    defineField({
+      name: "heroSlideshowInterval",
+      title: "Bildwechsel-Intervall (Sekunden)",
+      type: "number",
+      group: "hero",
+      initialValue: 6,
+      description: "Wie viele Sekunden ein Bild zu sehen ist, bevor das nächste eingeblendet wird. Empfehlung: 4–12.",
+      validation: (Rule) => Rule.min(2).max(60),
     }),
     defineField({
       name: "heroEyebrow",

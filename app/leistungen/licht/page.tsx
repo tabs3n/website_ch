@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Lichttechnik",
   description:
     "Moving Lights, LED-Systeme, kinetisches Licht und DMX-Netzwerke auf Broadcast-Niveau.",
+  openGraph: {
+    title: "Lichttechnik · Cologne Hunters",
+    description: "Moving Lights, LED-Systeme, kinetisches Licht und DMX-Netzwerke auf Broadcast-Niveau.",
+    images: [{ url: "https://images.unsplash.com/photo-1516307365426-bea591f05011?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 630 }],
+  },
 };
 
 export default function LichtPage() {

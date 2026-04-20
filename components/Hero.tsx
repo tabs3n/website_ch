@@ -12,6 +12,8 @@ const FALLBACK_IMAGES = [
 export interface HeroData {
   heroImage?: string | null;
   heroImages?: string[] | null;
+  heroSlideshowEnabled?: boolean | null;
+  heroSlideshowInterval?: number | null;
   heroEyebrow?: string | null;
   heroHeadline?: string | null;
   heroDescription?: string | null;
@@ -25,19 +27,26 @@ const DEFAULT_STATS = [
   { value: "4K", label: "Broadcast-Ready" },
 ];
 
-const SLIDE_INTERVAL = 6000;
 const FADE_DURATION = 1500;
 
-function HeroBackground({ images }: { images: string[] }) {
+function HeroBackground({
+  images,
+  enabled,
+  interval,
+}: {
+  images: string[];
+  enabled: boolean;
+  interval: number;
+}) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (!enabled || images.length <= 1) return;
     const id = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length);
-    }, SLIDE_INTERVAL);
+    }, interval);
     return () => clearInterval(id);
-  }, [images.length]);
+  }, [enabled, images.length, interval]);
 
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
@@ -134,18 +143,23 @@ function CTA({ children, primary }: { children: React.ReactNode; primary?: boole
 export default function Hero({
   heroImage,
   heroImages,
+  heroSlideshowEnabled,
+  heroSlideshowInterval,
   heroEyebrow,
   heroHeadline,
   heroDescription,
   heroStats,
 }: HeroData = {}) {
-  // Build the images array: prefer heroImages array, then single heroImage, else fallbacks
   const images: string[] =
     heroImages && heroImages.length > 0
       ? heroImages
       : heroImage
       ? [heroImage]
       : FALLBACK_IMAGES;
+
+  // null/undefined aus Sanity → Standardwerte
+  const slideshowEnabled = heroSlideshowEnabled !== false;
+  const slideshowInterval = Math.max(2, (heroSlideshowInterval ?? 6)) * 1000;
   const eyebrow = heroEyebrow !== undefined ? heroEyebrow : "Veranstaltungstechnik · Köln · seit 2003";
   const headline = heroHeadline !== undefined ? heroHeadline : "Licht. Ton. Video auf Broadcast-Niveau.";
   const description =
@@ -159,7 +173,7 @@ export default function Hero({
       id="top"
       style={{ position: "relative", minHeight: "100vh", overflow: "hidden", paddingTop: 110 }}
     >
-      <HeroBackground images={images} />
+      <HeroBackground images={images} enabled={slideshowEnabled} interval={slideshowInterval} />
 
       {/* top meta rail */}
       <div

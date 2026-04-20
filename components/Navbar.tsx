@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
@@ -85,12 +86,13 @@ export default function Navbar({
       {/* Logo */}
       <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
         {logoUrl ? (
-          /* Custom uploaded logo */
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={logoUrl}
             alt={name}
+            height={36}
+            width={120}
             style={{ height: 36, width: "auto", objectFit: "contain" }}
+            priority
           />
         ) : (
           /* Default SVG mark + wordmark */
@@ -155,7 +157,7 @@ function NavAnchor({
 }) {
   const [hovered, setHovered] = useState(false);
   return (
-    <a
+    <Link
       href={href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -163,15 +165,15 @@ function NavAnchor({
     >
       <span style={{ color: "var(--accent)", marginRight: 6, opacity: 0.8 }}>0{index + 1}</span>
       {children}
-    </a>
+    </Link>
   );
 }
 
 function ContactBtn() {
   const [hovered, setHovered] = useState(false);
   return (
-    <a
-      href="#kontakt"
+    <Link
+      href="/#kontakt"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -200,6 +202,6 @@ function ContactBtn() {
         }}
       />
       Projekt anfragen
-    </a>
+    </Link>
   );
 }

@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   title: "Videotechnik",
   description:
     "LED-Walls, Broadcast-Kameras, Medienserver und Live-Streaming in 4K.",
+  openGraph: {
+    title: "Videotechnik · Cologne Hunters",
+    description: "LED-Walls, Broadcast-Kameras, Medienserver und Live-Streaming in 4K.",
+    images: [{ url: "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=1200&q=80", width: 1200, height: 630 }],
+  },
 };
 
 export default function VideoPage() {
