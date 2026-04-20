@@ -110,6 +110,8 @@ export default function Footer({
             { label: "Arbeiten", href: "/projekte" },
             { label: "Projektkarte", href: "/projektkarte" },
             { label: "Kontakt", href: "/kontakt" },
+            { label: "Impressum", href: "/impressum" },
+            { label: "Datenschutz", href: "/datenschutz" },
           ]}
         />
         <FootCol

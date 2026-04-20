@@ -244,7 +244,7 @@ export default async function ProjektPage({ params }: { params: Params }) {
                   >
                     <div
                       role="img"
-                      aria-label={`${project.title} – Galeriebild ${i + 1} von ${project.gallery.length}`}
+                      aria-label={`${project.title} – Galeriebild ${i + 1} von ${project.gallery?.length ?? 0}`}
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
                       style={{ backgroundImage: `url(${src})` }}
                     />
