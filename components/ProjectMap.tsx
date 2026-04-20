@@ -326,7 +326,7 @@ export default function ProjectMap({ projects }: Props) {
           svg.call(zoom);
 
           // Intercept wheel events so scrolling over the map zooms instead of scrolling the page
-          svg.node()?.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
+          svg.node()?.addEventListener("wheel", (e: WheelEvent) => e.preventDefault(), { passive: false });
 
           if (!container) return;
 
