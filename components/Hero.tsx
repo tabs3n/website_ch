@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const FALLBACK_IMAGE =
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80";
+const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=2400&q=80",
+  "https://images.unsplash.com/photo-1516307365426-bea591f05011?auto=format&fit=crop&w=2400&q=80",
+  "https://images.unsplash.com/photo-1520166012956-add9ba0835cb?auto=format&fit=crop&w=2400&q=80",
+  "https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&w=2400&q=80",
+];
 
 export interface HeroData {
   heroImage?: string | null;
+  heroImages?: string[] | null;
   heroEyebrow?: string | null;
   heroHeadline?: string | null;
   heroDescription?: string | null;
@@ -20,20 +25,39 @@ const DEFAULT_STATS = [
   { value: "4K", label: "Broadcast-Ready" },
 ];
 
-function HeroBackground({ src }: { src: string }) {
+const SLIDE_INTERVAL = 6000;
+const FADE_DURATION = 1500;
+
+function HeroBackground({ images }: { images: string[] }) {
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const id = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, SLIDE_INTERVAL);
+    return () => clearInterval(id);
+  }, [images.length]);
+
   return (
     <div style={{ position: "absolute", inset: 0, overflow: "hidden" }}>
-      <div
-        style={{
-          position: "absolute",
-          inset: "-6%",
-          backgroundImage: `url(${src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          animation: "kenburns 22s ease-in-out infinite alternate",
-          filter: "brightness(.55) contrast(1.05) saturate(.9)",
-        }}
-      />
+      {images.map((src, i) => (
+        <div
+          key={src}
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: "-6%",
+            backgroundImage: `url(${src})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            animation: "kenburns 22s ease-in-out infinite alternate",
+            filter: "brightness(.55) contrast(1.05) saturate(.9)",
+            opacity: i === current ? 1 : 0,
+            transition: `opacity ${FADE_DURATION}ms ease-in-out`,
+          }}
+        />
+      ))}
       <div
         style={{
           position: "absolute",
@@ -109,15 +133,19 @@ function CTA({ children, primary }: { children: React.ReactNode; primary?: boole
 
 export default function Hero({
   heroImage,
+  heroImages,
   heroEyebrow,
   heroHeadline,
   heroDescription,
   heroStats,
 }: HeroData = {}) {
-  // undefined  = Sanity-Dokument existiert noch nicht → Fallback-Text zeigen
-  // null / ""  = Feld wurde in Sanity geleert → Bereich ausblenden
-  // "text"     = Sanity-Wert verwenden
-  const imgSrc = heroImage !== undefined ? (heroImage ?? FALLBACK_IMAGE) : FALLBACK_IMAGE;
+  // Build the images array: prefer heroImages array, then single heroImage, else fallbacks
+  const images: string[] =
+    heroImages && heroImages.length > 0
+      ? heroImages
+      : heroImage
+      ? [heroImage]
+      : FALLBACK_IMAGES;
   const eyebrow = heroEyebrow !== undefined ? heroEyebrow : "Veranstaltungstechnik · Köln · seit 2003";
   const headline = heroHeadline !== undefined ? heroHeadline : "Licht. Ton. Video auf Broadcast-Niveau.";
   const description =
@@ -131,7 +159,7 @@ export default function Hero({
       id="top"
       style={{ position: "relative", minHeight: "100vh", overflow: "hidden", paddingTop: 110 }}
     >
-      <HeroBackground src={imgSrc} />
+      <HeroBackground images={images} />
 
       {/* top meta rail */}
       <div
