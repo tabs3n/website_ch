@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 
 const SERVICES = ["Licht", "Ton", "Video", "Konferenz", "Rigging", "Stage-Design"];
+
+type Status = "idle" | "submitting" | "success" | "error";
 
 export interface ContactData {
   contactHeading?: string | null;
@@ -16,28 +18,39 @@ export interface ContactData {
 
 function Field({
   label,
+  name,
   type = "text",
   textarea,
   full,
-  chips,
+  required,
 }: {
   label: string;
+  name: string;
   type?: string;
   textarea?: boolean;
   full?: boolean;
-  chips?: string[];
+  required?: boolean;
 }) {
   const [focused, setFocused] = useState(false);
-  const [val, setVal] = useState("");
-  const [active, setActive] = useState<string[]>([]);
+  const id = `cta-${name}`;
+
+  const sharedStyle = {
+    width: "100%",
+    background: "transparent",
+    border: "none",
+    borderBottom: `1px solid ${focused ? "var(--accent)" : "var(--line-strong)"}`,
+    color: "var(--ink)",
+    fontFamily: "inherit",
+    fontSize: 16,
+    padding: "10px 0",
+    outline: "none",
+    transition: "border-color .2s",
+  } as const;
 
   return (
     <label
-      style={{
-        gridColumn: full ? "1 / -1" : "auto",
-        display: "block",
-        position: "relative",
-      }}
+      htmlFor={id}
+      style={{ gridColumn: full ? "1 / -1" : "auto", display: "block", position: "relative" }}
     >
       <div
         className="mono"
@@ -51,81 +64,81 @@ function Field({
         }}
       >
         {label}
+        {required && <span style={{ color: "var(--accent)" }}> *</span>}
       </div>
-
-      {chips ? (
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {chips.map((c) => {
-            const on = active.includes(c);
-            return (
-              <button
-                type="button"
-                key={c}
-                onClick={() =>
-                  setActive((a) => (on ? a.filter((x) => x !== c) : [...a, c]))
-                }
-                className="mono"
-                style={{
-                  fontSize: 11,
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                  padding: "8px 12px",
-                  borderRadius: 999,
-                  border: `1px solid ${on ? "var(--accent)" : "var(--line-strong)"}`,
-                  background: on ? "var(--accent)" : "transparent",
-                  color: on ? "#0A0A0A" : "var(--ink)",
-                  cursor: "pointer",
-                  transition: "all .2s",
-                }}
-              >
-                {c}
-              </button>
-            );
-          })}
-        </div>
-      ) : textarea ? (
+      {textarea ? (
         <textarea
+          id={id}
+          name={name}
           rows={3}
-          value={val}
-          onChange={(e) => setVal(e.target.value)}
+          required={required}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          style={{
-            width: "100%",
-            background: "transparent",
-            border: "none",
-            borderBottom: `1px solid ${focused ? "var(--accent)" : "var(--line-strong)"}`,
-            color: "var(--ink)",
-            fontFamily: "inherit",
-            fontSize: 16,
-            padding: "10px 0",
-            outline: "none",
-            resize: "vertical",
-            transition: "border-color .2s",
-          }}
+          style={{ ...sharedStyle, resize: "vertical" }}
         />
       ) : (
         <input
+          id={id}
+          name={name}
           type={type}
-          value={val}
-          onChange={(e) => setVal(e.target.value)}
+          required={required}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          style={{
-            width: "100%",
-            background: "transparent",
-            border: "none",
-            borderBottom: `1px solid ${focused ? "var(--accent)" : "var(--line-strong)"}`,
-            color: "var(--ink)",
-            fontFamily: "inherit",
-            fontSize: 16,
-            padding: "10px 0",
-            outline: "none",
-            transition: "border-color .2s",
-          }}
+          style={sharedStyle}
         />
       )}
     </label>
+  );
+}
+
+function ChipsField({ label, name, full }: { label: string; name: string; full?: boolean }) {
+  const [active, setActive] = useState<string[]>([]);
+
+  return (
+    <div style={{ gridColumn: full ? "1 / -1" : "auto" }}>
+      <div
+        className="mono"
+        style={{
+          fontSize: 10,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: "var(--ink-mute)",
+          marginBottom: 8,
+        }}
+      >
+        {label}
+      </div>
+      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+        {SERVICES.map((c) => {
+          const on = active.includes(c);
+          return (
+            <button
+              type="button"
+              key={c}
+              onClick={() =>
+                setActive((a) => (on ? a.filter((x) => x !== c) : [...a, c]))
+              }
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                padding: "8px 12px",
+                borderRadius: 999,
+                border: `1px solid ${on ? "var(--accent)" : "var(--line-strong)"}`,
+                background: on ? "var(--accent)" : "transparent",
+                color: on ? "#0A0A0A" : "var(--ink)",
+                cursor: "pointer",
+                transition: "all .2s",
+              }}
+            >
+              {c}
+            </button>
+          );
+        })}
+      </div>
+      <input type="hidden" name={name} value={active.join(", ")} />
+    </div>
   );
 }
 
@@ -153,11 +166,13 @@ function InfoBlock({ label, lines }: { label: string; lines: React.ReactNode[] }
   );
 }
 
-function CTABtn({ children, primary }: { children: React.ReactNode; primary?: boolean }) {
+function SubmitBtn({ status }: { status: Status }) {
   const [hovered, setHovered] = useState(false);
+  const disabled = status === "submitting";
   return (
     <button
       type="submit"
+      disabled={disabled}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -170,23 +185,18 @@ function CTABtn({ children, primary }: { children: React.ReactNode; primary?: bo
         textTransform: "uppercase",
         padding: "14px 22px",
         borderRadius: 999,
-        background: primary
-          ? hovered
-            ? "var(--ink)"
-            : "var(--accent)"
-          : hovered
-          ? "rgba(242,238,232,.08)"
-          : "transparent",
-        color: primary ? "#0A0A0A" : "var(--ink)",
-        border: primary ? "1px solid var(--accent)" : "1px solid var(--line-strong)",
-        cursor: "pointer",
+        background: hovered && !disabled ? "var(--ink)" : "var(--accent)",
+        color: "#0A0A0A",
+        border: "1px solid var(--accent)",
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled ? 0.6 : 1,
         transition: "all .25s",
       }}
     >
-      {children}
+      {status === "submitting" ? "Sende…" : "Anfrage senden"}
       <span
         style={{
-          transform: hovered ? "translateX(4px)" : "none",
+          transform: hovered && !disabled ? "translateX(4px)" : "none",
           transition: "transform .25s",
         }}
       >
@@ -205,6 +215,10 @@ export default function ContactCTA({
   addressCity,
   businessHours,
 }: ContactData = {}) {
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
   const heading = contactHeading !== undefined
     ? contactHeading
     : "Lassen Sie uns Ihr nächstes Event realisieren.";
@@ -217,6 +231,45 @@ export default function ContactCTA({
   const city = addressCity ?? "51063 Köln";
   const hours = businessHours?.length ? businessHours : ["Mo–Fr · 08:00–18:00", "24/7 Show-Support"];
 
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log("[ContactCTA] submit fired");
+    if (status === "submitting") return;
+
+    setStatus("submitting");
+    setErrorMessage(null);
+
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    console.log("[ContactCTA] payload", data);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      console.log("[ContactCTA] response", res.status);
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        setErrorMessage(
+          typeof payload?.error === "string"
+            ? payload.error
+            : "Beim Senden ist etwas schiefgelaufen."
+        );
+        setStatus("error");
+        return;
+      }
+
+      setStatus("success");
+      formRef.current?.reset();
+    } catch (err) {
+      console.error("[ContactCTA] network error", err);
+      setErrorMessage("Netzwerkfehler — bitte erneut versuchen.");
+      setStatus("error");
+    }
+  }
+
   return (
     <section
       id="kontakt"
@@ -227,7 +280,6 @@ export default function ContactCTA({
         overflow: "hidden",
       }}
     >
-      {/* Section header */}
       <div
         style={{
           display: "grid",
@@ -264,7 +316,6 @@ export default function ContactCTA({
         <style>{`@media (max-width:900px){ .ctc-head{grid-template-columns:1fr !important} }`}</style>
       </div>
 
-      {/* Form + info */}
       <div
         style={{
           display: "grid",
@@ -274,44 +325,127 @@ export default function ContactCTA({
         }}
         className="ctc-grid"
       >
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div
-            style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
-            className="ctc-fields"
-          >
-            <Field label="Name" />
-            <Field label="Unternehmen" />
-            <Field label="E-Mail" type="email" />
-            <Field label="Telefon" type="tel" />
-            <Field label="Eventdatum (optional)" full />
-            <Field label="Gewerke" full chips={SERVICES} />
-            <Field label="Kurzbeschreibung" full textarea />
-          </div>
-
+        {status === "success" ? (
           <div
             style={{
-              marginTop: 28,
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-              flexWrap: "wrap",
+              padding: "40px",
+              border: "1px solid var(--accent)",
+              borderRadius: 8,
+              background: "rgba(232, 181, 74, 0.05)",
             }}
           >
-            <CTABtn primary>Anfrage senden</CTABtn>
-            <span
-              className="mono"
-              style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--ink-mute)" }}
+            <div
+              style={{
+                fontSize: 32,
+                color: "var(--accent)",
+                marginBottom: 16,
+              }}
             >
-              {responseTime}
-            </span>
+              ✓
+            </div>
+            <h3
+              className="serif"
+              style={{
+                fontSize: 28,
+                lineHeight: 1.1,
+                letterSpacing: "-0.02em",
+                marginBottom: 12,
+                color: "var(--ink)",
+              }}
+            >
+              Anfrage eingegangen.
+            </h3>
+            <p style={{ fontSize: 15, lineHeight: 1.6, color: "var(--ink-mute)", marginBottom: 20 }}>
+              Vielen Dank — wir melden uns in der Regel innerhalb eines Werktages bei Ihnen.
+            </p>
+            <button
+              type="button"
+              onClick={() => setStatus("idle")}
+              className="mono"
+              style={{
+                fontSize: 11,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--ink-mute)",
+                background: "transparent",
+                border: "none",
+                textDecoration: "underline",
+                cursor: "pointer",
+              }}
+            >
+              Weitere Anfrage senden
+            </button>
           </div>
-        </form>
+        ) : (
+          <form ref={formRef} onSubmit={onSubmit} noValidate>
+            {/* Honeypot */}
+            <input
+              type="text"
+              name="honeypot"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+            />
+
+            <div
+              style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}
+              className="ctc-fields"
+            >
+              <Field label="Name" name="name" required />
+              <Field label="Unternehmen" name="company" />
+              <Field label="E-Mail" name="email" type="email" required />
+              <Field label="Telefon" name="phone" type="tel" />
+              <Field label="Eventdatum (optional)" name="date" full />
+              <ChipsField label="Gewerke" name="services" full />
+              <Field label="Kurzbeschreibung" name="message" full textarea required />
+            </div>
+
+            {status === "error" && (
+              <div
+                role="alert"
+                style={{
+                  marginTop: 20,
+                  padding: "14px 18px",
+                  borderRadius: 6,
+                  border: "1px solid rgba(239, 68, 68, 0.4)",
+                  background: "rgba(239, 68, 68, 0.08)",
+                  fontSize: 14,
+                  lineHeight: 1.5,
+                  color: "var(--ink)",
+                }}
+              >
+                {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}
+                {" "}Bitte schreiben Sie uns direkt an{" "}
+                <a href={`mailto:${resolvedEmail}`} style={{ color: "var(--accent)" }}>
+                  {resolvedEmail}
+                </a>
+                .
+              </div>
+            )}
+
+            <div
+              style={{
+                marginTop: 28,
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                flexWrap: "wrap",
+              }}
+            >
+              <SubmitBtn status={status} />
+              <span
+                className="mono"
+                style={{ fontSize: 11, letterSpacing: "0.12em", color: "var(--ink-mute)" }}
+              >
+                {responseTime}
+              </span>
+            </div>
+          </form>
+        )}
 
         <aside style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-          <InfoBlock
-            label="Projektbüro Köln"
-            lines={[street, city]}
-          />
+          <InfoBlock label="Projektbüro Köln" lines={[street, city]} />
           <InfoBlock
             label="Telefon"
             lines={[
