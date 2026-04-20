@@ -53,7 +53,6 @@ export default function LogosStrip({ clients }: { clients?: string[] | null }) {
       <div
         style={{
           display: "flex",
-          gap: 64,
           whiteSpace: "nowrap",
           animation: "mq 48s linear infinite",
           willChange: "transform",
@@ -68,9 +67,10 @@ export default function LogosStrip({ clients }: { clients?: string[] | null }) {
               letterSpacing: "-0.02em",
               color: "var(--ink)",
               opacity: 0.85,
+              marginRight: "64px",
             }}
           >
-            {c}{" "}
+            {c}
             <span style={{ color: "var(--accent)", margin: "0 28px" }}>✦</span>
           </span>
         ))}
