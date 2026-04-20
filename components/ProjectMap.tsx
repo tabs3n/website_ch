@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MapProject } from "@/lib/supabase";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,107 +65,33 @@ type Props = {
 
 export default function ProjectMap({ projects }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const [activeIso, setActiveIso] = useState<string | null>(null);
 
-  const byCountry: Record<string, MapProject[]> = {};
-  projects.forEach((p) => {
-    if (!byCountry[p.iso]) byCountry[p.iso] = [];
-    byCountry[p.iso].push(p);
-  });
+  const byCountry = useMemo(() => {
+    const map: Record<string, MapProject[]> = {};
+    projects.forEach((p) => {
+      if (!map[p.iso]) map[p.iso] = [];
+      map[p.iso].push(p);
+    });
+    return map;
+  }, [projects]);
 
-  function closeModal() {
-    if (!modalRef.current) return;
-    modalRef.current.style.opacity = "0";
-    modalRef.current.style.pointerEvents = "none";
-  }
-
-  function openModal(iso: string) {
-    const countryProjects = byCountry[iso];
-    if (!countryProjects?.length || !modalRef.current) return;
-    const name = countryProjects[0].country;
-
-    modalRef.current.innerHTML = `
-      <div style="
-        background:#141414;
-        border:1px solid rgba(242,238,232,0.12);
-        font-family:'Inter Tight',system-ui,sans-serif;
-        color:#F2EEE8;
-        width:min(720px,calc(100vw - 32px));
-        max-height:calc(100vh - 60px);
-        overflow:auto;
-        border-radius:4px;
-      ">
-        <div style="
-          display:flex;align-items:flex-start;justify-content:space-between;
-          padding:20px 24px 16px;border-bottom:1px solid rgba(242,238,232,0.12);gap:16px;
-        ">
-          <div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(242,238,232,0.38);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;">
-              Projekte in
-            </div>
-            <h2 style="font-family:'Instrument Serif',serif;font-size:26px;margin:0;line-height:1.1;letter-spacing:-0.02em;color:#F2EEE8;">
-              ${name}
-            </h2>
-          </div>
-          <button id="modal-close" style="
-            background:transparent;border:1px solid rgba(242,238,232,0.22);
-            width:32px;height:32px;cursor:pointer;font-size:14px;
-            display:flex;align-items:center;justify-content:center;flex-shrink:0;
-            color:#F2EEE8;border-radius:2px;
-          ">✕</button>
-        </div>
-        <div style="padding:20px 24px 24px;">
-          ${countryProjects
-            .map(
-              (p) => `
-            <div style="
-              border:1px solid rgba(242,238,232,0.12);
-              padding:18px;margin-bottom:16px;
-              background:rgba(242,238,232,0.02);
-              border-radius:4px;
-            ">
-              <h3 style="
-                font-family:'Instrument Serif',serif;
-                font-size:20px;margin:0 0 10px;
-                letter-spacing:-0.02em;color:#F2EEE8;
-              ">${p.title}</h3>
-              <div style="
-                font-family:'JetBrains Mono',monospace;
-                font-size:11px;color:rgba(242,238,232,0.38);
-                margin-bottom:12px;display:flex;flex-wrap:wrap;gap:18px;
-                letter-spacing:0.1em;text-transform:uppercase;
-              ">
-                ${p.city ? `<span>Stadt: <b style="color:#F2EEE8">${p.city}</b></span>` : ""}
-                ${p.year ? `<span>Jahr: <b style="color:#F2EEE8">${p.year}</b></span>` : ""}
-                ${p.client ? `<span>Kunde: <b style="color:#F2EEE8">${p.client}</b></span>` : ""}
-              </div>
-              ${p.blurb ? `<p style="font-size:15px;line-height:1.6;margin:0 0 12px;color:rgba(242,238,232,0.58);">${p.blurb}</p>` : ""}
-              ${p.quote ? `<div style="font-size:14px;font-style:italic;color:#F2EEE8;border-left:3px solid #E8B54A;padding:4px 0 4px 12px;margin:12px 0;line-height:1.5;">"${p.quote}"</div>` : ""}
-              ${
-                p.project_images?.length
-                  ? `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;">
-                  ${p.project_images
-                    .sort((a, b) => a.sort_order - b.sort_order)
-                    .slice(0, 3)
-                    .map(
-                      (img) =>
-                        `<img src="${img.url}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid rgba(242,238,232,0.12);" />`
-                    )
-                    .join("")}
-                </div>`
-                  : ""
-              }
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-      </div>`;
-
-    modalRef.current.style.opacity = "1";
-    modalRef.current.style.pointerEvents = "auto";
-    document.getElementById("modal-close")?.addEventListener("click", closeModal);
-  }
+  // Close on Escape + focus management
+  useEffect(() => {
+    if (!activeIso) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveIso(null);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [activeIso]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -206,7 +132,6 @@ export default function ProjectMap({ projects }: Props) {
         .translate([W / 2, H / 2]);
       const path = d3.geoPath(proj);
 
-      // Amber accent for highlighted countries
       const accentColor = "#E8B54A";
       const inactiveColor = "rgba(242,238,232,0.08)";
       const hoverColor = "#c8982e";
@@ -245,7 +170,7 @@ export default function ProjectMap({ projects }: Props) {
             })
             .on("click", (_: MouseEvent, d: GeoFeature) => {
               const a3 = ID_TO_A3[String(d.id).padStart(3, "0")];
-              if (a3 && byCountry[a3]) openModal(a3);
+              if (a3 && byCountry[a3]) setActiveIso(a3);
             });
 
           const MARKER_R = isMobile ? 6 : 9;
@@ -259,7 +184,6 @@ export default function ProjectMap({ projects }: Props) {
             if (!coord) return;
             const [x, y] = proj(coord) ?? [0, 0];
 
-            // Outer ring (pulse effect placeholder)
             markersG
               .append("circle")
               .attr("cx", x).attr("cy", y)
@@ -269,7 +193,6 @@ export default function ProjectMap({ projects }: Props) {
               .attr("stroke-width", 1)
               .attr("stroke-opacity", 0.4);
 
-            // Main dot
             markersG
               .append("circle")
               .attr("cx", x).attr("cy", y).attr("r", MARKER_R)
@@ -277,7 +200,6 @@ export default function ProjectMap({ projects }: Props) {
               .attr("stroke", accentColor)
               .attr("stroke-width", 1.5);
 
-            // Count label
             markersG
               .append("text")
               .attr("x", x).attr("y", y + 3.5)
@@ -289,13 +211,12 @@ export default function ProjectMap({ projects }: Props) {
               .attr("pointer-events", "none")
               .text(ps.length);
 
-            // Clickable hit area
             markersG
               .append("circle")
               .attr("cx", x).attr("cy", y).attr("r", MARKER_R + 6)
               .attr("fill", "transparent")
               .style("cursor", "pointer")
-              .on("click", () => openModal(iso));
+              .on("click", () => setActiveIso(iso));
           });
 
           const zoom = d3
@@ -327,14 +248,12 @@ export default function ProjectMap({ projects }: Props) {
 
           svg.call(zoom);
 
-          // Ctrl+scroll zooms the map; plain scroll passes through to the page
           svg.node()?.addEventListener("wheel", (e: WheelEvent) => {
             if (e.ctrlKey) e.preventDefault();
           }, { passive: false });
 
           if (!container) return;
 
-          // Zoom controls (dark style)
           const zoomEl = document.createElement("div");
           zoomEl.style.cssText = `
             position:absolute;top:12px;right:12px;
@@ -350,9 +269,9 @@ export default function ProjectMap({ projects }: Props) {
             display:flex;align-items:center;justify-content:center;
           `;
           zoomEl.innerHTML = `
-            <button data-z="in" style="${btn}">+</button>
-            <button data-z="out" style="${btn}border-top:1px solid rgba(242,238,232,0.12);">−</button>
-            <button data-z="reset" style="${btn}border-top:1px solid rgba(242,238,232,0.12);font-size:12px;">↺</button>
+            <button data-z="in" aria-label="Hineinzoomen" style="${btn}">+</button>
+            <button data-z="out" aria-label="Herauszoomen" style="${btn}border-top:1px solid rgba(242,238,232,0.12);">−</button>
+            <button data-z="reset" aria-label="Zoom zurücksetzen" style="${btn}border-top:1px solid rgba(242,238,232,0.12);font-size:12px;">↺</button>
           `;
           container.appendChild(zoomEl);
           zoomEl.addEventListener("click", (e) => {
@@ -372,8 +291,10 @@ export default function ProjectMap({ projects }: Props) {
       window.removeEventListener("resize", onResize);
     };
     return cleanupFn;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects]);
+  }, [byCountry]);
+
+  const activeProjects = activeIso ? byCountry[activeIso] : null;
+  const activeCountryName = activeProjects?.[0]?.country ?? "";
 
   return (
     <>
@@ -386,24 +307,210 @@ export default function ProjectMap({ projects }: Props) {
           minHeight: 300,
         }}
       />
-      <div
-        ref={modalRef}
-        onClick={(e) => {
-          if (e.target === modalRef.current) closeModal();
-        }}
-        style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(10,10,10,0.72)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          zIndex: 100,
-          opacity: 0,
-          pointerEvents: "none",
-          transition: "opacity 0.2s",
-        }}
-      />
+      {activeProjects && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="map-modal-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveIso(null);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(10,10,10,0.72)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            transition: "opacity 0.2s",
+          }}
+        >
+          <div
+            style={{
+              background: "#141414",
+              border: "1px solid rgba(242,238,232,0.12)",
+              fontFamily: "'Inter Tight',system-ui,sans-serif",
+              color: "#F2EEE8",
+              width: "min(720px,calc(100vw - 32px))",
+              maxHeight: "calc(100vh - 60px)",
+              overflow: "auto",
+              borderRadius: 4,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                padding: "20px 24px 16px",
+                borderBottom: "1px solid rgba(242,238,232,0.12)",
+                gap: 16,
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontFamily: "'JetBrains Mono',monospace",
+                    fontSize: 10,
+                    color: "rgba(242,238,232,0.38)",
+                    textTransform: "uppercase",
+                    letterSpacing: 2,
+                    marginBottom: 8,
+                  }}
+                >
+                  Projekte in
+                </div>
+                <h2
+                  id="map-modal-title"
+                  style={{
+                    fontFamily: "'Instrument Serif',serif",
+                    fontSize: 26,
+                    margin: 0,
+                    lineHeight: 1.1,
+                    letterSpacing: "-0.02em",
+                    color: "#F2EEE8",
+                  }}
+                >
+                  {activeCountryName}
+                </h2>
+              </div>
+              <button
+                ref={closeButtonRef}
+                onClick={() => setActiveIso(null)}
+                aria-label="Modal schließen"
+                style={{
+                  background: "transparent",
+                  border: "1px solid rgba(242,238,232,0.22)",
+                  width: 32,
+                  height: 32,
+                  cursor: "pointer",
+                  fontSize: 14,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  color: "#F2EEE8",
+                  borderRadius: 2,
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div style={{ padding: "20px 24px 24px" }}>
+              {activeProjects.map((p) => (
+                <div
+                  key={p.id}
+                  style={{
+                    border: "1px solid rgba(242,238,232,0.12)",
+                    padding: 18,
+                    marginBottom: 16,
+                    background: "rgba(242,238,232,0.02)",
+                    borderRadius: 4,
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontFamily: "'Instrument Serif',serif",
+                      fontSize: 20,
+                      margin: "0 0 10px",
+                      letterSpacing: "-0.02em",
+                      color: "#F2EEE8",
+                    }}
+                  >
+                    {p.title}
+                  </h3>
+                  <div
+                    style={{
+                      fontFamily: "'JetBrains Mono',monospace",
+                      fontSize: 11,
+                      color: "rgba(242,238,232,0.38)",
+                      marginBottom: 12,
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 18,
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {p.city && (
+                      <span>
+                        Stadt: <b style={{ color: "#F2EEE8" }}>{p.city}</b>
+                      </span>
+                    )}
+                    {p.year && (
+                      <span>
+                        Jahr: <b style={{ color: "#F2EEE8" }}>{p.year}</b>
+                      </span>
+                    )}
+                    {p.client && (
+                      <span>
+                        Kunde: <b style={{ color: "#F2EEE8" }}>{p.client}</b>
+                      </span>
+                    )}
+                  </div>
+                  {p.blurb && (
+                    <p
+                      style={{
+                        fontSize: 15,
+                        lineHeight: 1.6,
+                        margin: "0 0 12px",
+                        color: "rgba(242,238,232,0.58)",
+                      }}
+                    >
+                      {p.blurb}
+                    </p>
+                  )}
+                  {p.quote && (
+                    <div
+                      style={{
+                        fontSize: 14,
+                        fontStyle: "italic",
+                        color: "#F2EEE8",
+                        borderLeft: "3px solid #E8B54A",
+                        padding: "4px 0 4px 12px",
+                        margin: "12px 0",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      &ldquo;{p.quote}&rdquo;
+                    </div>
+                  )}
+                  {p.project_images && p.project_images.length > 0 && (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(3,1fr)",
+                        gap: 6,
+                        marginTop: 12,
+                      }}
+                    >
+                      {p.project_images
+                        .slice()
+                        .sort((a, b) => a.sort_order - b.sort_order)
+                        .slice(0, 3)
+                        .map((img, i) => (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            key={img.url + i}
+                            src={img.url}
+                            alt={`${p.title} – Bild ${i + 1}`}
+                            style={{
+                              width: "100%",
+                              aspectRatio: "4/3",
+                              objectFit: "cover",
+                              border: "1px solid rgba(242,238,232,0.12)",
+                            }}
+                          />
+                        ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

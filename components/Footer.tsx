@@ -1,6 +1,10 @@
 "use client";
 
-function FootCol({ t, items }: { t: string; items: string[] }) {
+import Link from "next/link";
+
+type FootItem = { label: string; href: string };
+
+function FootCol({ t, items }: { t: string; items: FootItem[] }) {
   return (
     <div>
       <div
@@ -9,19 +13,27 @@ function FootCol({ t, items }: { t: string; items: string[] }) {
       >
         {t.toUpperCase()}
       </div>
-      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 8 }}>
-        {items.map((item) => (
-          <li key={item} style={{ fontSize: 14, color: "var(--ink-dim)" }}>
-            <a
-              href="#"
-              style={{ transition: "color .2s" }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "var(--ink)")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--ink-dim)")}
-            >
-              {item}
-            </a>
-          </li>
-        ))}
+      <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 8, padding: 0, margin: 0 }}>
+        {items.map((item) => {
+          const isExternal =
+            item.href.startsWith("mailto:") ||
+            item.href.startsWith("tel:") ||
+            item.href.startsWith("http");
+          const className = "footer-link";
+          return (
+            <li key={item.label} style={{ fontSize: 14, color: "var(--ink-dim)" }}>
+              {isExternal ? (
+                <a href={item.href} className={className}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link href={item.href} className={className}>
+                  {item.label}
+                </Link>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
@@ -42,7 +54,6 @@ export default function Footer({
   addressStreet?: string | null;
   addressCity?: string | null;
 } = {}) {
-  const company = companyName ?? "Cologne Hunters";
   const tagline =
     footerTagline ??
     "Licht und Ton Service GmbH · Veranstaltungstechnik auf Broadcast-Niveau — von der Konzeption bis zur schlüsselfertigen Umsetzung.";
@@ -50,6 +61,8 @@ export default function Footer({
   const resolvedPhone = phone ?? "+49 221 1234 5678";
   const street = addressStreet ?? "Deutz-Mülheimer Str. 129";
   const city = addressCity ?? "51063 Köln";
+
+  const phoneHref = `tel:${resolvedPhone.replace(/[^+\d]/g, "")}`;
 
   return (
     <footer
@@ -60,7 +73,6 @@ export default function Footer({
         overflow: "hidden",
       }}
     >
-      {/* Footer links */}
       <div
         style={{
           display: "grid",
@@ -85,13 +97,30 @@ export default function Footer({
         </div>
         <FootCol
           t="Leistungen"
-          items={["Lichttechnik", "Tontechnik", "Videotechnik", "Rigging", "Konferenz"]}
+          items={[
+            { label: "Lichttechnik", href: "/leistungen/licht" },
+            { label: "Tontechnik", href: "/leistungen/ton" },
+            { label: "Videotechnik", href: "/leistungen/video" },
+            { label: "Alle Leistungen", href: "/leistungen" },
+          ]}
         />
         <FootCol
           t="Studio"
-          items={["Arbeiten", "Kunden", "Karriere", "Impressum", "Datenschutz"]}
+          items={[
+            { label: "Arbeiten", href: "/projekte" },
+            { label: "Projektkarte", href: "/projektkarte" },
+            { label: "Kontakt", href: "/kontakt" },
+          ]}
         />
-        <FootCol t="Kontakt" items={[resolvedEmail, resolvedPhone, street, city]} />
+        <FootCol
+          t="Kontakt"
+          items={[
+            { label: resolvedEmail, href: `mailto:${resolvedEmail}` },
+            { label: resolvedPhone, href: phoneHref },
+            { label: street, href: "/kontakt" },
+            { label: city, href: "/kontakt" },
+          ]}
+        />
       </div>
 
       <div
@@ -113,7 +142,11 @@ export default function Footer({
         </span>
       </div>
 
-      <style>{`@media (max-width:900px){ .foot-grid{grid-template-columns:1fr 1fr !important} }`}</style>
+      <style>{`
+        @media (max-width:900px){ .foot-grid{grid-template-columns:1fr 1fr !important} }
+        .footer-link{transition:color .2s;color:var(--ink-dim);}
+        .footer-link:hover{color:var(--ink);}
+      `}</style>
     </footer>
   );
 }

@@ -9,6 +9,7 @@ const services = ["Licht", "Ton", "Video", "Rigging", "Konferenztechnik", "Strea
 
 export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
 
   const toggle = (s: string) =>
@@ -19,19 +20,49 @@ export default function ContactForm() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("submitting");
-    // Client-side submit — in production wire up an API route or 3rd-party form service.
-    await new Promise((r) => setTimeout(r, 900));
+    setErrorMessage(null);
+
+    const formEl = e.currentTarget;
+    const data = Object.fromEntries(new FormData(formEl).entries());
+
     try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const payload = await res.json().catch(() => ({}));
+        setErrorMessage(
+          typeof payload?.error === "string"
+            ? payload.error
+            : "Beim Senden ist etwas schiefgelaufen."
+        );
+        setStatus("error");
+        return;
+      }
+
       setStatus("success");
-      (e.target as HTMLFormElement).reset();
+      formEl.reset();
       setSelected([]);
     } catch {
+      setErrorMessage("Netzwerkfehler — bitte erneut versuchen.");
       setStatus("error");
     }
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8">
+    <form onSubmit={onSubmit} className="space-y-8" noValidate>
+      {/* Honeypot: visually hidden, real users won't fill it */}
+      <input
+        type="text"
+        name="honeypot"
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
+      />
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Name" name="name" required />
         <Field label="Unternehmen" name="company" />
@@ -110,10 +141,19 @@ export default function ContactForm() {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
+            role="alert"
             className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-white"
           >
-            Beim Senden ist etwas schiefgelaufen. Bitte schreiben Sie uns direkt
-            an kontakt@cologne-hunters.de.
+            {errorMessage ??
+              "Beim Senden ist etwas schiefgelaufen."}{" "}
+            Bitte schreiben Sie uns direkt an{" "}
+            <a
+              href="mailto:kontakt@cologne-hunters.de"
+              className="underline decoration-accent/60 underline-offset-2 hover:text-accent"
+            >
+              kontakt@cologne-hunters.de
+            </a>
+            .
           </motion.div>
         )}
       </AnimatePresence>
