@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Status = "idle" | "submitting" | "success" | "error";
@@ -11,6 +11,7 @@ export default function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
+  const feedbackRef = useRef<HTMLDivElement>(null);
 
   const toggle = (s: string) =>
     setSelected((prev) =>
@@ -40,21 +41,69 @@ export default function ContactForm() {
             : "Beim Senden ist etwas schiefgelaufen."
         );
         setStatus("error");
+        setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
         return;
       }
 
       setStatus("success");
       formEl.reset();
       setSelected([]);
+      setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
     } catch {
       setErrorMessage("Netzwerkfehler — bitte erneut versuchen.");
       setStatus("error");
+      setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
     }
+  }
+
+  // Success: replace the entire form
+  if (status === "success") {
+    return (
+      <motion.div
+        ref={feedbackRef}
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="rounded-2xl border border-accent/30 bg-ink-800 p-8 md:p-12"
+      >
+        <div className="flex items-start gap-6">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-2xl text-accent">
+            ✓
+          </div>
+          <div>
+            <h3 className="font-display text-2xl font-semibold text-white md:text-3xl">
+              Anfrage eingegangen.
+            </h3>
+            <p className="mt-3 text-sm leading-relaxed text-steel-300">
+              Vielen Dank — wir haben Ihre Anfrage erhalten und melden uns in der Regel{" "}
+              <strong className="text-white">innerhalb eines Werktages</strong> bei Ihnen.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.22em] text-steel-400">
+              <span className="flex items-center gap-2">
+                <span className="h-px w-4 bg-accent/60" />
+                Mo–Fr · 08:00–18:00
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="h-px w-4 bg-accent/60" />
+                24/7 Show-Support
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setStatus("idle")}
+              className="mt-6 text-xs text-steel-400 underline decoration-steel-400/40 underline-offset-2 transition hover:text-white"
+            >
+              Weitere Anfrage senden
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    );
   }
 
   return (
     <form onSubmit={onSubmit} className="space-y-8" noValidate>
-      {/* Honeypot: visually hidden, real users won't fill it */}
+      {/* Honeypot: bots fill this, real users don't */}
       <input
         type="text"
         name="honeypot"
@@ -63,6 +112,7 @@ export default function ContactForm() {
         aria-hidden="true"
         style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
       />
+
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Name" name="name" required />
         <Field label="Unternehmen" name="company" />
@@ -109,73 +159,18 @@ export default function ContactForm() {
         required
       />
 
-      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-        <p className="max-w-md text-xs text-steel-400">
-          Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten zur
-          Bearbeitung Ihrer Anfrage zu.
-        </p>
-        <button
-          type="submit"
-          disabled={status === "submitting"}
-          className="inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:opacity-60"
-        >
-          {status === "submitting" ? "Sende…" : "Anfrage senden"}
-          <span aria-hidden>→</span>
-        </button>
-      </div>
-
+      {/* Error message — directly above the submit button */}
       <AnimatePresence>
-        {status === "success" && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-2xl border border-accent/30 bg-ink-800 p-8 md:p-10"
-          >
-            <div className="flex items-start gap-6">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent text-xl">
-                ✓
-              </div>
-              <div>
-                <h3 className="font-display text-xl font-semibold text-white md:text-2xl">
-                  Anfrage eingegangen.
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-steel-300">
-                  Vielen Dank — wir haben Ihre Anfrage erhalten und melden uns
-                  in der Regel <strong className="text-white">innerhalb eines Werktages</strong> bei Ihnen.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.22em] text-steel-400">
-                  <span className="flex items-center gap-2">
-                    <span className="h-px w-4 bg-accent/60" />
-                    Mo–Fr · 08:00–18:00
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <span className="h-px w-4 bg-accent/60" />
-                    24/7 Show-Support
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setStatus("idle")}
-                  className="mt-6 text-xs text-steel-400 underline decoration-steel-400/40 underline-offset-2 transition hover:text-white"
-                >
-                  Weitere Anfrage senden
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
         {status === "error" && (
           <motion.div
-            initial={{ opacity: 0, y: 6 }}
+            ref={feedbackRef}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             role="alert"
             className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-white"
           >
-            {errorMessage ??
-              "Beim Senden ist etwas schiefgelaufen."}{" "}
+            {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}{" "}
             Bitte schreiben Sie uns direkt an{" "}
             <a
               href="mailto:kontakt@cologne-hunters.de"
@@ -187,6 +182,33 @@ export default function ContactForm() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <p className="max-w-md text-xs text-steel-400">
+          Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten zur
+          Bearbeitung Ihrer Anfrage zu.
+        </p>
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:opacity-60"
+        >
+          {status === "submitting" ? (
+            <>
+              <span
+                className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"
+                aria-hidden
+              />
+              Sende…
+            </>
+          ) : (
+            <>
+              Anfrage senden
+              <span aria-hidden>→</span>
+            </>
+          )}
+        </button>
+      </div>
     </form>
   );
 }
