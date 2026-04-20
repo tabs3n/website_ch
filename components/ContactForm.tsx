@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useRef, useState, type FormEvent } from "react";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -12,21 +11,22 @@ export default function ContactForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const feedbackRef = useRef<HTMLDivElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   const toggle = (s: string) =>
     setSelected((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
 
-  async function handleSubmit() {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log("[ContactForm] submit fired");
+
     if (status === "submitting") return;
     setStatus("submitting");
     setErrorMessage(null);
 
-    const formEl = formRef.current;
-    if (!formEl) return;
-    const data = Object.fromEntries(new FormData(formEl).entries());
+    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
+    console.log("[ContactForm] payload", data);
 
     try {
       const res = await fetch("/api/contact", {
@@ -34,6 +34,7 @@ export default function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      console.log("[ContactForm] response", res.status);
 
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));
@@ -48,24 +49,20 @@ export default function ContactForm() {
       }
 
       setStatus("success");
-      formRef.current?.reset();
       setSelected([]);
       setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
-    } catch {
+    } catch (err) {
+      console.error("[ContactForm] network error", err);
       setErrorMessage("Netzwerkfehler — bitte erneut versuchen.");
       setStatus("error");
       setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
     }
   }
 
-  // Success: replace the entire form
   if (status === "success") {
     return (
-      <motion.div
+      <div
         ref={feedbackRef}
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="rounded-2xl border border-accent/30 bg-ink-800 p-8 md:p-12"
       >
         <div className="flex items-start gap-6">
@@ -99,12 +96,12 @@ export default function ContactForm() {
             </button>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <form ref={formRef} className="space-y-8" noValidate>
+    <form onSubmit={onSubmit} className="space-y-8" noValidate>
       {/* Honeypot: bots fill this, real users don't */}
       <input
         type="text"
@@ -161,29 +158,23 @@ export default function ContactForm() {
         required
       />
 
-      {/* Error message — directly above the submit button */}
-      <AnimatePresence>
-        {status === "error" && (
-          <motion.div
-            ref={feedbackRef}
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            role="alert"
-            className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-white"
+      {status === "error" && (
+        <div
+          ref={feedbackRef}
+          role="alert"
+          className="rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-white"
+        >
+          {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}{" "}
+          Bitte schreiben Sie uns direkt an{" "}
+          <a
+            href="mailto:kontakt@cologne-hunters.de"
+            className="underline decoration-accent/60 underline-offset-2 hover:text-accent"
           >
-            {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}{" "}
-            Bitte schreiben Sie uns direkt an{" "}
-            <a
-              href="mailto:kontakt@cologne-hunters.de"
-              className="underline decoration-accent/60 underline-offset-2 hover:text-accent"
-            >
-              kontakt@cologne-hunters.de
-            </a>
-            .
-          </motion.div>
-        )}
-      </AnimatePresence>
+            kontakt@cologne-hunters.de
+          </a>
+          .
+        </div>
+      )}
 
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <p className="max-w-md text-xs text-steel-400">
@@ -191,9 +182,8 @@ export default function ContactForm() {
           Bearbeitung Ihrer Anfrage zu.
         </p>
         <button
-          type="button"
+          type="submit"
           disabled={status === "submitting"}
-          onClick={handleSubmit}
           className="inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:opacity-60"
         >
           {status === "submitting" ? (
