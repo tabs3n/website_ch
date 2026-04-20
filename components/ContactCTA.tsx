@@ -378,15 +378,13 @@ export default function ContactCTA({
           </div>
         ) : (
           <form ref={formRef} onSubmit={onSubmit} noValidate>
-            {/* Honeypot */}
-            <input
-              type="text"
-              name="honeypot"
-              tabIndex={-1}
-              autoComplete="off"
-              aria-hidden="true"
-              style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
-            />
+            {/* Honeypot — display:none blocks browser autofill while still submitting via FormData */}
+            <div style={{ display: "none" }} aria-hidden="true">
+              <label>
+                Nicht ausfüllen
+                <input type="text" name="honeypot" tabIndex={-1} autoComplete="off" defaultValue="" />
+              </label>
+            </div>
 
             <div
               style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}

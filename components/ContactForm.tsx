@@ -102,15 +102,13 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-8" noValidate>
-      {/* Honeypot: bots fill this, real users don't */}
-      <input
-        type="text"
-        name="honeypot"
-        tabIndex={-1}
-        autoComplete="off"
-        aria-hidden="true"
-        style={{ position: "absolute", left: "-9999px", width: 1, height: 1, opacity: 0 }}
-      />
+      {/* Honeypot — display:none blocks browser autofill while still submitting via FormData */}
+      <div style={{ display: "none" }} aria-hidden="true">
+        <label>
+          Nicht ausfüllen
+          <input type="text" name="honeypot" tabIndex={-1} autoComplete="off" defaultValue="" />
+        </label>
+      </div>
 
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Name" name="name" required />
