@@ -264,9 +264,14 @@ export default function ProjectsPreview() {
         .proj-grid > *:nth-child(3){grid-column:span 2;grid-row:span 1}
         .proj-grid > *:nth-child(4){grid-column:span 2;grid-row:span 1}
         .proj-grid > *:nth-child(5){grid-column:span 2;grid-row:span 1}
-        @media (max-width:900px){
-          .proj-grid{grid-template-columns:1fr !important;grid-auto-rows: 280px !important}
+        @media (max-width:1100px){
+          .proj-grid{grid-template-columns:repeat(2,1fr) !important;grid-auto-rows: 260px !important}
           .proj-grid > *{grid-column:span 1 !important;grid-row:span 1 !important}
+          .proj-grid > *:nth-child(1){grid-column:span 2 !important}
+        }
+        @media (max-width:640px){
+          .proj-grid{grid-template-columns:1fr !important;grid-auto-rows: 260px !important}
+          .proj-grid > *:nth-child(1){grid-column:span 1 !important}
         }
       `}</style>
     </section>

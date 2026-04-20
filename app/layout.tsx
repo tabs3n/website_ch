@@ -178,6 +178,9 @@ export default async function RootLayout({
           phone={settings?.phone}
           addressStreet={settings?.addressStreet}
           addressCity={settings?.addressCity}
+          instagramUrl={settings?.instagramUrl}
+          facebookUrl={settings?.facebookUrl}
+          linkedinUrl={settings?.linkedinUrl}
         />
         {preview && <PreviewBanner />}
       </body>

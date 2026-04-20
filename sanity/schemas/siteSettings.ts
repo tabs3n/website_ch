@@ -181,6 +181,35 @@ export const siteSettingsSchema = defineType({
       initialValue: ["Mo–Fr · 08:00–18:00", "24/7 Show-Support"],
     }),
 
+    // ── Social Media ──────────────────────────────────────
+    defineField({
+      name: "instagramUrl",
+      title: "📸 Instagram-URL",
+      type: "url",
+      group: "contact",
+      description: "Vollständige URL zum Instagram-Profil, z.B. https://instagram.com/cologne-hunters. Leer lassen = Icon wird im Footer ausgeblendet.",
+      validation: (R) =>
+        R.uri({ scheme: ["http", "https"] }).error("Bitte eine gültige URL mit https:// eingeben."),
+    }),
+    defineField({
+      name: "facebookUrl",
+      title: "📘 Facebook-URL",
+      type: "url",
+      group: "contact",
+      description: "Vollständige URL zur Facebook-Seite, z.B. https://facebook.com/cologne-hunters. Leer lassen = Icon wird im Footer ausgeblendet.",
+      validation: (R) =>
+        R.uri({ scheme: ["http", "https"] }).error("Bitte eine gültige URL mit https:// eingeben."),
+    }),
+    defineField({
+      name: "linkedinUrl",
+      title: "💼 LinkedIn-URL",
+      type: "url",
+      group: "contact",
+      description: "Vollständige URL zum LinkedIn-Profil. Leer lassen = Icon wird im Footer ausgeblendet.",
+      validation: (R) =>
+        R.uri({ scheme: ["http", "https"] }).error("Bitte eine gültige URL mit https:// eingeben."),
+    }),
+
     // ── Footer ────────────────────────────────────────────
     defineField({
       name: "footerTagline",

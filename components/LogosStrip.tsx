@@ -15,9 +15,39 @@ const FALLBACK_CLIENTS = [
   "VODAFONE",
 ];
 
+function Copy({ list }: { list: string[] }) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexShrink: 0,
+        whiteSpace: "nowrap",
+        paddingRight: 64,
+      }}
+      aria-hidden="true"
+    >
+      {list.map((c, i) => (
+        <span
+          key={i}
+          className="serif"
+          style={{
+            fontSize: "clamp(32px, 4.4vw, 64px)",
+            letterSpacing: "-0.02em",
+            color: "var(--ink)",
+            opacity: 0.85,
+            marginRight: "64px",
+          }}
+        >
+          {c}
+          <span style={{ color: "var(--accent)", margin: "0 28px" }}>✦</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 export default function LogosStrip({ clients }: { clients?: string[] | null }) {
   const list = clients?.length ? clients : FALLBACK_CLIENTS;
-  const items = [...list, ...list];
 
   return (
     <section
@@ -50,30 +80,18 @@ export default function LogosStrip({ clients }: { clients?: string[] | null }) {
         <span className="eyebrow">Im Vertrauen führender Marken &amp; Sender</span>
       </div>
 
+      {/* Two identical copies inside a track: translateX(-50%) is guaranteed
+          to snap exactly to the start of the second copy. */}
       <div
         style={{
           display: "flex",
-          whiteSpace: "nowrap",
+          width: "max-content",
           animation: "mq 48s linear infinite",
           willChange: "transform",
         }}
       >
-        {items.map((c, i) => (
-          <span
-            key={i}
-            className="serif"
-            style={{
-              fontSize: "clamp(32px, 4.4vw, 64px)",
-              letterSpacing: "-0.02em",
-              color: "var(--ink)",
-              opacity: 0.85,
-              marginRight: "64px",
-            }}
-          >
-            {c}
-            <span style={{ color: "var(--accent)", margin: "0 28px" }}>✦</span>
-          </span>
-        ))}
+        <Copy list={list} />
+        <Copy list={list} />
       </div>
     </section>
   );

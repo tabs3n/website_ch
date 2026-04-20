@@ -39,6 +39,46 @@ function FootCol({ t, items }: { t: string; items: FootItem[] }) {
   );
 }
 
+function InstagramIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.3-1.5 1.5-1.5h1.6V3.6c-.3 0-1.2-.1-2.2-.1-2.2 0-3.8 1.3-3.8 3.8v2.2H7.9V13h2.6v8h3z" />
+    </svg>
+  );
+}
+
+function LinkedinIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.1c.5-1 1.8-2 3.7-2 4 0 4.7 2.6 4.7 6V21h-4v-5.6c0-1.3 0-3.1-1.9-3.1s-2.2 1.5-2.2 3V21h-4V9z" />
+    </svg>
+  );
+}
+
+function SocialLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="footer-social"
+    >
+      {children}
+    </a>
+  );
+}
+
 export default function Footer({
   companyName,
   footerTagline,
@@ -46,6 +86,9 @@ export default function Footer({
   phone,
   addressStreet,
   addressCity,
+  instagramUrl,
+  facebookUrl,
+  linkedinUrl,
 }: {
   companyName?: string | null;
   footerTagline?: string | null;
@@ -53,6 +96,9 @@ export default function Footer({
   phone?: string | null;
   addressStreet?: string | null;
   addressCity?: string | null;
+  instagramUrl?: string | null;
+  facebookUrl?: string | null;
+  linkedinUrl?: string | null;
 } = {}) {
   const tagline =
     footerTagline ??
@@ -63,11 +109,12 @@ export default function Footer({
   const city = addressCity ?? "51063 Köln";
 
   const phoneHref = `tel:${resolvedPhone.replace(/[^+\d]/g, "")}`;
+  const hasSocials = instagramUrl || facebookUrl || linkedinUrl;
 
   return (
     <footer
       style={{
-        padding: "80px var(--pad-x) 36px",
+        padding: "clamp(48px, 8vh, 80px) var(--pad-x) 36px",
         borderTop: "1px solid var(--line)",
         position: "relative",
         overflow: "hidden",
@@ -77,8 +124,8 @@ export default function Footer({
         style={{
           display: "grid",
           gridTemplateColumns: "2fr 1fr 1fr 1fr",
-          gap: 32,
-          marginTop: 64,
+          gap: "clamp(20px, 3vw, 32px)",
+          marginTop: "clamp(24px, 5vh, 64px)",
           paddingTop: 28,
           borderTop: "1px solid var(--line)",
         }}
@@ -94,6 +141,32 @@ export default function Footer({
           <div style={{ color: "var(--ink-dim)", maxWidth: "40ch", fontSize: 15, lineHeight: 1.55 }}>
             {tagline}
           </div>
+
+          {hasSocials && (
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                marginTop: 20,
+              }}
+            >
+              {instagramUrl && (
+                <SocialLink href={instagramUrl} label="Instagram">
+                  <InstagramIcon />
+                </SocialLink>
+              )}
+              {facebookUrl && (
+                <SocialLink href={facebookUrl} label="Facebook">
+                  <FacebookIcon />
+                </SocialLink>
+              )}
+              {linkedinUrl && (
+                <SocialLink href={linkedinUrl} label="LinkedIn">
+                  <LinkedinIcon />
+                </SocialLink>
+              )}
+            </div>
+          )}
         </div>
         <FootCol
           t="Leistungen"
@@ -130,7 +203,9 @@ export default function Footer({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginTop: 48,
+          gap: 16,
+          flexWrap: "wrap",
+          marginTop: "clamp(32px, 6vh, 48px)",
           paddingTop: 20,
           borderTop: "1px solid var(--line)",
         }}
@@ -145,9 +220,30 @@ export default function Footer({
       </div>
 
       <style>{`
-        @media (max-width:900px){ .foot-grid{grid-template-columns:1fr 1fr !important} }
-        .footer-link{transition:color .2s;color:var(--ink-dim);}
-        .footer-link:hover{color:var(--ink);}
+        @media (max-width: 900px) {
+          .foot-grid { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }
+        }
+        @media (max-width: 560px) {
+          .foot-grid { grid-template-columns: 1fr !important; }
+        }
+        .footer-link { transition: color .2s; color: var(--ink-dim); }
+        .footer-link:hover { color: var(--ink); }
+        .footer-social {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          border: 1px solid var(--line-strong);
+          color: var(--ink-dim);
+          transition: color .2s, border-color .2s, background .2s;
+        }
+        .footer-social:hover {
+          color: #0A0A0A;
+          background: var(--accent);
+          border-color: var(--accent);
+        }
       `}</style>
     </footer>
   );

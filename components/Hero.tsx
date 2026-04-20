@@ -266,6 +266,7 @@ export default function Hero({
       {/* bottom stat rail — wird ausgeblendet wenn stats in Sanity geleert */}
       {stats.length > 0 && (
       <div
+        className="hero-stats"
         style={{
           position: "absolute",
           left: 0,
@@ -281,10 +282,10 @@ export default function Hero({
         }}
       >
         {stats.map((s) => (
-          <div key={s.value + s.label} style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+          <div key={s.value + s.label} style={{ display: "flex", alignItems: "baseline", gap: 10, minWidth: 0 }}>
             <span
               className="serif"
-              style={{ fontSize: "clamp(28px, 3.2vw, 44px)", lineHeight: 1 }}
+              style={{ fontSize: "clamp(22px, 3.2vw, 44px)", lineHeight: 1 }}
             >
               {s.value}
             </span>
@@ -295,6 +296,8 @@ export default function Hero({
                 letterSpacing: "0.14em",
                 color: "var(--ink-dim)",
                 textTransform: "uppercase",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
               {s.label}
@@ -303,6 +306,15 @@ export default function Hero({
         ))}
       </div>
       )}
+      <style>{`
+        @media (max-width: 760px) {
+          .hero-stats {
+            grid-template-columns: repeat(2, minmax(0,1fr)) !important;
+            gap: 14px 20px !important;
+            padding: 16px var(--pad-x) !important;
+          }
+        }
+      `}</style>
     </section>
   );
 }
