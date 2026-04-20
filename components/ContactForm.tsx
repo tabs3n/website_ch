@@ -12,18 +12,20 @@ export default function ContactForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const feedbackRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const toggle = (s: string) =>
     setSelected((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleSubmit() {
+    if (status === "submitting") return;
     setStatus("submitting");
     setErrorMessage(null);
 
-    const formEl = e.currentTarget;
+    const formEl = formRef.current;
+    if (!formEl) return;
     const data = Object.fromEntries(new FormData(formEl).entries());
 
     try {
@@ -46,7 +48,7 @@ export default function ContactForm() {
       }
 
       setStatus("success");
-      formEl.reset();
+      formRef.current?.reset();
       setSelected([]);
       setTimeout(() => feedbackRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 100);
     } catch {
@@ -102,7 +104,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-8" noValidate>
+    <form ref={formRef} className="space-y-8" noValidate>
       {/* Honeypot: bots fill this, real users don't */}
       <input
         type="text"
@@ -189,8 +191,9 @@ export default function ContactForm() {
           Bearbeitung Ihrer Anfrage zu.
         </p>
         <button
-          type="submit"
+          type="button"
           disabled={status === "submitting"}
+          onClick={handleSubmit}
           className="inline-flex items-center gap-3 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-white transition hover:bg-accent-hover disabled:opacity-60"
         >
           {status === "submitting" ? (
