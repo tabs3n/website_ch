@@ -127,13 +127,43 @@ export default function ContactForm() {
       <AnimatePresence>
         {status === "success" && (
           <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-xl border border-accent/40 bg-accent/10 p-4 text-sm text-white"
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="rounded-2xl border border-accent/30 bg-ink-800 p-8 md:p-10"
           >
-            Danke — Ihre Anfrage ist bei uns eingegangen. Wir melden uns
-            innerhalb eines Werktages.
+            <div className="flex items-start gap-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-accent/40 bg-accent/10 text-accent text-xl">
+                ✓
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-semibold text-white md:text-2xl">
+                  Anfrage eingegangen.
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-steel-300">
+                  Vielen Dank — wir haben Ihre Anfrage erhalten und melden uns
+                  in der Regel <strong className="text-white">innerhalb eines Werktages</strong> bei Ihnen.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.22em] text-steel-400">
+                  <span className="flex items-center gap-2">
+                    <span className="h-px w-4 bg-accent/60" />
+                    Mo–Fr · 08:00–18:00
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="h-px w-4 bg-accent/60" />
+                    24/7 Show-Support
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStatus("idle")}
+                  className="mt-6 text-xs text-steel-400 underline decoration-steel-400/40 underline-offset-2 transition hover:text-white"
+                >
+                  Weitere Anfrage senden
+                </button>
+              </div>
+            </div>
           </motion.div>
         )}
         {status === "error" && (

@@ -126,8 +126,26 @@ export const siteSettingsSchema = defineType({
 
     // ── Kontakt ───────────────────────────────────────────
     defineField({
+      name: "contactRecipientEmail",
+      title: "📬 Anfragen-Postfach (Formular-Empfänger)",
+      type: "string",
+      group: "contact",
+      description: "An diese Adresse werden alle Kontaktformular-Einsendungen geschickt. z.B. anfragen@cologne-hunters.de",
+      validation: (R) =>
+        R.regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { name: "email" })
+          .error("Bitte eine gültige E-Mail-Adresse eingeben."),
+    }),
+    defineField({
+      name: "contactFromEmail",
+      title: "📤 Absender-Adresse (muss in Resend verifiziert sein)",
+      type: "string",
+      group: "contact",
+      initialValue: "onboarding@resend.dev",
+      description: "Von dieser Adresse gehen die E-Mails raus. Für eigene Domain (z.B. no-reply@cologne-hunters.de) muss die Domain zuerst in resend.com/domains verifiziert werden. Leer lassen = Resend-Testadresse (nur an verifizierte Empfänger sendbar).",
+    }),
+    defineField({
       name: "email",
-      title: "E-Mail",
+      title: "E-Mail (öffentlich, Impressum & Footer)",
       type: "string",
       group: "contact",
       initialValue: "kontakt@cologne-hunters.de",
