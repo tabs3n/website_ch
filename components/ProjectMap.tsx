@@ -304,6 +304,8 @@ export default function ProjectMap({ projects }: Props) {
             .filter((evt: Event) => {
               if ((evt as TouchEvent).touches)
                 return (evt as TouchEvent).touches.length >= 2;
+              if ((evt as WheelEvent).deltaY !== undefined)
+                return (evt as WheelEvent).ctrlKey;
               return !(evt as MouseEvent).button;
             })
             .on("zoom", (evt: { transform: { k: number } }) => {
@@ -325,8 +327,10 @@ export default function ProjectMap({ projects }: Props) {
 
           svg.call(zoom);
 
-          // Intercept wheel events so scrolling over the map zooms instead of scrolling the page
-          svg.node()?.addEventListener("wheel", (e: WheelEvent) => e.preventDefault(), { passive: false });
+          // Ctrl+scroll zooms the map; plain scroll passes through to the page
+          svg.node()?.addEventListener("wheel", (e: WheelEvent) => {
+            if (e.ctrlKey) e.preventDefault();
+          }, { passive: false });
 
           if (!container) return;
 
