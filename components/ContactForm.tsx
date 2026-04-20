@@ -223,13 +223,15 @@ function Field(props: {
   required?: boolean;
 }) {
   const { label, name, type = "text", required } = props;
+  const id = `contact-${name}`;
   return (
-    <label className="block">
+    <label htmlFor={id} className="block">
       <span className="mb-2 block text-[11px] uppercase tracking-[0.24em] text-steel-400">
         {label}
         {required && <span className="text-accent"> *</span>}
       </span>
       <input
+        id={id}
         name={name}
         type={type}
         required={required}
@@ -247,13 +249,15 @@ function Textarea(props: {
   required?: boolean;
 }) {
   const { label, name, rows = 4, placeholder, required } = props;
+  const id = `contact-${name}`;
   return (
-    <label className="block">
+    <label htmlFor={id} className="block">
       <span className="mb-2 block text-[11px] uppercase tracking-[0.24em] text-steel-400">
         {label}
         {required && <span className="text-accent"> *</span>}
       </span>
       <textarea
+        id={id}
         name={name}
         rows={rows}
         required={required}
