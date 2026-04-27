@@ -25,13 +25,13 @@ export default function DatenschutzPage() {
                   ist:
                 </p>
                 <address className="mt-3 not-italic">
-                  Cologne Hunters GmbH<br />
-                  Deutz-Mülheimer Straße 129<br />
-                  51063 Köln<br />
+                  Cologne Hunters Licht & Ton Service GmbH<br />
+                  Bonner Wall 31<br />
+                  50677 Köln<br />
                   <br />
                   Telefon:{" "}
-                  <a href="tel:+4922112345678" className="hover:text-white transition-colors">
-                    +49 221 1234 5678
+                  <a href="tel:+49221279020" className="hover:text-white transition-colors">
+                    +49 (0) 221 2790-20
                   </a>
                   <br />
                   E-Mail:{" "}
@@ -120,7 +120,7 @@ export default function DatenschutzPage() {
                   Diese Website setzt keine Tracking- oder Werbe-Cookies ein.
                   Es werden ausschließlich technisch notwendige Session-Cookies
                   verwendet, die nach dem Schließen des Browsers gelöscht
-                  werden. Eine Einwilligung ist nach § 25 Abs. 2 TTDSG nicht
+                  werden. Eine Einwilligung ist nach § 25 Abs. 2 TDDDG nicht
                   erforderlich.
                 </p>
               </Block>
@@ -159,7 +159,7 @@ export default function DatenschutzPage() {
                   anzupassen. Die jeweils aktuelle Version ist auf dieser Seite
                   abrufbar.
                 </p>
-                <p className="mt-3 text-steel-500">Stand: Januar 2025</p>
+                <p className="mt-3 text-steel-500">Stand: April 2026</p>
               </Block>
 
             </div>

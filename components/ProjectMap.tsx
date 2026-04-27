@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { MapProject } from "@/lib/supabase";
+import type { MapProject } from "@/lib/getMapProjects";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type D3Any = any;

@@ -4,7 +4,7 @@ import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Impressum",
-  description: "Impressum der Cologne Hunters GmbH — Angaben gemäß § 5 TMG.",
+  description: "Impressum der Cologne Hunters Licht & Ton Service GmbH.",
   robots: { index: false },
 };
 
@@ -18,21 +18,21 @@ export default function ImpressumPage() {
           <Reveal>
             <div className="space-y-12 text-sm leading-relaxed text-steel-300">
 
-              <Block title="Angaben gemäß § 5 TMG">
+              <Block title="Anbieterkennzeichnung">
                 <p className="font-display text-lg font-semibold text-white">
-                  Cologne Hunters GmbH
+                  Cologne Hunters Licht & Ton Service GmbH
                 </p>
                 <address className="mt-2 not-italic">
-                  Deutz-Mülheimer Straße 129<br />
-                  51063 Köln<br />
+                  Bonner Wall 31<br />
+                  50677 Köln<br />
                   Deutschland
                 </address>
               </Block>
 
               <Block title="Kontakt">
                 <Row label="Telefon">
-                  <a href="tel:+4922112345678" className="hover:text-white transition-colors">
-                    +49 221 1234 5678
+                  <a href="tel:+49221279020" className="hover:text-white transition-colors">
+                    +49 (0) 221 2790-20
                   </a>
                 </Row>
                 <Row label="E-Mail">
@@ -44,33 +44,27 @@ export default function ImpressumPage() {
 
               <Block title="Vertreten durch">
                 <p>
-                  {/* TODO: Namen der Geschäftsführer eintragen */}
-                  [Vorname Nachname], Geschäftsführer
+                  Daniel Hentze, Geschäftsführer
                 </p>
               </Block>
 
               <Block title="Handelsregister">
                 <Row label="Registergericht">Amtsgericht Köln</Row>
-                <Row label="Registernummer">
-                  {/* TODO: HRB-Nummer eintragen */}
-                  HRB [XXXXX]
-                </Row>
+                <Row label="Registernummer">HRB 22475</Row>
               </Block>
 
               <Block title="Umsatzsteuer-Identifikationsnummer">
                 <p>
-                  {/* TODO: USt-IdNr. eintragen */}
-                  USt-IdNr.: DE [XXXXXXXXX]<br />
+                  USt-IdNr.: DE153241514<br />
                   (gemäß § 27a Umsatzsteuergesetz)
                 </p>
               </Block>
 
-              <Block title="Verantwortlich für den Inhalt (§ 55 Abs. 2 RStV)">
+              <Block title="Verantwortlich für den Inhalt (§ 18 Abs. 2 MStV)">
                 <p>
-                  {/* TODO: Name und Adresse der inhaltlich verantwortlichen Person */}
-                  [Vorname Nachname]<br />
-                  Deutz-Mülheimer Straße 129<br />
-                  51063 Köln
+                  Daniel Hentze<br />
+                  Bonner Wall 31<br />
+                  50677 Köln
                 </p>
               </Block>
 
@@ -97,10 +91,9 @@ export default function ImpressumPage() {
 
               <Block title="Haftung für Inhalte">
                 <p>
-                  Als Diensteanbieter sind wir gemäß § 7 Abs. 1 TMG für eigene
-                  Inhalte auf diesen Seiten nach den allgemeinen Gesetzen
-                  verantwortlich. Nach §§ 8 bis 10 TMG sind wir als
-                  Diensteanbieter jedoch nicht verpflichtet, übermittelte oder
+                  Als Diensteanbieter sind wir für eigene Inhalte auf diesen
+                  Seiten nach den allgemeinen Gesetzen verantwortlich. Wir sind
+                  als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder
                   gespeicherte fremde Informationen zu überwachen oder nach
                   Umständen zu forschen, die auf eine rechtswidrige Tätigkeit
                   hinweisen.

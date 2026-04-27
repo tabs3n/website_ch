@@ -155,21 +155,21 @@ export const siteSettingsSchema = defineType({
       title: "Telefon",
       type: "string",
       group: "contact",
-      initialValue: "+49 221 1234 5678",
+      initialValue: "+49 (0) 221 2790-20",
     }),
     defineField({
       name: "addressStreet",
       title: "Straße & Hausnummer",
       type: "string",
       group: "contact",
-      initialValue: "Deutz-Mülheimer Straße 129",
+      initialValue: "Bonner Wall 31",
     }),
     defineField({
       name: "addressCity",
       title: "PLZ und Stadt",
       type: "string",
       group: "contact",
-      initialValue: "51063 Köln",
+      initialValue: "50677 Köln",
     }),
     defineField({
       name: "businessHours",
@@ -178,7 +178,7 @@ export const siteSettingsSchema = defineType({
       group: "contact",
       of: [{ type: "string" }],
       description: 'Jede Zeile = eine Zeile im Kontaktbereich. z.B. "Mo–Fr · 08:00–18:00"',
-      initialValue: ["Mo–Fr · 08:00–18:00", "24/7 Show-Support"],
+      initialValue: ["Mo–Fr · 08:00–18:00", "Kurzfristige Produktionen nach Absprache"],
     }),
 
     // ── Social Media ──────────────────────────────────────

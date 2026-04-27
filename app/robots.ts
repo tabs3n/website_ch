@@ -1,15 +1,15 @@
 import type { MetadataRoute } from "next";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanitySettings } from "@/sanity/lib/types";
 
 export const revalidate = 3600;
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const settings = await (client.fetch as any)(
+  const settings = await sanityFetch<SanitySettings | null>(
     siteSettingsQuery,
     {},
-    { next: { revalidate: 3600 } }
+    { revalidate: 3600 }
   ).catch(() => null);
 
   const base: string = settings?.siteUrl ?? "https://cologne-hunters.de";

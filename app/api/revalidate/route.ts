@@ -12,24 +12,38 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   const secret = process.env.REVALIDATE_SECRET;
 
-  // Token-Prüfung (optional, aber empfohlen)
-  if (secret) {
-    const token = req.headers.get("x-revalidate-token");
-    if (token !== secret) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!secret) {
+    return NextResponse.json(
+      { error: "REVALIDATE_SECRET is not configured" },
+      { status: 500 }
+    );
+  }
+
+  const token = req.headers.get("x-revalidate-token");
+  if (token !== secret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    // Alle Seiten mit Projektdaten invalidieren
+    const paths = [
+      "/",
+      "/projekte",
+      "/projektkarte",
+      "/leistungen",
+      "/leistungen/licht",
+      "/leistungen/ton",
+      "/leistungen/video",
+      "/kontakt",
+    ];
+
     revalidatePath("/", "layout");
-    revalidatePath("/projekte", "page");
+    paths.forEach((path) => revalidatePath(path, "page"));
     revalidatePath("/projekte/[slug]", "page");
 
     return NextResponse.json({
       revalidated: true,
       now: Date.now(),
-      paths: ["/", "/projekte", "/projekte/[slug]"],
+      paths: [...paths, "/projekte/[slug]"],
     });
   } catch (err) {
     return NextResponse.json(

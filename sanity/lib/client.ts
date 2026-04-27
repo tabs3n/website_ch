@@ -29,3 +29,42 @@ export const previewClient = createClient({
 export function getClient(preview = false) {
   return preview ? previewClient : client;
 }
+
+type SanityParams = Record<string, unknown>;
+type NextFetchOptions = {
+  cache?: "no-store";
+  next?: {
+    revalidate?: number;
+    tags?: string[];
+  };
+};
+
+type FetchWithNextOptions = <T>(
+  query: string,
+  params?: SanityParams,
+  options?: NextFetchOptions
+) => Promise<T>;
+
+export async function sanityFetch<T>(
+  query: string,
+  params: SanityParams = {},
+  {
+    preview = false,
+    revalidate = 60,
+    tags,
+  }: {
+    preview?: boolean;
+    revalidate?: number;
+    tags?: string[];
+  } = {}
+): Promise<T> {
+  const fetchOptions: NextFetchOptions = preview
+    ? { cache: "no-store" }
+    : { next: { revalidate, ...(tags ? { tags } : {}) } };
+
+  return (getClient(preview).fetch as FetchWithNextOptions)<T>(
+    query,
+    params,
+    fetchOptions
+  );
+}

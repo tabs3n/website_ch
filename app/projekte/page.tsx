@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { getAllProjects } from "@/lib/getProjects";
 import PageHeader from "@/components/PageHeader";
 import ProjectCard from "@/components/ProjectCard";
@@ -13,7 +14,8 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function ProjekteIndex() {
-  const projects = await getAllProjects();
+  const { isEnabled: preview } = draftMode();
+  const projects = await getAllProjects({ preview });
 
   return (
     <>

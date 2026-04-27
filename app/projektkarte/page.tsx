@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import Script from "next/script";
 import ProjectMap from "@/components/ProjectMap";
-import { getSupabase } from "@/lib/supabase";
-import type { MapProject } from "@/lib/supabase";
+import { getMapProjects, isDemoMapData } from "@/lib/getMapProjects";
 
 export const metadata: Metadata = {
   title: "Projektkarte",
@@ -13,61 +13,11 @@ export const metadata: Metadata = {
 // Revalidate every 5 minutes
 export const revalidate = 300;
 
-// Static fallback data — shown when Supabase is not yet configured
-const FALLBACK_PROJECTS: MapProject[] = [
-  {
-    id: "1", iso: "DEU", country: "Deutschland", title: "Lanxess Global Kick-off",
-    city: "Köln", year: 2025, client: "Lanxess AG",
-    blurb: "Komplettes Licht-, Ton- und Video-Setup für die internationale Jahresauftaktveranstaltung in der Lanxess Arena.",
-    quote: null, lat: 50.93, lng: 6.97, created_at: "", project_images: [],
-  },
-  {
-    id: "2", iso: "DEU", country: "Deutschland", title: "RTL Primetime Studio",
-    city: "Köln", year: 2024, client: "RTL Deutschland",
-    blurb: "Permanentes Studiobeleuchungskonzept auf grandMA3 Basis — 24/7 Broadcastfähig.",
-    quote: null, lat: 50.95, lng: 6.99, created_at: "", project_images: [],
-  },
-  {
-    id: "3", iso: "GBR", country: "Großbritannien", title: "IBC Amsterdam Side Event",
-    city: "London", year: 2024, client: "Broadcaster Consortium",
-    blurb: "Licht- und Sound-Design für Side Events während der IBC Broadcast-Konferenz.",
-    quote: null, lat: 51.5, lng: -0.12, created_at: "", project_images: [],
-  },
-  {
-    id: "4", iso: "USA", country: "USA", title: "NAB Show Booth",
-    city: "Las Vegas", year: 2023, client: "Technology Partner",
-    blurb: "Messeauftritt auf der NAB Show — Full LED Wall Setup mit Broadcast-Live-Demo.",
-    quote: null, lat: 36.17, lng: -115.14, created_at: "", project_images: [],
-  },
-  {
-    id: "5", iso: "ARE", country: "Vereinigte Arabische Emirate", title: "Corporate Gala Dubai",
-    city: "Dubai", year: 2023, client: "MENA Corp",
-    blurb: "Premium Gala-Abend mit Moving Lights, Line-Array und 4K LED Wall.",
-    quote: "Spectacular production — exactly what we envisioned.", lat: 25.2, lng: 55.27, created_at: "", project_images: [],
-  },
-];
-
-async function getProjects(): Promise<MapProject[]> {
-  const sb = getSupabase();
-  if (!sb) return FALLBACK_PROJECTS;
-
-  try {
-    const { data, error } = await sb
-      .from("projects")
-      .select("*, project_images(url, sort_order)")
-      .order("created_at");
-
-    if (error || !data?.length) return FALLBACK_PROJECTS;
-    return data as MapProject[];
-  } catch {
-    return FALLBACK_PROJECTS;
-  }
-}
-
 export default async function ProjektKartePage() {
-  const projects = await getProjects();
+  const { isEnabled: preview } = draftMode();
+  const projects = await getMapProjects({ preview, revalidate: 300 });
   const countryCount = new Set(projects.map((p) => p.iso)).size;
-  const isLive = getSupabase() !== null;
+  const isDemo = isDemoMapData(projects);
 
   return (
     <>
@@ -136,7 +86,7 @@ export default async function ProjektKartePage() {
             >
               <Stat value={String(countryCount)} label="Länder" />
               <Stat value={String(projects.length)} label="Projekte" />
-              {!isLive && (
+              {isDemo && (
                 <div
                   className="mono"
                   style={{
@@ -148,7 +98,7 @@ export default async function ProjektKartePage() {
                     lineHeight: 1.6,
                   }}
                 >
-                  Demo-Daten — Supabase noch nicht verbunden
+                  Demo-Daten — Projekte im Studio mit ISO-Code veröffentlichen
                 </div>
               )}
             </div>

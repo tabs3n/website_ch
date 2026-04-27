@@ -97,11 +97,19 @@ function HeroBackground({
   );
 }
 
-function CTA({ children, primary }: { children: React.ReactNode; primary?: boolean }) {
+function CTA({
+  children,
+  href,
+  primary,
+}: {
+  children: React.ReactNode;
+  href: string;
+  primary?: boolean;
+}) {
   const [hovered, setHovered] = useState(false);
   return (
     <a
-      href="#kontakt"
+      href={href}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -257,8 +265,10 @@ export default function Hero({
             </p>
           )}
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <CTA primary>Projekt anfragen</CTA>
-            <CTA>Arbeiten ansehen</CTA>
+            <CTA href="#kontakt" primary>
+              Projekt anfragen
+            </CTA>
+            <CTA href="#arbeiten">Arbeiten ansehen</CTA>
           </div>
         </div>
       </div>

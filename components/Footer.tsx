@@ -104,9 +104,9 @@ export default function Footer({
     footerTagline ??
     "Licht und Ton Service GmbH · Veranstaltungstechnik auf Broadcast-Niveau — von der Konzeption bis zur schlüsselfertigen Umsetzung.";
   const resolvedEmail = email ?? "kontakt@cologne-hunters.de";
-  const resolvedPhone = phone ?? "+49 221 1234 5678";
-  const street = addressStreet ?? "Deutz-Mülheimer Str. 129";
-  const city = addressCity ?? "51063 Köln";
+  const resolvedPhone = phone ?? "+49 (0) 221 2790-20";
+  const street = addressStreet ?? "Bonner Wall 31";
+  const city = addressCity ?? "50677 Köln";
 
   const phoneHref = `tel:${resolvedPhone.replace(/[^+\d]/g, "")}`;
   const hasSocials = instagramUrl || facebookUrl || linkedinUrl;

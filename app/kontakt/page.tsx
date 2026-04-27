@@ -15,7 +15,7 @@ export default function KontaktPage() {
       <PageHeader
         eyebrow="Kontakt"
         title="Sprechen Sie direkt mit unserem Projektteam."
-        intro="Wir beantworten Anfragen in der Regel innerhalb eines Werktages. Für Kurzfristiges erreichen Sie unsere 24/7 Show-Hotline."
+        intro="Wir beantworten Anfragen in der Regel innerhalb eines Werktages. Für kurzfristige Produktionen erreichen Sie uns direkt im Projektbüro."
       />
 
       <section className="py-10 md:py-20">
@@ -27,12 +27,12 @@ export default function KontaktPage() {
                   Projektbüro Köln
                 </div>
                 <div className="mt-4 font-display text-xl text-white">
-                  Cologne Hunters GmbH
+                  Cologne Hunters Licht & Ton Service GmbH
                 </div>
                 <address className="mt-2 not-italic text-sm leading-relaxed text-steel-300">
-                  Deutz-Mülheimer Straße 129
+                  Bonner Wall 31
                   <br />
-                  51063 Köln
+                  50677 Köln
                 </address>
 
                 <dl className="mt-8 space-y-5 text-sm">
@@ -42,10 +42,10 @@ export default function KontaktPage() {
                     </dt>
                     <dd className="mt-1">
                       <a
-                        href="tel:+4922112345678"
+                        href="tel:+49221279020"
                         className="text-white hover:text-accent"
                       >
-                        +49 221 1234 5678
+                        +49 (0) 221 2790-20
                       </a>
                     </dd>
                   </div>
@@ -64,14 +64,14 @@ export default function KontaktPage() {
                   </div>
                   <div>
                     <dt className="text-[10px] uppercase tracking-[0.24em] text-steel-400">
-                      24/7 Show-Hotline
+                      Projekttelefon
                     </dt>
                     <dd className="mt-1">
                       <a
-                        href="tel:+4922111112222"
+                        href="tel:+49221279020"
                         className="text-white hover:text-accent"
                       >
-                        +49 221 1111 2222
+                        +49 (0) 221 2790-20
                       </a>
                     </dd>
                   </div>

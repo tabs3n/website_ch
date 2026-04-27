@@ -1,14 +1,20 @@
 import type { MetadataRoute } from "next";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { allProjectSlugsQuery, siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanitySettings } from "@/sanity/lib/types";
 
 export const revalidate = 3600; // rebuild sitemap every hour
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [settings, slugDocs] = await Promise.all([
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 3600 } }).catch(() => null),
-    (client.fetch as any)(allProjectSlugsQuery, {}, { next: { revalidate: 3600 } }).catch(() => []),
+    sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { revalidate: 3600 }).catch(
+      () => null
+    ),
+    sanityFetch<Array<{ slug: string; publishedAt?: string }>>(
+      allProjectSlugsQuery,
+      {},
+      { revalidate: 3600 }
+    ).catch(() => []),
   ]);
 
   const base: string = settings?.siteUrl ?? "https://cologne-hunters.de";

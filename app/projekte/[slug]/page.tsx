@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import {
   getAllProjectSlugs,
@@ -9,8 +10,9 @@ import {
 import Reveal from "@/components/Reveal";
 import ContactCTA from "@/components/ContactCTA";
 import JsonLd from "@/components/JsonLd";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanitySettings } from "@/sanity/lib/types";
 
 type Params = { slug: string };
 
@@ -26,10 +28,12 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
+  const { isEnabled: preview } = draftMode();
   const [project, settings] = await Promise.all([
-    getProjectBySlug(params.slug),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null),
+    getProjectBySlug(params.slug, { preview }),
+    sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { preview, revalidate: 60 }).catch(
+      () => null
+    ),
   ]);
   if (!project) return { title: "Projekt" };
 
@@ -63,11 +67,13 @@ export async function generateMetadata({
 }
 
 export default async function ProjektPage({ params }: { params: Params }) {
+  const { isEnabled: preview } = draftMode();
   const [project, allProjects, settings] = await Promise.all([
-    getProjectBySlug(params.slug),
-    getAllProjects(),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null),
+    getProjectBySlug(params.slug, { preview }),
+    getAllProjects({ preview }),
+    sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { preview, revalidate: 60 }).catch(
+      () => null
+    ),
   ]);
 
   if (!project) notFound();

@@ -6,8 +6,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PreviewBanner from "@/components/PreviewBanner";
-import { client } from "@/sanity/lib/client";
+import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
+import type { SanitySettings } from "@/sanity/lib/types";
 
 // ─── Default fonts (preloaded at build time) ──────────────────────────────────
 const instrumentSerif = Instrument_Serif({
@@ -49,9 +50,10 @@ const GOOGLE_FONT_URLS: Record<string, string> = {
 };
 
 // ─── Cached settings fetch (deduplicates between generateMetadata + RootLayout) ─
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fetchSettings = cache((): Promise<any> =>
-  (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 60 } }).catch(() => null)
+const fetchSettings = cache((preview = false): Promise<SanitySettings | null> =>
+  sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { preview, revalidate: 60 }).catch(
+    () => null
+  )
 );
 
 // Font-family CSS values for each option
@@ -68,7 +70,7 @@ const FONT_FAMILIES: Record<string, string> = {
 };
 
 export async function generateMetadata(): Promise<Metadata> {
-  const settings = await fetchSettings();
+  const settings = await fetchSettings(false);
 
   const siteUrl: string = settings?.siteUrl ?? "https://cologne-hunters.de";
   const companyName: string = settings?.companyName ?? "Cologne Hunters";
@@ -115,7 +117,7 @@ export default async function RootLayout({
 }) {
   const { isEnabled: preview } = draftMode();
 
-  const settings = await fetchSettings();
+  const settings = await fetchSettings(preview);
 
   // ─── Branding tokens from Sanity ─────────────────────────────────────────────
   const accentColor: string = settings?.accentColor ?? "#E8B54A";

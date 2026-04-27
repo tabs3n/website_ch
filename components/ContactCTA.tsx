@@ -226,21 +226,21 @@ export default function ContactCTA({
     ? contactResponseTime
     : "Antwort innerhalb von 24 h werktags";
   const resolvedEmail = email ?? "kontakt@cologne-hunters.de";
-  const resolvedPhone = phone ?? "+49 221 1234 5678";
-  const street = addressStreet ?? "Deutz-Mülheimer Straße 129";
-  const city = addressCity ?? "51063 Köln";
-  const hours = businessHours?.length ? businessHours : ["Mo–Fr · 08:00–18:00", "24/7 Show-Support"];
+  const resolvedPhone = phone ?? "+49 (0) 221 2790-20";
+  const street = addressStreet ?? "Bonner Wall 31";
+  const city = addressCity ?? "50677 Köln";
+  const hours = businessHours?.length
+    ? businessHours
+    : ["Mo–Fr · 08:00–18:00", "Kurzfristige Produktionen nach Absprache"];
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("[ContactCTA] submit fired");
     if (status === "submitting") return;
 
     setStatus("submitting");
     setErrorMessage(null);
 
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-    console.log("[ContactCTA] payload", data);
 
     try {
       const res = await fetch("/api/contact", {
@@ -248,7 +248,6 @@ export default function ContactCTA({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      console.log("[ContactCTA] response", res.status);
 
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));

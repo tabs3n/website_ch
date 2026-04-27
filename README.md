@@ -1,46 +1,59 @@
-# Cologne Hunters — Licht und Ton Service GmbH
+# Cologne Hunters — Licht & Ton Service GmbH
 
-Premium, production-ready Next.js 14 website for a Cologne-based event technology company (lighting, sound, video, rigging, conferencing).
+Next.js 14 website for Cologne Hunters, backed by Sanity for editable pages,
+projects, global settings, preview mode, and webhook-based revalidation.
 
-Built with:
-- **Next.js 14** (App Router) + **TypeScript**
-- **Tailwind CSS** (custom dark palette: ink / steel / accent blue)
-- **Framer Motion** for page transitions, scroll-reveals, hover interactions
-- Fully responsive, SEO-ready (metadata, sitemap, robots)
+## Stack
 
-## Getting started
+- Next.js 14 App Router + TypeScript
+- Tailwind CSS with custom brand tokens
+- Sanity Studio at `/studio`
+- Framer Motion for page reveals and transitions
+- Resend-compatible contact form endpoint at `/api/contact`
+
+## Getting Started
 
 ```bash
 npm install
-npm run dev     # http://localhost:3000
+npm run dev
 npm run build
 npm run start
 ```
 
+Local dev runs at `http://localhost:3000`.
+
+## Environment
+
+Copy `.env.local.example` to `.env.local` and fill the missing values.
+
+Required for production contact forms:
+
+- `RESEND_API_KEY`
+- `CONTACT_RECIPIENT_EMAIL` or `contactRecipientEmail` in Sanity settings
+
+Recommended for CMS workflows:
+
+- `SANITY_API_READ_TOKEN` for draft documents
+- `SANITY_PREVIEW_SECRET` for `/api/draft`
+- `REVALIDATE_SECRET` for Sanity webhooks to `/api/revalidate`
+
+## Content Model
+
+- `homepage` controls the start page sections and visibility toggles.
+- `project` controls `/projekte`, `/projekte/[slug]`, featured projects, and the project map when `countryIso` is set.
+- `siteSettings` controls branding, contact details, footer, SEO, social links, and contact form routing.
+
+Static project data in `data/projects.ts` is only a fallback for empty or unavailable
+Sanity datasets.
+
 ## Deployment
 
-Zero-config deploy to Vercel — just push to a GitHub repo and import the project.
+The project is Vercel-ready. Configure the same environment variables in Vercel
+and add a Sanity webhook:
 
-## Structure
+- URL: `https://<domain>/api/revalidate`
+- Method: `POST`
+- Header: `x-revalidate-token: <REVALIDATE_SECRET>`
 
-- `app/` — App Router routes
-  - `/` · homepage
-  - `/leistungen` · services overview
-  - `/leistungen/{licht,ton,video}` · service detail pages
-  - `/projekte` · case study grid
-  - `/projekte/[slug]` · dynamic case study pages (prerendered via `generateStaticParams`)
-  - `/kontakt` · contact page with client-side form
-- `components/` — shared UI (Hero, Navbar, Footer, ProjectCard, ServiceDetail, ContactForm, …)
-- `data/projects.ts` — central case-study data source. Add a new object to the array → a new page.
-
-## Adding a project
-
-Open `data/projects.ts` and append a new `Project` object. No other changes needed — the overview grid and `/projekte/[slug]` route pick it up automatically.
-
-## Hero video
-
-Drop an MP4 at `public/videos/hero.mp4`. The `Hero` component auto-detects it and cross-fades from the fallback image. If no video is present, the fallback image stays visible.
-
-## Contact form
-
-The form posts client-side and shows a success state. For production, wire the handler in `components/ContactForm.tsx` to an API route, Resend, Formspree, or similar.
+The revalidation endpoint refreshes homepage, project, service, map, and contact
+routes.

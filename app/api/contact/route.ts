@@ -71,10 +71,9 @@ export async function POST(req: Request) {
 
   // Honeypot: bots fill this field, real users don't
   if (body.honeypot) {
-    console.warn("[contact] Honeypot triggered — payload discarded:", { honeypot: body.honeypot, name: body.name, email: body.email });
+    console.warn("[contact] Honeypot triggered — payload discarded");
     return NextResponse.json({ ok: true });
   }
-  console.log("[contact] Submission received:", { name: body.name, email: body.email });
 
   const name = (body.name ?? "").trim();
   const email = (body.email ?? "").trim();
@@ -168,6 +167,6 @@ export async function POST(req: Request) {
   }
 
   const resendResult = await res.json().catch(() => ({}));
-  console.log("[contact] Resend accepted:", { id: resendResult.id, to: recipient, from });
+  console.info("[contact] Resend accepted:", { id: resendResult.id });
   return NextResponse.json({ ok: true });
 }

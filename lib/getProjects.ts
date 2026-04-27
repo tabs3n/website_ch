@@ -8,11 +8,16 @@
  */
 
 import type { SanityProject } from "@/sanity/lib/types";
+import { sanityFetch } from "@/sanity/lib/client";
 import {
   projects as staticProjects,
   getProjectBySlug as staticGetBySlug,
   getAllProjectSlugs as staticGetSlugs,
 } from "@/data/projects";
+
+type FetchOptions = {
+  preview?: boolean;
+};
 
 // ── Statischer Adapter ─────────────────────────────────────────────────────────
 
@@ -38,39 +43,31 @@ function toSanity(
 
 const staticFallback = staticProjects.map(toSanity);
 
-// ── Sanity fetch ───────────────────────────────────────────────────────────────
-
-async function sanityFetch<T>(
-  query: string,
-  params: Record<string, unknown> = {},
-  revalidate = 60
-): Promise<T> {
-  const { client } = await import("@/sanity/lib/client");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return client.fetch(query, params, { next: { revalidate } } as any) as Promise<T>;
-}
-
 // ── Public API ─────────────────────────────────────────────────────────────────
 
-export async function getAllProjects(): Promise<SanityProject[]> {
+export async function getAllProjects({
+  preview = false,
+}: FetchOptions = {}): Promise<SanityProject[]> {
   try {
     const { allProjectsQuery } = await import("@/sanity/lib/queries");
-    const results = await sanityFetch<SanityProject[]>(allProjectsQuery);
+    const results = await sanityFetch<SanityProject[]>(allProjectsQuery, {}, { preview });
     return results.length > 0 ? results : staticFallback;
   } catch {
     return staticFallback;
   }
 }
 
-export async function getFeaturedProjects(): Promise<SanityProject[]> {
+export async function getFeaturedProjects({
+  preview = false,
+}: FetchOptions = {}): Promise<SanityProject[]> {
   try {
     const { featuredProjectsQuery, allProjectsQuery } = await import(
       "@/sanity/lib/queries"
     );
-    const featured = await sanityFetch<SanityProject[]>(featuredProjectsQuery);
+    const featured = await sanityFetch<SanityProject[]>(featuredProjectsQuery, {}, { preview });
     if (featured.length > 0) return featured;
 
-    const all = await sanityFetch<SanityProject[]>(allProjectsQuery);
+    const all = await sanityFetch<SanityProject[]>(allProjectsQuery, {}, { preview });
     if (all.length > 0) return all.slice(0, 4);
 
     return staticFallback.slice(0, 4);
@@ -80,13 +77,15 @@ export async function getFeaturedProjects(): Promise<SanityProject[]> {
 }
 
 export async function getProjectBySlug(
-  slug: string
+  slug: string,
+  { preview = false }: FetchOptions = {}
 ): Promise<SanityProject | null> {
   try {
     const { projectBySlugQuery } = await import("@/sanity/lib/queries");
     const result = await sanityFetch<SanityProject | null>(
       projectBySlugQuery,
-      { slug }
+      { slug },
+      { preview }
     );
     if (result) return result;
     // Fallback: statisches Projekt
@@ -98,13 +97,15 @@ export async function getProjectBySlug(
   }
 }
 
-export async function getAllProjectSlugs(): Promise<string[]> {
+export async function getAllProjectSlugs({
+  preview = false,
+}: FetchOptions = {}): Promise<string[]> {
   try {
     const { allProjectSlugsQuery } = await import("@/sanity/lib/queries");
     const docs = await sanityFetch<{ slug: string }[]>(
       allProjectSlugsQuery,
       {},
-      3600
+      { preview, revalidate: 3600 }
     );
     if (docs.length > 0) return docs.map((d) => d.slug);
     return staticGetSlugs();

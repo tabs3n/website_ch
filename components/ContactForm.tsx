@@ -19,14 +19,12 @@ export default function ContactForm() {
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    console.log("[ContactForm] submit fired");
 
     if (status === "submitting") return;
     setStatus("submitting");
     setErrorMessage(null);
 
     const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-    console.log("[ContactForm] payload", data);
 
     try {
       const res = await fetch("/api/contact", {
@@ -34,7 +32,6 @@ export default function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      console.log("[ContactForm] response", res.status);
 
       if (!res.ok) {
         const payload = await res.json().catch(() => ({}));
@@ -84,7 +81,7 @@ export default function ContactForm() {
               </span>
               <span className="flex items-center gap-2">
                 <span className="h-px w-4 bg-accent/60" />
-                24/7 Show-Support
+                Kurzfristige Produktionen nach Absprache
               </span>
             </div>
             <button

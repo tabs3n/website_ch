@@ -115,7 +115,7 @@ function SectionHead({
       </div>
       {link && (
         <a
-          href="#"
+          href="/leistungen"
           className="mono"
           style={{
             fontSize: 12,

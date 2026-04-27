@@ -7,17 +7,21 @@ import MapSection from "@/components/MapSection";
 import ContactCTA from "@/components/ContactCTA";
 import StudioSection from "@/components/StudioSection";
 import JsonLd from "@/components/JsonLd";
-import { client } from "@/sanity/lib/client";
+import { draftMode } from "next/headers";
+import { sanityFetch } from "@/sanity/lib/client";
 import { homepageQuery, siteSettingsQuery } from "@/sanity/lib/queries";
+import type { HomepageData, SanitySettings } from "@/sanity/lib/types";
 
 export const revalidate = 30;
 
-async function getData() {
+async function getData(preview = false): Promise<{
+  hp: HomepageData | null;
+  settings: SanitySettings;
+}> {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [hp, settings] = await Promise.all([
-      (client.fetch as any)(homepageQuery, {}, { next: { revalidate: 30 } }),
-      (client.fetch as any)(siteSettingsQuery, {}, { next: { revalidate: 30 } }),
+      sanityFetch<HomepageData | null>(homepageQuery, {}, { preview, revalidate: 30 }),
+      sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { preview, revalidate: 30 }),
     ]);
     // hp === null bedeutet: Dokument existiert noch nicht in Sanity
     // hp === {} / { field: null } bedeutet: Dokument existiert, Felder ggf. geleert
@@ -28,15 +32,15 @@ async function getData() {
 }
 
 export default async function HomePage() {
-  const { hp, settings } = await getData();
+  const { isEnabled: preview } = draftMode();
+  const { hp, settings } = await getData(preview);
 
   // Wenn das Sanity-Dokument noch nicht existiert (hp === null):
   // → alle Props als undefined übergeben → Komponenten nutzen eingebaute Fallback-Texte
   // Wenn das Dokument existiert (hp ist ein Objekt):
   // → Sanity-Werte direkt übergeben; null = Feld geleert = Bereich ausblenden
   const docExists = hp !== null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const g = (val: any) => (docExists ? val : undefined);
+  const g = <T,>(val: T): T | undefined => (docExists ? val : undefined);
 
   // Sichtbarkeits-Toggles (Standard: ausgeblendet, bis in Sanity aktiviert)
   const showCapabilities = docExists ? (hp.showCapabilities ?? false) : false;
@@ -47,8 +51,8 @@ export default async function HomePage() {
   const siteUrl: string = settings.siteUrl ?? "https://cologne-hunters.de";
   const companyName: string = settings.companyName ?? "Cologne Hunters";
 
-  // Parse addressCity into postalCode + locality (e.g. "51063 Köln" → "51063", "Köln")
-  const cityRaw: string = settings.addressCity ?? "51063 Köln";
+  // Parse addressCity into postalCode + locality (e.g. "50677 Köln" → "50677", "Köln")
+  const cityRaw: string = settings.addressCity ?? "50677 Köln";
   const postalMatch = cityRaw.match(/^(\d{4,5})\s+(.*)/);
   const postalCode = postalMatch ? postalMatch[1] : "";
   const addressLocality = postalMatch ? postalMatch[2] : cityRaw;
@@ -60,13 +64,13 @@ export default async function HomePage() {
     name: companyName,
     url: siteUrl,
     email: settings.email ?? "kontakt@cologne-hunters.de",
-    telephone: settings.phone ?? "+49 221 1234 5678",
+    telephone: settings.phone ?? "+49 (0) 221 2790-20",
     description:
       settings.siteDescription ??
       "Premium Veranstaltungstechnik aus Köln — Licht, Ton, Video und Rigging für Events, Broadcast und Corporate.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: settings.addressStreet ?? "Deutz-Mülheimer Straße 129",
+      streetAddress: settings.addressStreet ?? "Bonner Wall 31",
       addressLocality,
       postalCode,
       addressCountry: "DE",
@@ -102,7 +106,7 @@ export default async function HomePage() {
         heroStats={g(hp?.heroStats)}
       />
 
-      <LogosStrip clients={settings.clients} />
+      <LogosStrip clients={settings.clients ?? undefined} />
 
       <ServicesPreview
         servicesHeading={g(hp?.servicesHeading)}
