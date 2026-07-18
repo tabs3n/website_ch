@@ -77,8 +77,8 @@ export default async function HomePage() {
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: 50.9386,
-      longitude: 6.9603,
+      latitude: settings.geoLat ?? 50.9386,
+      longitude: settings.geoLng ?? 6.9603,
     },
     openingHoursSpecification: [
       {
@@ -89,7 +89,12 @@ export default async function HomePage() {
       },
     ],
     ...(settings.ogImage ? { image: settings.ogImage } : {}),
-    sameAs: [],
+    ...(settings.legalName ? { legalName: settings.legalName } : {}),
+    ...(settings.vatId ? { vatID: settings.vatId } : {}),
+    // Verknüpfte Profile helfen Google, das Unternehmen eindeutig zuzuordnen
+    sameAs: [settings.instagramUrl, settings.facebookUrl, settings.linkedinUrl].filter(
+      Boolean
+    ),
   };
 
   return (
@@ -100,6 +105,8 @@ export default async function HomePage() {
         heroImages={g(hp?.heroImages)}
         heroSlideshowEnabled={g(hp?.heroSlideshowEnabled)}
         heroSlideshowInterval={g(hp?.heroSlideshowInterval)}
+        heroMetaLeft={g(hp?.heroMetaLeft)}
+        heroMetaRight={g(hp?.heroMetaRight)}
         heroEyebrow={g(hp?.heroEyebrow)}
         heroHeadline={g(hp?.heroHeadline)}
         heroDescription={g(hp?.heroDescription)}

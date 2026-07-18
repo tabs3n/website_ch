@@ -6,9 +6,12 @@ export const siteSettingsSchema = defineType({
   type: "document",
   groups: [
     { name: "branding", title: "🎨 Branding", default: true },
+    { name: "navigation", title: "🧭 Navigationsleiste" },
     { name: "company", title: "🏢 Unternehmen" },
     { name: "contact", title: "📞 Kontakt" },
+    { name: "legal", title: "⚖️ Rechtsangaben" },
     { name: "footer", title: "🔗 Footer" },
+    { name: "notFound", title: "🚧 404-Seite" },
     { name: "seo", title: "🔍 SEO" },
   ],
   fields: [
@@ -83,6 +86,44 @@ export const siteSettingsSchema = defineType({
         ],
         layout: "radio",
       },
+    }),
+
+    // ── Navigationsleiste ─────────────────────────────────
+    defineField({
+      name: "showNavClock",
+      title: "Ortszeit in der Navigationsleiste anzeigen",
+      type: "boolean",
+      group: "navigation",
+      initialValue: false,
+      description:
+        'Blendet oben rechts "KÖLN · 14:32:07" mit mitlaufender Uhr ein. Standardmässig ausgeblendet.',
+    }),
+    defineField({
+      name: "navClockCity",
+      title: "Stadt für die Ortszeit",
+      type: "string",
+      group: "navigation",
+      initialValue: "KÖLN",
+      hidden: ({ document }) => !document?.showNavClock,
+      description: "Nur relevant, wenn die Ortszeit oben aktiviert ist.",
+    }),
+    defineField({
+      name: "showNavCta",
+      title: "Button in der Navigationsleiste anzeigen",
+      type: "boolean",
+      group: "navigation",
+      initialValue: false,
+      description:
+        'Blendet den Button "Projekt anfragen" oben rechts ein. Standardmässig ausgeblendet — im mobilen Menü bleibt der Button unabhängig davon bestehen.',
+    }),
+    defineField({
+      name: "navCtaLabel",
+      title: "Beschriftung des Buttons",
+      type: "string",
+      group: "navigation",
+      initialValue: "Projekt anfragen",
+      hidden: ({ document }) => !document?.showNavCta,
+      description: "Nur relevant, wenn der Button oben aktiviert ist.",
     }),
 
     // ── Unternehmen ──────────────────────────────────────
@@ -210,6 +251,69 @@ export const siteSettingsSchema = defineType({
         R.uri({ scheme: ["http", "https"] }).error("Bitte eine gültige URL mit https:// eingeben."),
     }),
 
+    // ── Rechtsangaben ─────────────────────────────────────
+    // Diese Felder speisen Impressum, Datenschutz und die strukturierten
+    // Daten für Google. Einmal hier pflegen — überall aktuell.
+    defineField({
+      name: "legalName",
+      title: "Vollständiger Firmenname (Handelsregister)",
+      type: "string",
+      group: "legal",
+      initialValue: "Cologne Hunters Licht & Ton Service GmbH",
+      description:
+        "Der komplette Name inkl. Rechtsform, wie er im Handelsregister steht. Erscheint im Impressum und auf der Kontaktseite.",
+    }),
+    defineField({
+      name: "managingDirector",
+      title: "Geschäftsführung",
+      type: "string",
+      group: "legal",
+      initialValue: "Daniel Hentze",
+      description:
+        'Name der vertretungsberechtigten Person. Bei mehreren Personen mit Komma trennen, z.B. "Daniel Hentze, Maria Muster".',
+    }),
+    defineField({
+      name: "registerCourt",
+      title: "Registergericht",
+      type: "string",
+      group: "legal",
+      initialValue: "Amtsgericht Köln",
+    }),
+    defineField({
+      name: "registerNumber",
+      title: "Registernummer",
+      type: "string",
+      group: "legal",
+      initialValue: "HRB 22475",
+      description: 'z.B. "HRB 22475"',
+    }),
+    defineField({
+      name: "vatId",
+      title: "Umsatzsteuer-Identifikationsnummer",
+      type: "string",
+      group: "legal",
+      initialValue: "DE153241514",
+      description: 'Ohne Präfix-Text, z.B. "DE153241514"',
+    }),
+    defineField({
+      name: "contentResponsible",
+      title: "Inhaltlich verantwortlich (§ 18 Abs. 2 MStV)",
+      type: "text",
+      group: "legal",
+      rows: 3,
+      initialValue: "Daniel Hentze\nBonner Wall 31\n50677 Köln",
+      description:
+        "Name und Anschrift der inhaltlich verantwortlichen Person. Zeilenumbrüche werden übernommen.",
+    }),
+    defineField({
+      name: "addressCountry",
+      title: "Land",
+      type: "string",
+      group: "legal",
+      initialValue: "Deutschland",
+      description: "Wird in der Impressums-Anschrift unter PLZ und Stadt ausgegeben.",
+    }),
+
     // ── Footer ────────────────────────────────────────────
     defineField({
       name: "footerTagline",
@@ -219,6 +323,31 @@ export const siteSettingsSchema = defineType({
       rows: 3,
       initialValue:
         "Licht und Ton Service GmbH · Veranstaltungstechnik auf Broadcast-Niveau — von der Konzeption bis zur schlüsselfertigen Umsetzung.",
+    }),
+
+    // ── 404-Seite ─────────────────────────────────────────
+    defineField({
+      name: "notFoundEyebrow",
+      title: "404 – Kleiner Text oben",
+      type: "string",
+      group: "notFound",
+      initialValue: "404 · Seite nicht gefunden",
+    }),
+    defineField({
+      name: "notFoundTitle",
+      title: "404 – Überschrift",
+      type: "string",
+      group: "notFound",
+      initialValue: "Diese Seite existiert nicht mehr.",
+    }),
+    defineField({
+      name: "notFoundBody",
+      title: "404 – Beschreibungstext",
+      type: "text",
+      group: "notFound",
+      rows: 3,
+      initialValue:
+        "Möglicherweise wurde sie verschoben oder umbenannt. Kehren Sie zur Startseite zurück oder sprechen Sie uns direkt an.",
     }),
 
     // ── SEO ───────────────────────────────────────────────
@@ -252,5 +381,24 @@ export const siteSettingsSchema = defineType({
       description:
         "Vorschaubild für Facebook, LinkedIn, Twitter etc. Empfohlen: 1200 × 630 px, JPG oder PNG.",
     }),
+    defineField({
+      name: "geoLat",
+      title: "Breitengrad (Firmenstandort)",
+      type: "number",
+      group: "seo",
+      initialValue: 50.9386,
+      description:
+        "Wird an Google für den Eintrag als lokales Unternehmen übergeben. Koordinaten findest du, indem du bei Google Maps mit der rechten Maustaste auf den Standort klickst.",
+    }),
+    defineField({
+      name: "geoLng",
+      title: "Längengrad (Firmenstandort)",
+      type: "number",
+      group: "seo",
+      initialValue: 6.9603,
+    }),
   ],
+  preview: {
+    prepare: () => ({ title: "Website-Einstellungen" }),
+  },
 });

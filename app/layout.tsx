@@ -9,6 +9,7 @@ import PreviewBanner from "@/components/PreviewBanner";
 import { sanityFetch } from "@/sanity/lib/client";
 import { siteSettingsQuery } from "@/sanity/lib/queries";
 import type { SanitySettings } from "@/sanity/lib/types";
+import { getAllServices } from "@/lib/getServices";
 
 // ─── Default fonts (preloaded at build time) ──────────────────────────────────
 const instrumentSerif = Instrument_Serif({
@@ -117,7 +118,16 @@ export default async function RootLayout({
 }) {
   const { isEnabled: preview } = draftMode();
 
-  const settings = await fetchSettings(preview);
+  const [settings, services] = await Promise.all([
+    fetchSettings(preview),
+    getAllServices({ preview }),
+  ]);
+
+  // Leistungs-Links im Footer folgen der Reihenfolge aus dem CMS
+  const serviceLinks = services.map((s) => ({
+    label: s.title,
+    href: `/leistungen/${s.slug}`,
+  }));
 
   // ─── Branding tokens from Sanity ─────────────────────────────────────────────
   const accentColor: string = settings?.accentColor ?? "#E8B54A";
@@ -171,6 +181,10 @@ export default async function RootLayout({
           logoUrl={settings?.logo}
           companyName={settings?.companyName}
           tagline={settings?.tagline}
+          showClock={settings?.showNavClock}
+          clockCity={settings?.navClockCity}
+          showCta={settings?.showNavCta}
+          ctaLabel={settings?.navCtaLabel}
         />
         <main style={{ position: "relative" }}>{children}</main>
         <Footer
@@ -183,6 +197,7 @@ export default async function RootLayout({
           instagramUrl={settings?.instagramUrl}
           facebookUrl={settings?.facebookUrl}
           linkedinUrl={settings?.linkedinUrl}
+          serviceLinks={serviceLinks}
         />
         {preview && <PreviewBanner />}
       </body>

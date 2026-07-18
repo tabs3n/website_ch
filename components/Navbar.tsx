@@ -18,7 +18,7 @@ function LogoMark() {
   );
 }
 
-function Clock() {
+function Clock({ city }: { city: string }) {
   const [time, setTime] = useState<Date | null>(null);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ function Clock() {
 
   return (
     <span className="mono nav-clock" style={{ color: "var(--ink-dim)", fontSize: 11, letterSpacing: "0.1em" }}>
-      KÖLN · {pad(time.getHours())}:{pad(time.getMinutes())}:{pad(time.getSeconds())}
+      {city} · {pad(time.getHours())}:{pad(time.getMinutes())}:{pad(time.getSeconds())}
     </span>
   );
 }
@@ -48,13 +48,24 @@ export default function Navbar({
   logoUrl,
   companyName,
   tagline,
+  showClock = false,
+  clockCity,
+  showCta = false,
+  ctaLabel,
 }: {
   logoUrl?: string | null;
   companyName?: string | null;
   tagline?: string | null;
+  /** Ortszeit oben rechts. Standard: ausgeblendet. */
+  showClock?: boolean | null;
+  clockCity?: string | null;
+  /** "Projekt anfragen"-Button oben rechts. Standard: ausgeblendet. */
+  showCta?: boolean | null;
+  ctaLabel?: string | null;
 } = {}) {
   const name = companyName ?? "Cologne Hunters";
   const sub = tagline ?? "LICHT · TON · VIDEO";
+  const cta = ctaLabel || "Projekt anfragen";
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -153,11 +164,15 @@ export default function Navbar({
           ))}
         </nav>
 
-        {/* Right: clock + CTA (desktop) */}
-        <div className="nav-right" style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <Clock />
-          <ContactBtn />
-        </div>
+        {/* Right: clock + CTA (desktop) — beide über die Website-Einstellungen
+            zuschaltbar. Sind beide aus, entfällt der Bereich ganz, damit die
+            Navigation nicht rechts ins Leere läuft. */}
+        {(showClock || showCta) && (
+          <div className="nav-right" style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            {showClock && <Clock city={clockCity || "KÖLN"} />}
+            {showCta && <ContactBtn label={cta} />}
+          </div>
+        )}
 
         {/* Mobile burger */}
         <button
@@ -267,7 +282,7 @@ export default function Navbar({
                 alignSelf: "flex-start",
               }}
             >
-              Projekt anfragen →
+              {cta} →
             </Link>
           </nav>
         </div>
@@ -314,7 +329,7 @@ function NavAnchor({
   );
 }
 
-function ContactBtn() {
+function ContactBtn({ label }: { label: string }) {
   const [hovered, setHovered] = useState(false);
   return (
     <Link
@@ -346,7 +361,7 @@ function ContactBtn() {
           boxShadow: hovered ? "none" : "0 0 12px var(--accent)",
         }}
       />
-      Projekt anfragen
+      {label}
     </Link>
   );
 }

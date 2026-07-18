@@ -2,20 +2,55 @@ import type { Metadata } from "next";
 import { draftMode } from "next/headers";
 import Script from "next/script";
 import ProjectMap from "@/components/ProjectMap";
+import EmphasisText from "@/components/EmphasisText";
 import { getMapProjects, isDemoMapData } from "@/lib/getMapProjects";
+import { sanityFetch } from "@/sanity/lib/client";
+import { mapPageQuery } from "@/sanity/lib/queries";
+import type { MapPageData } from "@/sanity/lib/types";
+import { buildMetadata, getSettingsForMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Projektkarte",
+// Texte, solange im CMS noch nichts gepflegt ist
+const FALLBACK = {
+  eyebrow: "● Referenzen weltweit",
+  title: "Projekt*karte*.",
+  intro:
+    "Cologne Hunters realisiert Produktionen weltweit. Klicken Sie auf ein markiertes Land, um die Projekte dort zu sehen.",
+  countriesLabel: "Länder",
+  projectsLabel: "Projekte",
+  demoNotice: "Demo-Daten — Projekte im Studio mit ISO-Code veröffentlichen",
   description:
     "Interaktive Weltkarte aller Cologne Hunters Produktionen — Events, Broadcast und Corporate weltweit.",
-};
+} as const;
 
 // Revalidate every 5 minutes
 export const revalidate = 300;
 
+async function getPage(preview = false): Promise<MapPageData | null> {
+  return sanityFetch<MapPageData | null>(
+    mapPageQuery,
+    {},
+    { preview, revalidate: 300 }
+  ).catch(() => null);
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [page, settings] = await Promise.all([getPage(), getSettingsForMetadata()]);
+
+  return buildMetadata({
+    seo: page?.seo,
+    settings,
+    fallbackTitle: "Projektkarte",
+    fallbackDescription: FALLBACK.description,
+    path: "/projektkarte",
+  });
+}
+
 export default async function ProjektKartePage() {
   const { isEnabled: preview } = draftMode();
-  const projects = await getMapProjects({ preview, revalidate: 300 });
+  const [page, projects] = await Promise.all([
+    getPage(preview),
+    getMapProjects({ preview, revalidate: 300 }),
+  ]);
   const countryCount = new Set(projects.map((p) => p.iso)).size;
   const isDemo = isDemoMapData(projects);
 
@@ -50,7 +85,7 @@ export default async function ProjektKartePage() {
           >
             <div>
               <div className="eyebrow" style={{ color: "var(--accent)", marginBottom: 16 }}>
-                ● Referenzen weltweit
+                {page?.eyebrow ?? FALLBACK.eyebrow}
               </div>
               <h1
                 className="serif"
@@ -60,21 +95,21 @@ export default async function ProjektKartePage() {
                   letterSpacing: "-0.035em",
                 }}
               >
-                Projekt
-                <span style={{ fontStyle: "italic" }}>karte</span>.
+                <EmphasisText text={page?.title || FALLBACK.title} />
               </h1>
-              <p
-                style={{
-                  marginTop: 20,
-                  maxWidth: "52ch",
-                  color: "var(--ink-dim)",
-                  fontSize: 17,
-                  lineHeight: 1.55,
-                }}
-              >
-                Cologne Hunters realisiert Produktionen weltweit. Klicken Sie auf ein
-                markiertes Land, um die Projekte dort zu sehen.
-              </p>
+              {(page?.intro ?? FALLBACK.intro) && (
+                <p
+                  style={{
+                    marginTop: 20,
+                    maxWidth: "52ch",
+                    color: "var(--ink-dim)",
+                    fontSize: 17,
+                    lineHeight: 1.55,
+                  }}
+                >
+                  {page?.intro ?? FALLBACK.intro}
+                </p>
+              )}
             </div>
 
             <div
@@ -84,9 +119,15 @@ export default async function ProjektKartePage() {
                 alignItems: "flex-end",
               }}
             >
-              <Stat value={String(countryCount)} label="Länder" />
-              <Stat value={String(projects.length)} label="Projekte" />
-              {isDemo && (
+              <Stat
+                value={String(countryCount)}
+                label={page?.countriesLabel || FALLBACK.countriesLabel}
+              />
+              <Stat
+                value={String(projects.length)}
+                label={page?.projectsLabel || FALLBACK.projectsLabel}
+              />
+              {isDemo && (page?.demoNotice ?? FALLBACK.demoNotice) && (
                 <div
                   className="mono"
                   style={{
@@ -98,7 +139,7 @@ export default async function ProjektKartePage() {
                     lineHeight: 1.6,
                   }}
                 >
-                  Demo-Daten — Projekte im Studio mit ISO-Code veröffentlichen
+                  {page?.demoNotice ?? FALLBACK.demoNotice}
                 </div>
               )}
             </div>
