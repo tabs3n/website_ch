@@ -24,7 +24,7 @@ const FALLBACK_DISCIPLINES: Discipline[] = [
     abbr: "Licht",
     title: "Lichttechnik",
     description:
-      "Moving Lights · Konventionell · LED-Paneele · DMX-Netzwerke · kinetische Elemente. Gesteuert auf grandMA3.",
+      "Vom kamerafesten Tageslicht bis zur Show-Beleuchtung der Produktpremiere: Lichtdesign, das Marken und Menschen richtig in Szene setzt.",
     image:
       "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=1400&q=80",
     href: "/leistungen/licht",
@@ -34,7 +34,7 @@ const FALLBACK_DISCIPLINES: Discipline[] = [
     abbr: "Ton",
     title: "Tontechnik",
     description:
-      "Line-Array Systeme · IEM-Monitoring · digitale Konsolen · Dante-Netzwerke. Für Events jeder Größenordnung.",
+      "Beschallung mit vorausgehender Raumakustik-Analyse — damit jedes Wort verständlich ankommt, von der Pressekonferenz bis zur Gala.",
     image:
       "https://images.unsplash.com/photo-1520170350707-b2da59970118?auto=format&fit=crop&w=1400&q=80",
     href: "/leistungen/ton",
@@ -44,7 +44,7 @@ const FALLBACK_DISCIPLINES: Discipline[] = [
     abbr: "Video",
     title: "Videotechnik",
     description:
-      "LED-Walls · 4K-Kameraketten · Bildregie · Live-Streaming · Stage-Design. Nahtlos in Broadcast-Qualität.",
+      "LED-Wände, Kameratechnik und Streaming in Full HD und 4K — für hybride Konferenzen ebenso wie für den TV-tauglichen Auftritt.",
     image:
       "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1400&q=80",
     href: "/leistungen/video",
@@ -262,10 +262,10 @@ export default function ServicesPreview({
   servicesBody,
   disciplines,
 }: ServicesData = {}) {
-  const heading = servicesHeading ?? "Drei Gewerke, eine Regie.";
+  const heading = servicesHeading ?? "Licht, Ton und Video — aus einer Hand.";
   const body =
     servicesBody ??
-    "Wir planen, liefern und betreiben komplette Technik-Setups. Jede Linie spricht miteinander — konzeptionell, technisch, operativ.";
+    "Messe, TV-Produktion, Konferenz oder Gala: Wir übernehmen die komplette technische Umsetzung — von der ersten CAD-Zeichnung über den Aufbau mit TÜV-geprüftem Material bis zur Betreuung während der Veranstaltung.";
   const discs = disciplines?.length ? disciplines : FALLBACK_DISCIPLINES;
 
   useEffect(() => {

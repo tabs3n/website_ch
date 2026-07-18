@@ -77,7 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const companyName: string = settings?.companyName ?? "Cologne Hunters";
   const description: string =
     settings?.siteDescription ??
-    "Cologne Hunters ist ein Full-Service-Dienstleister für Veranstaltungstechnik: Licht, Ton, Video, Rigging und Konferenztechnik auf Broadcast-Niveau.";
+    "Cologne Hunters — Veranstaltungstechnik aus Köln: Licht, Ton, Video, Konferenz- und Streamingtechnik für Messen, TV-Produktionen und Events weltweit.";
   const ogImage: string | null = settings?.ogImage ?? null;
   const defaultTitle = `${companyName} · Licht und Ton Service GmbH`;
 

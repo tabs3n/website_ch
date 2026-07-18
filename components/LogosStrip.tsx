@@ -1,18 +1,17 @@
 // ClientMarquee — animated scrolling strip with client names
 
+// Referenzen von der Bestandswebsite cologne-hunters.de — im CMS unter
+// Einstellungen → Unternehmen → Referenzkunden übersteuerbar.
 const FALLBACK_CLIENTS = [
-  "RTL",
+  "VOLKSWAGEN",
+  "AUDI",
+  "BUGATTI",
+  "SKODA",
+  "MAZDA",
+  "SCANIA",
+  "MAN",
   "ZDF",
-  "FORD",
-  "LANXESS",
-  "KOELNMESSE",
-  "DEUTSCHE TELEKOM",
-  "REWE",
-  "BAYER",
-  "DMEXCO",
-  "BURDA",
-  "AXEL SPRINGER",
-  "VODAFONE",
+  "WDR",
 ];
 
 function Copy({ list }: { list: string[] }) {

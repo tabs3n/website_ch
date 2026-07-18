@@ -23,10 +23,10 @@ export interface HeroData {
 }
 
 const DEFAULT_STATS = [
-  { value: "20+", label: "Jahre" },
-  { value: "800+", label: "Produktionen" },
-  { value: "24/7", label: "On-Site Support" },
-  { value: "4K", label: "Broadcast-Ready" },
+  { value: "25+", label: "Jahre Erfahrung" },
+  { value: "15", label: "Metropolen weltweit" },
+  { value: "24/7", label: "Projektbetreuung" },
+  { value: "4K", label: "LED & Streaming" },
 ];
 
 const FADE_DURATION = 1500;
@@ -172,12 +172,13 @@ export default function Hero({
   // null/undefined aus Sanity → Standardwerte
   const slideshowEnabled = heroSlideshowEnabled !== false;
   const slideshowInterval = Math.max(2, (heroSlideshowInterval ?? 6)) * 1000;
-  const eyebrow = heroEyebrow !== undefined ? heroEyebrow : "Veranstaltungstechnik · Köln · seit 2003";
-  const headline = heroHeadline !== undefined ? heroHeadline : "Licht. Ton. Video auf Broadcast-Niveau.";
+  const eyebrow =
+    heroEyebrow !== undefined ? heroEyebrow : "Veranstaltungstechnik · Köln · über 25 Jahre";
+  const headline = heroHeadline !== undefined ? heroHeadline : "Licht. Ton. Video.";
   const description =
     heroDescription !== undefined
       ? heroDescription
-      : "Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der ersten CAD-Zeichnung bis zur schlüsselfertigen Show.";
+      : "Von der Automobilpremiere bis zur TV-Produktion: Wir planen, liefern und betreiben Licht-, Ton- und Videotechnik für Messen, Konferenzen und Events — in Köln zu Hause, weltweit im Einsatz.";
   const stats = heroStats !== undefined ? (heroStats ?? []) : DEFAULT_STATS;
 
   // Info-Zeile am oberen Bildrand. Die rechte Seite (Koordinaten) ist

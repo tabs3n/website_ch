@@ -106,7 +106,7 @@ export default function Footer({
 } = {}) {
   const tagline =
     footerTagline ??
-    "Licht und Ton Service GmbH · Veranstaltungstechnik auf Broadcast-Niveau — von der Konzeption bis zur schlüsselfertigen Umsetzung.";
+    "Cologne Hunters Licht und Ton Service GmbH — Veranstaltungstechnik aus Köln, weltweit im Einsatz. Licht, Ton, Video, Konferenztechnik und Rigging aus einer Hand.";
   const resolvedEmail = email ?? "kontakt@cologne-hunters.de";
   const resolvedPhone = phone ?? "+49 (0) 221 2790-20";
   const street = addressStreet ?? "Bonner Wall 31";

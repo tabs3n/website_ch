@@ -16,25 +16,27 @@ export interface CapabilitiesData {
 const FALLBACK_CAPABILITIES: Capability[] = [
   {
     tag: "Planung",
-    title: "Konzeption & Engineering",
-    description: "CAD-basierte Planung, Rigging-Statik, Power-Kalkulation und Netzwerk-Design.",
+    title: "Beratung & CAD-Planung",
+    description:
+      "Wir denken Veranstaltungen vom Ergebnis her: Beratung, Konzeption und CAD-Planung mit 3D-Visualisierung — bevor das erste Case rollt.",
   },
   {
     tag: "Rigging",
-    title: "Traversen & Motorsysteme",
-    description: "Zertifizierte Rigger, Chain Hoists bis 2 t, Ground Support und Arena-Systeme.",
+    title: "Rigging & Bühnenbau",
+    description:
+      "Traversen, Motoren und Bühnen mit TÜV-geprüftem Material und zertifiziertem Personal — sicher geplant, termingerecht montiert.",
   },
   {
     tag: "Konferenz",
-    title: "Dolmetsch & Streaming",
+    title: "Konferenztechnik & Streaming",
     description:
-      "Personenführungsanlagen, Simultandolmetschen, hybride Konferenzen mit Multi-Feed-Streaming.",
+      "Analog, digital oder hybrid: Konferenzen mit Licht, Ton, Video und Streaming — auf Wunsch Ende-zu-Ende-verschlüsselt.",
   },
   {
-    tag: "Crew",
-    title: "Techniker & Operator",
+    tag: "Sonderlösungen",
+    title: "Sonderbauten & Speziallösungen",
     description:
-      "Eigene, qualifizierte Crew — von SFX und Pyro bis FOH-Engineer und Show-Caller.",
+      "Wenn es für andere schwierig wird, wird es für uns erst richtig spannend: technische Lösungen abseits des Katalogs.",
   },
 ];
 

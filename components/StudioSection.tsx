@@ -14,10 +14,10 @@ export interface StudioData {
 }
 
 const FALLBACK_STEPS: ProcessStep[] = [
-  { num: "01", title: "Brief", description: "Anforderungen, Gewerke, Budget, Termine." },
-  { num: "02", title: "Engineering", description: "CAD · Statik · Power · Netzwerk." },
-  { num: "03", title: "Proben", description: "Technische Proben und Show-Programmierung." },
-  { num: "04", title: "Showtime", description: "FOH · Operator · Crew · Backup on-site." },
+  { num: "01", title: "Beratung", description: "Anlass, Ziele, Budget — wir hören zu und denken mit." },
+  { num: "02", title: "Planung", description: "Konzeption und CAD-Planung mit 3D-Visualisierung." },
+  { num: "03", title: "Aufbau", description: "Termingerechte Montage mit TÜV-geprüftem Material." },
+  { num: "04", title: "Show", description: "Erfahrene Operator und 24/7-Betreuung vor Ort." },
 ];
 
 const FALLBACK_IMG =
@@ -30,11 +30,11 @@ export default function StudioSection({
   processSteps,
 }: StudioData = {}) {
   const heading =
-    studioHeading !== undefined ? studioHeading : "Ein Team. Ein Signal-Weg.";
+    studioHeading !== undefined ? studioHeading : "Ein Team. Ein Ansprechpartner.";
   const body =
     studioBody !== undefined
       ? studioBody
-      : "Unsere Techniker, Operator und Projektleiter arbeiten seit Jahren zusammen. Keine Subunternehmer-Kette, keine Übergabe-Verluste.";
+      : "Unser Projektmanagement begleitet Sie rund um die Uhr — von der ersten Beratung über Aufbau und Show bis zum Abbau. Keine Übergabeverluste, keine Warteschleifen.";
   const img =
     studioImage !== undefined ? (studioImage ?? FALLBACK_IMG) : FALLBACK_IMG;
   const steps =

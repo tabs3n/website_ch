@@ -221,7 +221,7 @@ export default function ContactCTA({
 
   const heading = contactHeading !== undefined
     ? contactHeading
-    : "Lassen Sie uns Ihr nächstes Event realisieren.";
+    : "Lassen Sie uns Ihre Veranstaltung realisieren.";
   const responseTime = contactResponseTime !== undefined
     ? contactResponseTime
     : "Antwort innerhalb von 24 h werktags";

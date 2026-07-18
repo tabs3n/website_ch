@@ -7,6 +7,11 @@ import type { ServiceDetailData, ServiceListItem } from "@/sanity/lib/types";
  *  1. Fallback, solange im CMS noch keine Leistung angelegt ist.
  *  2. Vorlage für das Seed-Skript (scripts/seed.ts).
  *
+ * Die Texte folgen der Bestandswebsite cologne-hunters.de (über 25 Jahre
+ * Erfahrung, CAD-Planung mit 3D, Raumakustik-Analyse, TÜV-geprüftes Rigging,
+ * Full-HD/4K-Video, Streaming bis Satellit). Keine Marken-Behauptungen —
+ * Equipment wird als Kategorie genannt, nicht als Fabrikat.
+ *
  * Die Bilder sind Platzhalter von Unsplash. Sobald im CMS ein eigenes Bild
  * hochgeladen ist, hat dieses Vorrang.
  */
@@ -31,58 +36,58 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     number: "01",
     title: "Lichttechnik",
     shortDescription:
-      "Moving Lights, LED-Flächen, kinetische Systeme und DMX-Netzwerke — gesteuert aus einer Hand.",
+      "Lichtdesign für Messen, TV-Produktionen und Events — vom kamerafesten Tageslicht bis zur Show-Beleuchtung.",
     bullets: [
-      "grandMA3 & ETC EOS Lichtregie",
-      "MDG Hazer & Atmospheric FX",
-      "Kinetische Lichtsysteme",
-      "Truss- und Rigging-Integration",
+      "Lichtdesign & Operating",
+      "Kamerataugliches Tageslicht",
+      "Moving Lights & LED",
+      "Messe- & Architekturlicht",
     ],
     cardImage: img(UNSPLASH.licht, 1600),
     eyebrow: "01 · Lichttechnik",
-    headline: "Licht ist die erste Entscheidung jeder Produktion.",
+    headline: "Licht macht aus Technik eine Inszenierung.",
     intro:
-      "Von der Einzel-Keynote bis zur Arena-Show: Wir entwickeln Lichtdesigns, die Content stützen, Räume definieren und Marken inszenieren.",
+      "Ob Produktpremiere, Messestand oder TV-Studio: Wir entwickeln Lichtkonzepte, die zeigen, was gezeigt werden soll — und verschwinden lassen, was nicht.",
     headerImage: img(UNSPLASH.licht, 2400),
-    lead: "Wir denken Licht nicht als Ausstattung, sondern als erzählerisches Werkzeug — präzise gesteuert, redundant gesichert, sauber integriert.",
+    lead: "Gutes Licht fällt nicht auf. Es lässt auffallen, worauf es ankommt.",
     paragraphs: [
-      "Unser Licht-Team plant jedes Projekt in CAD: Rigging-Statik, Power-Verteilung, Dimmer-Schemata und DMX-Netzwerke werden vor dem ersten Aufbau geprüft und abgenommen.",
-      "Wir arbeiten ausschließlich mit Top-Tier-Equipment — primär grandMA3 als Konsolensystem, ergänzt durch ETC EOS und eine eigene Flotte an Moving Lights, LED-Flächen und kinetischen Elementen.",
-      "Für Broadcast-Produktionen liefern wir Lichtdesigns mit kalibrierten Farbtemperaturen, CRI ≥ 92 und flicker-freien Output für 4K-Kameras bei hohen Shutter Speeds.",
+      "Jedes Lichtkonzept beginnt bei uns am Plan: In der CAD-Planung mit 3D-Visualisierung stimmen wir Positionen, Winkel und Stromversorgung ab, bevor der erste Scheinwerfer hängt.",
+      "Aus über 25 Jahren Messe- und TV-Erfahrung wissen wir, was Kameras brauchen: flimmerfreies, kamerataugliches Licht mit sauberer Farbwiedergabe — im Studio wie auf der Messebühne.",
+      "Unsere Lichtoperator begleiten die Veranstaltung vor Ort, vom Einleuchten über die Proben bis zum letzten Cue. Bei Änderungen in letzter Minute reagieren wir, statt zu diskutieren.",
     ],
     capabilities: [
       {
-        title: "Show Lighting",
-        body: "Event-, Corporate- und Entertainment-Produktionen mit vollständigem Design und Operating.",
+        title: "Showlicht",
+        body: "Produktpräsentationen, Galas und Bühnenshows — geplant, programmiert und gefahren von erfahrenen Operatorn.",
       },
       {
-        title: "Broadcast Lighting",
-        body: "Studio-Grade Lichtdesign mit TV-tauglichem Spektrum und redundanter Stromversorgung.",
+        title: "Messelicht",
+        body: "Stände und Exponate ins richtige Licht gesetzt — abgestimmt auf Architektur, Material und Markenauftritt.",
       },
       {
-        title: "Architectural & Kinetisch",
-        body: "LED-Flächen, Lichtvorhänge und kinetische Winch-Systeme — synchronisiert über Timecode.",
+        title: "TV- & Studiolicht",
+        body: "Kamerataugliches Licht für Produktionen und Übertragungen — flimmerfrei und farbstabil.",
       },
       {
-        title: "Atmospheric FX",
-        body: "MDG Hazer, Low-Fog und CO₂-Jets — sauber integriert mit Brandschutzfreigabe.",
+        title: "Tageslichttechnik",
+        body: "Leistungsstarke Tageslicht-Scheinwerfer für Situationen, in denen Kunstlicht an Grenzen stösst.",
       },
       {
-        title: "DMX / Network",
-        body: "sACN, Art-Net und redundante Fiber-Backbones für sichere Signalverteilung.",
+        title: "Architektur- & Effektlicht",
+        body: "Fassaden, Räume und Objekte inszeniert — dezent oder spektakulär, je nach Anlass.",
       },
       {
-        title: "Previz",
-        body: "Pre-Programming in grandMA onPC und depence² für volle Show-Sicherheit.",
+        title: "Lichtsteuerung",
+        body: "Programmierung und Operating über professionelle Lichtsteuerungen — inklusive Backup-Konzept.",
       },
     ],
     stack: [
-      "grandMA3 · grandMA2",
-      "ETC EOS Ti · Gio",
-      "Ayrton · Robe · Martin Moving Lights",
-      "Astera Titan · Quasar Science",
-      "MDG Atmosphere",
-      "depence² Previsualisierung",
+      "Moving Lights",
+      "LED-Wash- & Flächenlicht",
+      "Tageslicht-Scheinwerfer",
+      "Profiler & Verfolger",
+      "Lichtsteuerpulte",
+      "Dimmer- & Stromverteilung",
     ],
     gallery: [
       { url: img(UNSPLASH.licht, 1600), alt: "Moving Lights über einer Bühne" },
@@ -94,7 +99,7 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     seo: {
       metaTitle: "Lichttechnik",
       metaDescription:
-        "Moving Lights, LED-Systeme, kinetisches Licht und DMX-Netzwerke auf Broadcast-Niveau.",
+        "Lichtdesign und Lichttechnik aus Köln: kamerataugliches Licht für TV, Messen und Events — Planung, Equipment und Operating aus einer Hand.",
     },
   },
 
@@ -105,58 +110,58 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     number: "02",
     title: "Tontechnik",
     shortDescription:
-      "Line-Array-Systeme, Monitoring, digitale Konsolen und Dante-Netzwerke für alle Venue-Größen.",
+      "Beschallung mit Raumakustik-Analyse — von der Pressekonferenz bis zum Konzert verständlich und druckvoll.",
     bullets: [
-      "d&b audiotechnik GSL & KSL",
-      "DiGiCo SD-Serie · Yamaha RIVAGE",
-      "IEM Monitoring · Shure Axient",
-      "Dante- & MADI-Netzwerke",
+      "Beschallung & Raumakustik",
+      "Funkmikrofonie & Monitoring",
+      "Konferenz- & Dolmetschton",
+      "Aufzeichnung & Mitschnitt",
     ],
     cardImage: img(UNSPLASH.ton, 1600),
     eyebrow: "02 · Tontechnik",
-    headline: "Sprachverständlichkeit und Musikalität, in jedem Winkel.",
+    headline: "Guter Ton ist der, über den niemand spricht.",
     intro:
-      "Beschallung ist Präzisionshandwerk. Wir liefern akustisch vermessene Setups mit Top-Tier-Equipment und erfahrenen FOH-Engineers.",
+      "Sprachverständlichkeit ist kein Zufall: Wir analysieren die Raumakustik, bevor die erste Box hängt — und liefern Beschallung, die zum Raum und zum Anlass passt.",
     headerImage: img(UNSPLASH.ton, 2400),
-    lead: "Wir messen, simulieren und optimieren jedes Setup — damit der Sound in Reihe 1 und Reihe 40 identisch trägt.",
+    lead: "Wir hören den Raum, bevor ihn Ihr Publikum hört.",
     paragraphs: [
-      "Für jede Venue erstellen wir eine d&b ArrayCalc-Simulation: Beschallungskeule, SPL-Verteilung und Delay-Konzept werden vor dem ersten Flug abgenommen.",
-      "Unsere FOH- und Monitor-Engineers arbeiten auf DiGiCo SD-Konsolen oder Yamaha RIVAGE — mit durchgängigen Dante-Netzwerken und MADI-Redundanz bis ins Rack.",
-      "Für Konferenz- und Broadcast-Formate liefern wir zusätzlich Dolmetschkabinen, Personenführungsanlagen und IFB-Systeme für Regie-Kommunikation.",
+      "Am Anfang steht die Analyse: Raumgrösse, Nachhall, Publikumsflächen. Daraus entsteht ein Beschallungskonzept, das jeden Platz erreicht — ohne die ersten Reihen zu erdrücken.",
+      "Für Konferenzen und Pressetermine liefern wir zuverlässige Funkmikrofonie und Konferenzton — auf Wunsch mit Anbindung an Streaming und Aufzeichnung.",
+      "Unsere Tontechniker mischen die Veranstaltung vor Ort und bleiben bis zum letzten Wort: bei Livemusik ebenso wie bei der Keynote, bei der jedes Wort sitzen muss.",
     ],
     capabilities: [
       {
-        title: "Live Sound",
-        body: "d&b audiotechnik GSL/KSL/Y-Serie — von Clubshows bis Arena-Tour.",
+        title: "Beschallung",
+        body: "Systeme für jede Raumgrösse — von der Besprechung bis zur Halle, sauber eingemessen.",
       },
       {
-        title: "Corporate Audio",
-        body: "Sprachverständlichkeit-optimierte Beschallung für Keynotes, Townhalls und Kongresse.",
+        title: "Raumakustik-Analyse",
+        body: "Wir vermessen und bewerten den Raum, bevor wir Technik empfehlen — nicht umgekehrt.",
       },
       {
-        title: "Broadcast Audio",
-        body: "IFB-Routing, Mix-Minus-Workflows und gesicherte Sendesignale.",
+        title: "Funkmikrofonie",
+        body: "Drahtlose Mikrofonstrecken mit sorgfältiger Frequenzplanung — störungsfrei auch im Messeumfeld.",
       },
       {
         title: "Monitoring",
-        body: "IEM-Systeme Shure Axient, Sennheiser 6000 und klassische Wedge-Monitoring.",
+        body: "In-Ear- und Bühnenmonitoring, damit alle auf der Bühne hören, was sie brauchen.",
       },
       {
-        title: "Dolmetschtechnik",
-        body: "Bosch Integrus, Williams Digi-Wave — bis zu 16 Simultansprachen.",
+        title: "Konferenzton",
+        body: "Diskussionsanlagen und Konferenzsysteme — analog, digital oder hybrid mit Streaming-Anbindung.",
       },
       {
-        title: "Measurement",
-        body: "Rational Acoustics Smaart und d&b ArrayCalc für reproduzierbare Ergebnisse.",
+        title: "Aufzeichnung",
+        body: "Mitschnitte in Sende- und Archivqualität, auf Wunsch direkt geschnitten und aufbereitet.",
       },
     ],
     stack: [
-      "d&b audiotechnik GSL · KSL · Y-Serie",
-      "DiGiCo SD7 · SD12 · Quantum",
-      "Yamaha RIVAGE PM10",
-      "Shure Axient Digital · Sennheiser 6000",
-      "Dante / MADI / Optocore",
-      "Rational Acoustics Smaart",
+      "Line-Array- & Punktquellen-Systeme",
+      "Digitale Mischpulte",
+      "Funkmikrofonie",
+      "In-Ear- & Bühnenmonitoring",
+      "Delay- & Frontfill-Systeme",
+      "Recording & Mitschnitt",
     ],
     gallery: [
       { url: img(UNSPLASH.ton, 1600), alt: "Mischpult im Front-of-House" },
@@ -168,7 +173,7 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     seo: {
       metaTitle: "Tontechnik",
       metaDescription:
-        "Line-Array-Beschallung, digitale Mischpulte, IEM-Monitoring und Dante-Netzwerke.",
+        "Tontechnik aus Köln: Beschallung mit Raumakustik-Analyse, Funkmikrofonie und Konferenzton für Messen, Konferenzen und Veranstaltungen.",
     },
   },
 
@@ -179,58 +184,58 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     number: "03",
     title: "Videotechnik",
     shortDescription:
-      "LED-Walls, Broadcast-Kameras, Medienserver und hybrides Streaming in 4K.",
+      "LED-Wände, Kameratechnik und Streaming in Full HD und 4K — live im Saal, hybrid im Netz.",
     bullets: [
-      "ROE Visual LED-Walls bis 1.2 mm",
-      "disguise VX4 · Resolume Arena",
-      "Blackmagic URSA · Sony PXW-Kameras",
-      "Multi-Feed Live-Streaming",
+      "LED-Wände & Displays",
+      "Kameratechnik & Bildregie",
+      "Streaming bis Satellit",
+      "Hybride Konferenzen",
     ],
     cardImage: img(UNSPLASH.video, 1600),
     eyebrow: "03 · Videotechnik",
-    headline: "Bildsprache, die trägt — live, hybrid und broadcastfähig.",
+    headline: "Bilder, die ankommen — im Saal und im Stream.",
     intro:
-      "LED-Walls, Kameraketten, Medienserver und Streaming — als ein aufeinander abgestimmtes System.",
+      "Von der LED-Wand über die Kameraregie bis zur Übertragung: Wir planen die komplette Bildkette und betreiben sie zuverlässig — in Full HD und 4K.",
     headerImage: img(UNSPLASH.video, 2400),
-    lead: "Vom Pixel Pitch bis zum CDN-Endpoint: wir planen die gesamte Bildkette — kalibriert, redundant, 4K-fähig.",
+    lead: "Eine Bildkette ist nur so stark wie ihr schwächstes Glied. Deshalb planen wir alle.",
     paragraphs: [
-      "Wir entwickeln LED-Designs auf Basis von ROE Visual Black Marble und Carbon-Serien — inklusive Processing auf Brompton Tessera für Broadcast-Qualität.",
-      "Unsere Kameraketten reichen von kompakten PTZ-Lösungen bis zu voll ausgestatteten Broadcast-Kameras mit Engineering-Support und Rack Control.",
-      "Für Streaming und Hybrid-Produktionen setzen wir auf vMix, Blackmagic ATEM Constellation und redundante Encoder mit Failover-Logik.",
+      "LED-Wände und Displays liefern wir in Full HD und 4K — passend zu Raum, Betrachtungsabstand und Content. Die Einbindung in Bühnenbild und Rigging planen wir gleich mit.",
+      "Für hybride Konferenzen verbinden wir Saal und Teilnehmende im Netz: Kamerazüge, Bildregie und Streaming — von der einfachen Konferenzschaltung bis zur Satellitenübertragung, auf Wunsch Ende-zu-Ende-verschlüsselt.",
+      "Nach der Veranstaltung ist das Material bei uns in guten Händen: Bearbeitung, Schnitt und Archivierung übernehmen wir auf Wunsch gleich mit.",
     ],
     capabilities: [
       {
-        title: "LED Walls",
-        body: "ROE Visual · INFiLED · Brompton Processing — bis 1.2 mm Pixel Pitch.",
+        title: "LED-Wände & Displays",
+        body: "Indoor und Outdoor, Full HD bis 4K — inklusive Statik-, Rigging- und Stromplanung.",
+      },
+      {
+        title: "Kameratechnik",
+        body: "Kamerazüge für Bühne, Studio und Übertragung — bedient von erfahrenen Operatorn.",
       },
       {
         title: "Bildregie",
-        body: "Blackmagic ATEM Constellation 4K · Grass Valley Kayenne.",
+        body: "Live geschnitten und gemischt — damit im Saal und im Stream immer das richtige Bild steht.",
       },
       {
-        title: "Kameras",
-        body: "Sony PXW-FX9, Blackmagic URSA Broadcast, Marshall PTZ — Fiber-Backbone.",
+        title: "Streaming & Übertragung",
+        body: "Von der Konferenzschaltung bis zur Satellitenübertragung — stabil, redundant, auf Wunsch verschlüsselt.",
       },
       {
-        title: "Medienserver",
-        body: "disguise VX4 · Resolume Arena · watchout — synchron über Timecode.",
+        title: "Hybride Konferenzen",
+        body: "Saal und Remote-Teilnehmende in einem Setup — Licht, Ton, Bild und Streaming aus einer Hand.",
       },
       {
-        title: "Live Streaming",
-        body: "Multi-Feed Encoder, RTMP & SRT, CDN-Distribution mit SLA.",
-      },
-      {
-        title: "Show Control",
-        body: "Timecode-basiertes Cueing, QLab & Stage Precision — verlässlich im Sekundentakt.",
+        title: "Content Management",
+        body: "Bearbeitung, Schnitt und Archivierung des Materials — für Doku, Social Media oder die nächste Ausgabe.",
       },
     ],
     stack: [
-      "ROE Visual Black Marble BM2 · CB5",
-      "Brompton Tessera SX40 · XD",
-      "disguise VX4 · Resolume Arena 7",
-      "Blackmagic ATEM Constellation 4K",
-      "Sony PXW-FX9 · Marshall PTZ",
-      "vMix · OBS · SRT Streaming",
+      "LED-Wände (Indoor & Outdoor)",
+      "4K-Kameratechnik",
+      "Bildregie & Bildmischer",
+      "Streaming-Encoder",
+      "Ü-Wagen & Schnittplatz",
+      "Medienserver & Zuspieler",
     ],
     gallery: [
       { url: img(UNSPLASH.video, 1600), alt: "LED-Wall auf einer Bühne" },
@@ -242,7 +247,7 @@ export const SERVICE_SEEDS: ServiceSeed[] = [
     seo: {
       metaTitle: "Videotechnik",
       metaDescription:
-        "LED-Walls, Broadcast-Kameras, Medienserver und Live-Streaming in 4K.",
+        "Videotechnik aus Köln: LED-Wände, Kameratechnik, Bildregie und Streaming in Full HD und 4K — für Events, Messen und hybride Konferenzen.",
     },
   },
 ];
