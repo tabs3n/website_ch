@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { telHref } from "@/lib/phone";
 
 type FootItem = { label: string; href: string };
 
@@ -89,6 +90,7 @@ export default function Footer({
   instagramUrl,
   facebookUrl,
   linkedinUrl,
+  serviceLinks,
 }: {
   companyName?: string | null;
   footerTagline?: string | null;
@@ -99,6 +101,8 @@ export default function Footer({
   instagramUrl?: string | null;
   facebookUrl?: string | null;
   linkedinUrl?: string | null;
+  /** Leistungen aus dem CMS — leer lassen für die eingebauten Standardlinks. */
+  serviceLinks?: FootItem[];
 } = {}) {
   const tagline =
     footerTagline ??
@@ -108,8 +112,14 @@ export default function Footer({
   const street = addressStreet ?? "Bonner Wall 31";
   const city = addressCity ?? "50677 Köln";
 
-  const phoneHref = `tel:${resolvedPhone.replace(/[^+\d]/g, "")}`;
+  const phoneHref = telHref(resolvedPhone);
   const hasSocials = instagramUrl || facebookUrl || linkedinUrl;
+
+  // Die im CMS gepflegten Leistungen, gefolgt vom Link auf die Übersicht
+  const serviceItems: FootItem[] = [
+    ...(serviceLinks ?? []),
+    { label: "Alle Leistungen", href: "/leistungen" },
+  ];
 
   return (
     <footer
@@ -168,15 +178,7 @@ export default function Footer({
             </div>
           )}
         </div>
-        <FootCol
-          t="Leistungen"
-          items={[
-            { label: "Lichttechnik", href: "/leistungen/licht" },
-            { label: "Tontechnik", href: "/leistungen/ton" },
-            { label: "Videotechnik", href: "/leistungen/video" },
-            { label: "Alle Leistungen", href: "/leistungen" },
-          ]}
-        />
+        <FootCol t="Leistungen" items={serviceItems} />
         <FootCol
           t="Studio"
           items={[

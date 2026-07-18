@@ -4,9 +4,42 @@ import { useRef, useState, type FormEvent } from "react";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const services = ["Licht", "Ton", "Video", "Rigging", "Konferenztechnik", "Streaming"];
+const DEFAULT_SERVICES = [
+  "Licht",
+  "Ton",
+  "Video",
+  "Rigging",
+  "Konferenztechnik",
+  "Streaming",
+];
 
-export default function ContactForm() {
+const DEFAULT_SUCCESS =
+  "Vielen Dank — wir haben Ihre Anfrage erhalten und melden uns in der Regel innerhalb eines Werktages bei Ihnen.";
+
+const DEFAULT_PRIVACY =
+  "Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten zur Bearbeitung Ihrer Anfrage zu.";
+
+type Props = {
+  /** Bestätigungstext nach erfolgreichem Absenden. */
+  successMessage?: string;
+  /** Hinweis unter dem Absenden-Button. Leerer String blendet ihn aus. */
+  privacyNote?: string;
+  /** Auswählbare Leistungen als Chips. */
+  serviceOptions?: string[];
+  /** Ausweich-Adresse, die im Fehlerfall angeboten wird. */
+  contactEmail?: string;
+  /** Geschäftszeiten, die auf der Bestätigung erscheinen. */
+  businessHours?: string[];
+};
+
+export default function ContactForm({
+  successMessage,
+  privacyNote,
+  serviceOptions,
+  contactEmail = "kontakt@cologne-hunters.de",
+  businessHours,
+}: Props = {}) {
+  const services = serviceOptions?.length ? serviceOptions : DEFAULT_SERVICES;
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selected, setSelected] = useState<string[]>([]);
@@ -71,19 +104,18 @@ export default function ContactForm() {
               Anfrage eingegangen.
             </h3>
             <p className="mt-3 text-sm leading-relaxed text-steel-300">
-              Vielen Dank — wir haben Ihre Anfrage erhalten und melden uns in der Regel{" "}
-              <strong className="text-white">innerhalb eines Werktages</strong> bei Ihnen.
+              {successMessage || DEFAULT_SUCCESS}
             </p>
-            <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.22em] text-steel-400">
-              <span className="flex items-center gap-2">
-                <span className="h-px w-4 bg-accent/60" />
-                Mo–Fr · 08:00–18:00
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="h-px w-4 bg-accent/60" />
-                Kurzfristige Produktionen nach Absprache
-              </span>
-            </div>
+            {businessHours && businessHours.length > 0 && (
+              <div className="mt-5 flex flex-wrap gap-4 text-[11px] uppercase tracking-[0.22em] text-steel-400">
+                {businessHours.map((line) => (
+                  <span key={line} className="flex items-center gap-2">
+                    <span aria-hidden className="h-px w-4 bg-accent/60" />
+                    {line}
+                  </span>
+                ))}
+              </div>
+            )}
             <button
               type="button"
               onClick={() => setStatus("idle")}
@@ -162,20 +194,21 @@ export default function ContactForm() {
           {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}{" "}
           Bitte schreiben Sie uns direkt an{" "}
           <a
-            href="mailto:kontakt@cologne-hunters.de"
+            href={`mailto:${contactEmail}`}
             className="underline decoration-accent/60 underline-offset-2 hover:text-accent"
           >
-            kontakt@cologne-hunters.de
+            {contactEmail}
           </a>
           .
         </div>
       )}
 
       <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-        <p className="max-w-md text-xs text-steel-400">
-          Mit dem Absenden stimmen Sie der Verarbeitung Ihrer Daten zur
-          Bearbeitung Ihrer Anfrage zu.
-        </p>
+        {(privacyNote ?? DEFAULT_PRIVACY) && (
+          <p className="max-w-md text-xs text-steel-400">
+            {privacyNote ?? DEFAULT_PRIVACY}
+          </p>
+        )}
         <button
           type="submit"
           disabled={status === "submitting"}

@@ -30,20 +30,24 @@ export async function POST(req: NextRequest) {
       "/projekte",
       "/projektkarte",
       "/leistungen",
-      "/leistungen/licht",
-      "/leistungen/ton",
-      "/leistungen/video",
       "/kontakt",
+      "/impressum",
+      "/datenschutz",
     ];
 
     revalidatePath("/", "layout");
     paths.forEach((path) => revalidatePath(path, "page"));
-    revalidatePath("/projekte/[slug]", "page");
+
+    // Detailseiten über ihr Routen-Muster erneuern — damit sind auch neu im
+    // CMS angelegte Projekte und Leistungen abgedeckt, ohne dass diese Liste
+    // gepflegt werden muss.
+    const dynamicRoutes = ["/projekte/[slug]", "/leistungen/[slug]"];
+    dynamicRoutes.forEach((route) => revalidatePath(route, "page"));
 
     return NextResponse.json({
       revalidated: true,
       now: Date.now(),
-      paths: [...paths, "/projekte/[slug]"],
+      paths: [...paths, ...dynamicRoutes],
     });
   } catch (err) {
     return NextResponse.json(

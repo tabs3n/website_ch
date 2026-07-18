@@ -14,6 +14,8 @@ export interface HeroData {
   heroImages?: string[] | null;
   heroSlideshowEnabled?: boolean | null;
   heroSlideshowInterval?: number | null;
+  heroMetaLeft?: string | null;
+  heroMetaRight?: string | null;
   heroEyebrow?: string | null;
   heroHeadline?: string | null;
   heroDescription?: string | null;
@@ -153,6 +155,8 @@ export default function Hero({
   heroImages,
   heroSlideshowEnabled,
   heroSlideshowInterval,
+  heroMetaLeft,
+  heroMetaRight,
   heroEyebrow,
   heroHeadline,
   heroDescription,
@@ -176,6 +180,13 @@ export default function Hero({
       : "Integrierte Technik-Setups für Events, Konferenzen und Broadcast-Produktionen — von der ersten CAD-Zeichnung bis zur schlüsselfertigen Show.";
   const stats = heroStats !== undefined ? (heroStats ?? []) : DEFAULT_STATS;
 
+  // Info-Zeile am oberen Bildrand. Die rechte Seite (Koordinaten) ist
+  // standardmässig leer und damit ausgeblendet; beide Seiten lassen sich im
+  // CMS unter Startseite → Hero füllen.
+  const metaLeft = heroMetaLeft ?? "REEL · 2024 — 2026";
+  const metaRight = heroMetaRight ?? "";
+  const showMetaRail = Boolean(metaLeft || metaRight);
+
   return (
     <section
       id="top"
@@ -184,24 +195,26 @@ export default function Hero({
       <HeroBackground images={images} enabled={slideshowEnabled} interval={slideshowInterval} />
 
       {/* top meta rail */}
-      <div
-        className="mono"
-        style={{
-          position: "relative",
-          zIndex: 2,
-          padding: "0 var(--pad-x)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
-          REEL · 2024 — 2026
-        </span>
-        <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
-          N 50° 56′ · E 6° 58′
-        </span>
-      </div>
+      {showMetaRail && (
+        <div
+          className="mono"
+          style={{
+            position: "relative",
+            zIndex: 2,
+            padding: "0 var(--pad-x)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
+            {metaLeft}
+          </span>
+          <span style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--ink-dim)" }}>
+            {metaRight}
+          </span>
+        </div>
+      )}
 
       {/* main headline */}
       <div

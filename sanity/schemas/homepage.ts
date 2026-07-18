@@ -74,6 +74,23 @@ export const homepageSchema = defineType({
       validation: (Rule) => Rule.min(2).max(60),
     }),
     defineField({
+      name: "heroMetaLeft",
+      title: "Info-Zeile über dem Hero – links",
+      type: "string",
+      group: "hero",
+      initialValue: "REEL · 2024 — 2026",
+      description:
+        "Kleine Zeile am oberen Bildrand. Leer lassen = ausgeblendet.",
+    }),
+    defineField({
+      name: "heroMetaRight",
+      title: "Info-Zeile über dem Hero – rechts",
+      type: "string",
+      group: "hero",
+      description:
+        'Gegenstück auf der rechten Seite, z.B. Koordinaten "N 50° 56′ · E 6° 58′". Leer lassen = ausgeblendet.',
+    }),
+    defineField({
       name: "heroEyebrow",
       title: "Eyebrow-Text",
       type: "string",
