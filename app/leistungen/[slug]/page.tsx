@@ -7,7 +7,7 @@ import { buildMetadata, getSettingsForMetadata } from "@/lib/seo";
 
 export const revalidate = 300;
 
-type Props = { params: { slug: string } };
+type Props = { params: Promise<{ slug: string }> };
 
 /**
  * Bekannte Leistungen zur Bauzeit vorrendern. Neue Leistungen aus dem CMS
@@ -18,7 +18,8 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
   const [service, settings] = await Promise.all([
     getServiceBySlug(params.slug),
     getSettingsForMetadata(),
@@ -35,8 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-export default async function ServicePage({ params }: Props) {
-  const { isEnabled: preview } = draftMode();
+export default async function ServicePage(props: Props) {
+  const params = await props.params;
+  const { isEnabled: preview } = await draftMode();
   const service = await getServiceBySlug(params.slug, { preview });
 
   if (!service) notFound();

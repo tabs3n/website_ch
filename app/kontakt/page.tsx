@@ -60,7 +60,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KontaktPage() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const { page, settings } = await getData(preview);
 
   // Adresse und Rufnummern stehen nur in den Website-Einstellungen — die

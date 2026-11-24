@@ -23,12 +23,13 @@ export async function generateStaticParams(): Promise<Params[]> {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Params;
-}): Promise<Metadata> {
-  const { isEnabled: preview } = draftMode();
+export async function generateMetadata(
+  props: {
+    params: Promise<Params>;
+  }
+): Promise<Metadata> {
+  const params = await props.params;
+  const { isEnabled: preview } = await draftMode();
   const [project, settings] = await Promise.all([
     getProjectBySlug(params.slug, { preview }),
     sanityFetch<SanitySettings | null>(siteSettingsQuery, {}, { preview, revalidate: 60 }).catch(
@@ -66,8 +67,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProjektPage({ params }: { params: Params }) {
-  const { isEnabled: preview } = draftMode();
+export default async function ProjektPage(props: { params: Promise<Params> }) {
+  const params = await props.params;
+  const { isEnabled: preview } = await draftMode();
   const [project, allProjects, settings] = await Promise.all([
     getProjectBySlug(params.slug, { preview }),
     getAllProjects({ preview }),

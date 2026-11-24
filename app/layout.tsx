@@ -116,7 +116,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
 
   const [settings, services] = await Promise.all([
     fetchSettings(preview),

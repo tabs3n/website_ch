@@ -143,7 +143,7 @@ function ProjectCard({
 }
 
 export default async function ProjectsPreview() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const projects = (await getFeaturedProjects({ preview })).slice(0, 5);
 
   if (projects.length === 0) return null;

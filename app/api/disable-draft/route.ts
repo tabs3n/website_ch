@@ -18,6 +18,6 @@ function safeRedirectPath(slug: string | null): string {
  * Exits preview / draft mode and redirects back to the page.
  */
 export async function GET(req: NextRequest) {
-  draftMode().disable();
+  (await draftMode()).disable();
   redirect(safeRedirectPath(req.nextUrl.searchParams.get("slug")));
 }

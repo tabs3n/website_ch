@@ -5,7 +5,7 @@ import ProjectMap from "@/components/ProjectMap";
 import { getMapProjects, isDemoMapData } from "@/lib/getMapProjects";
 
 export default async function MapSection() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const projects = await getMapProjects({ preview });
   const countryCount = new Set(projects.map((p) => p.iso)).size;
   const isDemo = isDemoMapData(projects);

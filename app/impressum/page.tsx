@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ImpressumPage() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const { page, settings } = await getLegalPage("impressum", { preview });
 
   return <LegalPageView page={page} settings={settings} />;

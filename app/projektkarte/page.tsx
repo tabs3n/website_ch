@@ -46,7 +46,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ProjektKartePage() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const [page, projects] = await Promise.all([
     getPage(preview),
     getMapProjects({ preview, revalidate: 300 }),
