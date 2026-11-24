@@ -67,7 +67,7 @@ export default function StudioSection({
           >
             III/IV
           </span>
-          <span className="eyebrow" style={{ color: "var(--accent)" }}>
+          <span className="eyebrow" style={{ color: "var(--accent-text)" }}>
             ● Studio
           </span>
         </div>
@@ -76,7 +76,7 @@ export default function StudioSection({
             <h2
               className="serif"
               style={{
-                fontSize: "clamp(40px, 6vw, 96px)",
+                fontSize: "clamp(36px, 5vw, 76px)",
                 lineHeight: 0.96,
                 letterSpacing: "-0.03em",
               }}
@@ -164,7 +164,7 @@ export default function StudioSection({
               >
                 <span
                   className="mono"
-                  style={{ fontSize: 12, letterSpacing: "0.14em", color: "var(--accent)" }}
+                  style={{ fontSize: 12, letterSpacing: "0.14em", color: "var(--accent-text)" }}
                 >
                   —— {s.num}
                 </span>

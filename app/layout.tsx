@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { cache } from "react";
-import { Instrument_Serif, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Inter_Tight, JetBrains_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -12,17 +12,9 @@ import type { SanitySettings } from "@/sanity/lib/types";
 import { getAllServices } from "@/lib/getServices";
 
 // ─── Default fonts (preloaded at build time) ──────────────────────────────────
-const instrumentSerif = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-serif",
-  display: "swap",
-});
-
 const interTight = Inter_Tight({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-sans",
   display: "swap",
 });
@@ -59,14 +51,13 @@ const fetchSettings = cache((preview = false): Promise<SanitySettings | null> =>
 
 // Font-family CSS values for each option
 const FONT_FAMILIES: Record<string, string> = {
-  "instrument-serif": '"Instrument Serif", serif',
   "playfair-display": '"Playfair Display", serif',
   "cormorant-garamond": '"Cormorant Garamond", serif',
   "dm-serif-display": '"DM Serif Display", serif',
-  "inter-tight": '"Inter Tight", system-ui, sans-serif',
+  "inter-tight": 'var(--font-sans), "Inter Tight", system-ui, sans-serif',
   "dm-sans": '"DM Sans", system-ui, sans-serif',
   "montserrat": '"Montserrat", system-ui, sans-serif',
-  "jetbrains-mono": '"JetBrains Mono", ui-monospace, monospace',
+  "jetbrains-mono": 'var(--font-mono), "JetBrains Mono", ui-monospace, monospace',
   "ibm-plex-mono": '"IBM Plex Mono", ui-monospace, monospace',
 };
 
@@ -130,15 +121,29 @@ export default async function RootLayout({
   }));
 
   // ─── Branding tokens from Sanity ─────────────────────────────────────────────
-  const accentColor: string = settings?.accentColor ?? "#E8B54A";
-  const headlineFont: string = settings?.headlineFont ?? "instrument-serif";
+  // Standard: Blau + serifenlose Überschriften. Die alten Standardwerte
+  // (Amber, Instrument Serif) stehen als Startwert in bestehenden
+  // Sanity-Dokumenten – sie gelten deshalb als "nicht gesetzt".
+  const DEFAULT_ACCENT = "#2563EB";
+  const LEGACY_ACCENTS = ["#E8B54A", "#e8b54a"];
+  const DEFAULT_HEADLINE_FONT = "inter-tight";
+  const LEGACY_HEADLINE_FONTS = ["instrument-serif"];
+
+  const rawAccent = settings?.accentColor;
+  const accentColor: string =
+    rawAccent && !LEGACY_ACCENTS.includes(rawAccent) ? rawAccent : DEFAULT_ACCENT;
+  const rawHeadlineFont = settings?.headlineFont;
+  const headlineFont: string =
+    rawHeadlineFont && !LEGACY_HEADLINE_FONTS.includes(rawHeadlineFont)
+      ? rawHeadlineFont
+      : DEFAULT_HEADLINE_FONT;
   const bodyFont: string = settings?.bodyFont ?? "inter-tight";
   const labelFont: string = settings?.labelFont ?? "jetbrains-mono";
 
   // Build CSS overrides — only inject what differs from the CSS default
   const cssLines: string[] = [];
-  if (accentColor !== "#E8B54A") cssLines.push(`--accent: ${accentColor};`);
-  if (headlineFont !== "instrument-serif" && FONT_FAMILIES[headlineFont])
+  if (accentColor !== DEFAULT_ACCENT) cssLines.push(`--accent: ${accentColor};`);
+  if (headlineFont !== DEFAULT_HEADLINE_FONT && FONT_FAMILIES[headlineFont])
     cssLines.push(`--font-headline: ${FONT_FAMILIES[headlineFont]};`);
   if (bodyFont !== "inter-tight" && FONT_FAMILIES[bodyFont])
     cssLines.push(`--font-body: ${FONT_FAMILIES[bodyFont]};`);
@@ -157,7 +162,7 @@ export default async function RootLayout({
   return (
     <html
       lang="de"
-      className={`${instrumentSerif.variable} ${interTight.variable} ${jetbrainsMono.variable}`}
+      className={`${interTight.variable} ${jetbrainsMono.variable}`}
     >
       <head>
         {/* Load alternative Google Fonts only when selected */}

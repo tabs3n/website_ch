@@ -18,7 +18,7 @@ export default function PreviewBanner() {
         right: 0,
         zIndex: 999,
         background: "var(--accent)",
-        color: "#0A0A0A",
+        color: "var(--accent-ink)",
         padding: "12px var(--pad-x)",
         display: "flex",
         alignItems: "center",
@@ -32,7 +32,7 @@ export default function PreviewBanner() {
           display: "flex",
           alignItems: "center",
           gap: 10,
-          fontFamily: '"JetBrains Mono", monospace',
+          fontFamily: "var(--font-label)",
           fontSize: 12,
           letterSpacing: "0.08em",
           textTransform: "uppercase",
@@ -53,12 +53,12 @@ export default function PreviewBanner() {
         <a
           href={`/studio`}
           style={{
-            fontFamily: '"JetBrains Mono", monospace',
+            fontFamily: "var(--font-label)",
             fontSize: 12,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "#0A0A0A",
-            borderBottom: "1px solid rgba(10,10,10,0.4)",
+            color: "var(--accent-ink)",
+            borderBottom: "1px solid rgba(255,255,255,0.5)",
             paddingBottom: 2,
           }}
         >
@@ -67,12 +67,12 @@ export default function PreviewBanner() {
         <a
           href={`/api/disable-draft?slug=${encodeURIComponent(path)}`}
           style={{
-            fontFamily: '"JetBrains Mono", monospace',
+            fontFamily: "var(--font-label)",
             fontSize: 12,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             background: "#0A0A0A",
-            color: "var(--accent)",
+            color: "var(--accent-text)",
             padding: "8px 14px",
             borderRadius: 999,
           }}

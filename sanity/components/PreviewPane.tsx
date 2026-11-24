@@ -107,9 +107,9 @@ export function IframePreview({ document: doc }: PreviewPaneProps) {
             rel="noreferrer"
             style={{
               background: "none",
-              border: "1px solid #E8B54A",
+              border: "1px solid #2563EB",
               borderRadius: 4,
-              color: "#E8B54A",
+              color: "#2563EB",
               fontSize: 11,
               fontFamily: "monospace",
               letterSpacing: "0.06em",

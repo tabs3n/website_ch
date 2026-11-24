@@ -120,8 +120,8 @@ export async function POST(req: Request) {
 
   const html = `
     <div style="font-family:system-ui,sans-serif;color:#111;line-height:1.6;max-width:600px;">
-      <div style="background:#E8B54A;padding:16px 24px;border-radius:4px 4px 0 0;">
-        <h2 style="margin:0;color:#0A0A0A;font-size:18px;letter-spacing:-0.01em;">
+      <div style="background:#2563EB;padding:16px 24px;border-radius:4px 4px 0 0;">
+        <h2 style="margin:0;color:#FFFFFF;font-size:18px;letter-spacing:-0.01em;">
           Neue Anfrage über cologne-hunters.de
         </h2>
       </div>
@@ -137,7 +137,7 @@ export async function POST(req: Request) {
             )
             .join("")}
         </table>
-        <div style="background:#f8f8f8;border-left:3px solid #E8B54A;padding:14px 16px;border-radius:2px;white-space:pre-wrap;font-size:14px;line-height:1.6;">${escapeHtml(message)}</div>
+        <div style="background:#f8f8f8;border-left:3px solid #2563EB;padding:14px 16px;border-radius:2px;white-space:pre-wrap;font-size:14px;line-height:1.6;">${escapeHtml(message)}</div>
         <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e5e5e5;font-size:12px;color:#999;">
           Antwort direkt auf diese E-Mail klicken — Reply-To ist auf ${escapeHtml(email)} gesetzt.
         </div>

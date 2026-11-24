@@ -63,7 +63,7 @@ function CapRow({ tag, title, description, i }: Capability & { i: number }) {
         style={{
           fontSize: 11,
           letterSpacing: "0.14em",
-          color: hovered ? "var(--accent)" : "var(--ink-mute)",
+          color: hovered ? "var(--accent-text)" : "var(--ink-mute)",
           transition: "color .25s",
           paddingTop: 6,
         }}
@@ -116,7 +116,7 @@ function CapRow({ tag, title, description, i }: Capability & { i: number }) {
         className="mono"
         style={{
           fontSize: 14,
-          color: hovered ? "var(--accent)" : "var(--ink-mute)",
+          color: hovered ? "var(--accent-text)" : "var(--ink-mute)",
           transition: "color .25s, transform .25s",
           transform: hovered ? "translateX(4px)" : "none",
         }}
@@ -150,13 +150,13 @@ export default function CapabilitiesStrip({
         className="cap-grid"
       >
         <div>
-          <span className="eyebrow" style={{ color: "var(--accent)" }}>
+          <span className="eyebrow" style={{ color: "var(--accent-text)" }}>
             ● Capabilities
           </span>
           <h3
             className="serif"
             style={{
-              fontSize: "clamp(32px, 4vw, 56px)",
+              fontSize: "clamp(28px, 3.4vw, 48px)",
               lineHeight: 1,
               letterSpacing: "-0.02em",
               marginTop: 18,

@@ -242,7 +242,7 @@ export default function Footer({
           transition: color .2s, border-color .2s, background .2s;
         }
         .footer-social:hover {
-          color: #0A0A0A;
+          color: var(--accent-ink);
           background: var(--accent);
           border-color: var(--accent);
         }

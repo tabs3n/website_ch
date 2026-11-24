@@ -11,9 +11,9 @@ const config: Config = {
         // New design system tokens
         bg: "#0A0A0A",
         accent: {
-          DEFAULT: "#E8B54A",
-          hover: "#f0c25f",
-          soft: "#c8982e",
+          DEFAULT: "#2563EB",
+          hover: "#3B82F6",
+          soft: "#1D4ED8",
         },
         // Legacy tokens (kept for inner pages)
         ink: {
@@ -30,11 +30,12 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['"Inter Tight"', "system-ui", "sans-serif"],
-        serif: ['"Instrument Serif"', "serif"],
-        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        sans: ["var(--font-sans)", '"Inter Tight"', "system-ui", "sans-serif"],
+        // Überschriften-Schrift (per CMS umstellbar über --font-headline)
+        serif: ["var(--font-headline)", '"Inter Tight"', "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", '"JetBrains Mono"', "ui-monospace", "monospace"],
         // Legacy alias
-        display: ['"Instrument Serif"', "serif"],
+        display: ["var(--font-headline)", '"Inter Tight"', "system-ui", "sans-serif"],
       },
       letterSpacing: {
         tightest: "-0.04em",

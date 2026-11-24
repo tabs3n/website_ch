@@ -175,7 +175,7 @@ export default async function ProjectsPreview() {
           >
             II/IV
           </span>
-          <span className="eyebrow" style={{ color: "var(--accent)" }}>
+          <span className="eyebrow" style={{ color: "var(--accent-text)" }}>
             ● Ausgewählte Arbeiten
           </span>
         </div>
@@ -183,14 +183,14 @@ export default async function ProjectsPreview() {
           <h2
             className="serif"
             style={{
-              fontSize: "clamp(40px, 6vw, 96px)",
+              fontSize: "clamp(36px, 5vw, 76px)",
               lineHeight: 0.96,
               letterSpacing: "-0.03em",
             }}
           >
             Produktionen,
             <br />
-            die <span style={{ fontStyle: "italic" }}>bleiben</span>.
+            die <span style={{ color: "var(--accent-text)" }}>bleiben</span>.
           </h2>
           <p
             style={{

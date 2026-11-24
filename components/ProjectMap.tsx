@@ -140,9 +140,9 @@ export default function ProjectMap({ projects }: Props) {
         .translate([W / 2, H / 2]);
       const path = d3.geoPath(proj);
 
-      const accentColor = "#E8B54A";
+      const accentColor = "#2563EB";
       const inactiveColor = "rgba(242,238,232,0.08)";
-      const hoverColor = "#c8982e";
+      const hoverColor = "#1D4ED8";
 
       fetch("https://unpkg.com/world-atlas@2.0.2/countries-50m.json")
         .then((r) => r.json())
@@ -372,7 +372,7 @@ export default function ProjectMap({ projects }: Props) {
                 <h2
                   id="map-modal-title"
                   style={{
-                    fontFamily: "'Instrument Serif',serif",
+                    fontFamily: "var(--font-headline)", fontWeight: 600,
                     fontSize: 26,
                     margin: 0,
                     lineHeight: 1.1,
@@ -419,7 +419,7 @@ export default function ProjectMap({ projects }: Props) {
                 >
                   <h3
                     style={{
-                      fontFamily: "'Instrument Serif',serif",
+                      fontFamily: "var(--font-headline)", fontWeight: 600,
                       fontSize: 20,
                       margin: "0 0 10px",
                       letterSpacing: "-0.02em",
@@ -475,7 +475,7 @@ export default function ProjectMap({ projects }: Props) {
                         fontSize: 14,
                         fontStyle: "italic",
                         color: "#F2EEE8",
-                        borderLeft: "3px solid #E8B54A",
+                        borderLeft: "3px solid #2563EB",
                         padding: "4px 0 4px 12px",
                         margin: "12px 0",
                         lineHeight: 1.5,

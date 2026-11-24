@@ -58,13 +58,13 @@ function Field({
           fontSize: 10,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: focused ? "var(--accent)" : "var(--ink-mute)",
+          color: focused ? "var(--accent-text)" : "var(--ink-mute)",
           marginBottom: 8,
           transition: "color .2s",
         }}
       >
         {label}
-        {required && <span style={{ color: "var(--accent)" }}> *</span>}
+        {required && <span style={{ color: "var(--accent-text)" }}> *</span>}
       </div>
       {textarea ? (
         <textarea
@@ -127,7 +127,7 @@ function ChipsField({ label, name, full }: { label: string; name: string; full?:
                 borderRadius: 999,
                 border: `1px solid ${on ? "var(--accent)" : "var(--line-strong)"}`,
                 background: on ? "var(--accent)" : "transparent",
-                color: on ? "#0A0A0A" : "var(--ink)",
+                color: on ? "var(--accent-ink)" : "var(--ink)",
                 cursor: "pointer",
                 transition: "all .2s",
               }}
@@ -179,14 +179,14 @@ function SubmitBtn({ status }: { status: Status }) {
         display: "inline-flex",
         alignItems: "center",
         gap: 10,
-        fontFamily: '"JetBrains Mono", monospace',
+        fontFamily: "var(--font-label)",
         fontSize: 13,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
         padding: "14px 22px",
         borderRadius: 999,
         background: hovered && !disabled ? "var(--ink)" : "var(--accent)",
-        color: "#0A0A0A",
+        color: hovered && !disabled ? "#0A0A0A" : "var(--accent-ink)",
         border: "1px solid var(--accent)",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.6 : 1,
@@ -298,14 +298,14 @@ export default function ContactCTA({
           >
             IV/IV
           </span>
-          <span className="eyebrow" style={{ color: "var(--accent)" }}>
+          <span className="eyebrow" style={{ color: "var(--accent-text)" }}>
             ● Projektanfrage
           </span>
         </div>
         <h2
           className="serif"
           style={{
-            fontSize: "clamp(40px, 6vw, 96px)",
+            fontSize: "clamp(36px, 5vw, 76px)",
             lineHeight: 0.96,
             letterSpacing: "-0.03em",
           }}
@@ -336,7 +336,7 @@ export default function ContactCTA({
             <div
               style={{
                 fontSize: 32,
-                color: "var(--accent)",
+                color: "var(--accent-text)",
                 marginBottom: 16,
               }}
             >
@@ -414,7 +414,7 @@ export default function ContactCTA({
               >
                 {errorMessage ?? "Beim Senden ist etwas schiefgelaufen."}
                 {" "}Bitte schreiben Sie uns direkt an{" "}
-                <a href={`mailto:${resolvedEmail}`} style={{ color: "var(--accent)" }}>
+                <a href={`mailto:${resolvedEmail}`} style={{ color: "var(--accent-text)" }}>
                   {resolvedEmail}
                 </a>
                 .
