@@ -44,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LeistungenPage() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const [page, services] = await Promise.all([
     getPage(preview),
     getAllServices({ preview }),

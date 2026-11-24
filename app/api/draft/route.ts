@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Enable draft mode — this sets a cookie that bypasses static cache
-  draftMode().enable();
+  (await draftMode()).enable();
 
   // Redirect to the requested slug, or homepage as fallback
   redirect(safeRedirectPath(searchParams.get("slug")));

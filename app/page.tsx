@@ -32,7 +32,7 @@ async function getData(preview = false): Promise<{
 }
 
 export default async function HomePage() {
-  const { isEnabled: preview } = draftMode();
+  const { isEnabled: preview } = await draftMode();
   const { hp, settings } = await getData(preview);
 
   // Wenn das Sanity-Dokument noch nicht existiert (hp === null):
