@@ -30,7 +30,7 @@ function Copy({ list }: { list: string[] }) {
           key={i}
           className="serif"
           style={{
-            fontSize: "clamp(32px, 4.4vw, 64px)",
+            fontSize: "clamp(24px, 3vw, 44px)",
             letterSpacing: "-0.02em",
             color: "var(--ink)",
             opacity: 0.85,
@@ -38,7 +38,7 @@ function Copy({ list }: { list: string[] }) {
           }}
         >
           {c}
-          <span style={{ color: "var(--accent)", margin: "0 28px" }}>✦</span>
+          <span style={{ color: "var(--accent-text)", margin: "0 28px" }}>✦</span>
         </span>
       ))}
     </div>

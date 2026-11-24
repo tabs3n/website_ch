@@ -26,20 +26,20 @@ export default async function MapSection() {
         className="map-head"
       >
         <div>
-          <div className="eyebrow" style={{ color: "var(--accent)", marginBottom: 14 }}>
+          <div className="eyebrow" style={{ color: "var(--accent-text)", marginBottom: 14 }}>
             ● Weltweit aktiv
           </div>
           <h2
             className="serif"
             style={{
-              fontSize: "clamp(40px, 6vw, 88px)",
+              fontSize: "clamp(36px, 5vw, 72px)",
               lineHeight: 0.94,
               letterSpacing: "-0.035em",
             }}
           >
             Kölner Technik,
             <br />
-            <span style={{ fontStyle: "italic" }}>globale</span> Bühne.
+            <span style={{ color: "var(--accent-text)" }}>globale</span> Bühne.
           </h2>
           <p
             style={{

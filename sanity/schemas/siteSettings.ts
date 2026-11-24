@@ -30,25 +30,27 @@ export const siteSettingsSchema = defineType({
       title: "Akzentfarbe",
       type: "string",
       group: "branding",
-      initialValue: "#E8B54A",
+      initialValue: "#2563EB",
       description:
-        "Hex-Farbcode für Buttons, Highlights und interaktive Elemente. z.B. #E8B54A (Amber · Standard) · #3B82F6 (Blau) · #10B981 (Grün) · #EF4444 (Rot)",
+        "Hex-Farbcode für Buttons, Highlights und interaktive Elemente. z.B. #2563EB (Cologne-Hunters-Blau · Standard) · #1D4ED8 (dunkleres Blau) · #0EA5E9 (Hellblau). Auf Buttons steht weiße Schrift – sehr helle Farben daher vermeiden.",
       validation: (R) =>
         R.regex(/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/, {
           name: "hex-color",
           invert: false,
-        }).error("Bitte einen gültigen Hex-Farbcode eingeben, z.B. #E8B54A"),
+        }).error("Bitte einen gültigen Hex-Farbcode eingeben, z.B. #2563EB"),
     }),
     defineField({
       name: "headlineFont",
       title: "Überschriften-Schrift",
       type: "string",
       group: "branding",
-      initialValue: "instrument-serif",
+      initialValue: "inter-tight",
       description: "Schriftart für Überschriften (H1, H2, H3) und den Markennamen.",
       options: {
         list: [
-          { title: "Instrument Serif — elegant, editorial (Standard)", value: "instrument-serif" },
+          { title: "Inter Tight — klar, sachlich (Standard)", value: "inter-tight" },
+          { title: "DM Sans — freundlich, rund", value: "dm-sans" },
+          { title: "Montserrat — markant, geometrisch", value: "montserrat" },
           { title: "Playfair Display — klassisch, zeitlos", value: "playfair-display" },
           { title: "Cormorant Garamond — fein, luxuriös", value: "cormorant-garamond" },
           { title: "DM Serif Display — modern, klar", value: "dm-serif-display" },

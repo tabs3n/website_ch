@@ -10,13 +10,19 @@
     --ink-mute: rgba(242, 238, 232, 0.38);
     --line: rgba(242, 238, 232, 0.12);
     --line-strong: rgba(242, 238, 232, 0.22);
-    --accent: #E8B54A;
+    --accent: #2563EB;
+    /* Hellere Variante des Akzents für kleine Schrift auf dunklem Grund (Kontrast ≥ 4.5:1) */
+    --accent-text: color-mix(in srgb, var(--accent) 62%, #ffffff);
+    /* Schriftfarbe auf Flächen in Akzentfarbe */
+    --accent-ink: #FFFFFF;
     --pad-x: clamp(20px, 4vw, 56px);
     --gap: clamp(16px, 2vw, 28px);
     /* Font roles — overridable via Sanity branding settings */
-    --font-headline: "Instrument Serif", serif;
-    --font-body: "Inter Tight", system-ui, sans-serif;
-    --font-label: "JetBrains Mono", ui-monospace, monospace;
+    /* --font-sans / --font-mono kommen von next/font (app/layout.tsx); die
+       Namen dahinter sind die Fallbacks, falls die Variablen fehlen. */
+    --font-headline: var(--font-sans), "Inter Tight", system-ui, sans-serif;
+    --font-body: var(--font-sans), "Inter Tight", system-ui, sans-serif;
+    --font-label: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
   }
 
   *, *::before, *::after {
@@ -28,7 +34,7 @@
   html, body {
     background: var(--bg);
     color: var(--ink);
-    font-family: "Inter Tight", system-ui, sans-serif;
+    font-family: var(--font-body);
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -51,15 +57,17 @@
 
   ::selection {
     background: var(--accent);
-    color: #0A0A0A;
+    color: var(--accent-ink);
   }
 }
 
-/* Typography helpers — all use CSS variables so Sanity can override them */
+/* Typography helpers — all use CSS variables so Sanity can override them.
+   ".serif" ist ein historischer Klassenname: gemeint ist die Überschriften-Schrift
+   (Standard jetzt Inter Tight, halbfett). */
 .serif {
   font-family: var(--font-headline);
-  font-weight: 400;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  letter-spacing: -0.035em;
 }
 
 .mono {

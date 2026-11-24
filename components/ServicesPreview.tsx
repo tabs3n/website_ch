@@ -83,7 +83,7 @@ function SectionHead({
         >
           {n}
         </span>
-        <span className="eyebrow" style={{ color: "var(--accent)" }}>
+        <span className="eyebrow" style={{ color: "var(--accent-text)" }}>
           ● {tag}
         </span>
       </div>
@@ -91,7 +91,7 @@ function SectionHead({
         <h2
           className="serif reveal"
           style={{
-            fontSize: "clamp(40px, 6vw, 96px)",
+            fontSize: "clamp(36px, 5vw, 76px)",
             lineHeight: 0.96,
             letterSpacing: "-0.03em",
           }}
@@ -169,7 +169,7 @@ function DisciplineCard({ num, abbr, title, description, image, href }: Discipli
       >
         <span
           className="mono"
-          style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--accent)" }}
+          style={{ fontSize: 11, letterSpacing: "0.14em", color: "var(--accent-text)" }}
         >
           —— {num}
         </span>
@@ -239,7 +239,7 @@ function DisciplineCard({ num, abbr, title, description, image, href }: Discipli
           textTransform: "uppercase",
           paddingTop: 16,
           borderTop: "1px solid var(--line)",
-          color: hovered ? "var(--accent)" : "var(--ink-dim)",
+          color: hovered ? "var(--accent-text)" : "var(--ink-dim)",
           transition: "color .3s",
         }}
       >

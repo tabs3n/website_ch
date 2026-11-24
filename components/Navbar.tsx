@@ -255,7 +255,7 @@ export default function Navbar({
                   letterSpacing: "0.04em",
                 }}
               >
-                <span style={{ color: "var(--accent)", fontSize: 12, opacity: 0.8, minWidth: 24 }}>
+                <span style={{ color: "var(--accent-text)", fontSize: 12, opacity: 0.8, minWidth: 24 }}>
                   0{i + 1}
                 </span>
                 {link.label}
@@ -270,8 +270,8 @@ export default function Navbar({
                 padding: "16px 24px",
                 borderRadius: 999,
                 background: "var(--accent)",
-                color: "#0A0A0A",
-                fontFamily: '"JetBrains Mono", monospace',
+                color: "var(--accent-ink)",
+                fontFamily: "var(--font-label)",
                 fontSize: 13,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
@@ -323,7 +323,7 @@ function NavAnchor({
       onMouseLeave={() => setHovered(false)}
       style={{ color: hovered ? "var(--ink)" : "var(--ink-dim)", transition: "color .2s" }}
     >
-      <span style={{ color: "var(--accent)", marginRight: 6, opacity: 0.8 }}>0{index + 1}</span>
+      <span style={{ color: "var(--accent-text)", marginRight: 6, opacity: 0.8 }}>0{index + 1}</span>
       {children}
     </Link>
   );
@@ -337,7 +337,7 @@ function ContactBtn({ label }: { label: string }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        fontFamily: '"JetBrains Mono", monospace',
+        fontFamily: "var(--font-label)",
         fontSize: 12,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
@@ -348,7 +348,7 @@ function ContactBtn({ label }: { label: string }) {
         alignItems: "center",
         gap: 8,
         background: hovered ? "var(--accent)" : "transparent",
-        color: hovered ? "#0A0A0A" : "var(--ink)",
+        color: hovered ? "var(--accent-ink)" : "var(--ink)",
         transition: "all .25s",
       }}
     >
@@ -357,7 +357,7 @@ function ContactBtn({ label }: { label: string }) {
           width: 6,
           height: 6,
           borderRadius: "50%",
-          background: hovered ? "#0A0A0A" : "var(--accent)",
+          background: hovered ? "var(--accent-ink)" : "var(--accent)",
           boxShadow: hovered ? "none" : "0 0 12px var(--accent)",
         }}
       />

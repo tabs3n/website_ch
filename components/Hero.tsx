@@ -118,7 +118,7 @@ function CTA({
         display: "inline-flex",
         alignItems: "center",
         gap: 10,
-        fontFamily: '"JetBrains Mono", monospace',
+        fontFamily: "var(--font-label)",
         fontSize: 13,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
@@ -131,7 +131,7 @@ function CTA({
           : hovered
           ? "rgba(242,238,232,.08)"
           : "transparent",
-        color: primary ? "#0A0A0A" : "var(--ink)",
+        color: primary ? (hovered ? "#0A0A0A" : "var(--accent-ink)") : "var(--ink)",
         border: primary ? "1px solid var(--accent)" : "1px solid var(--line-strong)",
         transition: "all .25s",
       }}
@@ -247,9 +247,9 @@ export default function Hero({
         <h1
           className="serif"
           style={{
-            fontSize: "clamp(48px, 10.5vw, 184px)",
-            lineHeight: 0.92,
-            letterSpacing: "-0.035em",
+            fontSize: "clamp(48px, 8vw, 136px)",
+            lineHeight: 0.98,
+            letterSpacing: "-0.04em",
             maxWidth: "14ch",
           }}
         >

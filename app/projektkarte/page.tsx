@@ -84,13 +84,13 @@ export default async function ProjektKartePage() {
             }}
           >
             <div>
-              <div className="eyebrow" style={{ color: "var(--accent)", marginBottom: 16 }}>
+              <div className="eyebrow" style={{ color: "var(--accent-text)", marginBottom: 16 }}>
                 {page?.eyebrow ?? FALLBACK.eyebrow}
               </div>
               <h1
                 className="serif"
                 style={{
-                  fontSize: "clamp(40px, 7vw, 96px)",
+                  fontSize: "clamp(36px, 5.5vw, 80px)",
                   lineHeight: 0.92,
                   letterSpacing: "-0.035em",
                 }}
@@ -212,7 +212,7 @@ function Stat({ value, label }: { value: string; label: string }) {
       <div
         className="serif"
         style={{
-          fontSize: "clamp(36px, 4vw, 60px)",
+          fontSize: "clamp(30px, 3.4vw, 50px)",
           lineHeight: 1,
           letterSpacing: "-0.03em",
           color: "var(--ink)",
